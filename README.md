@@ -146,6 +146,8 @@ TEST_DATABASE_URL=postgres://postgres@localhost:54329/adere_test npm test
 Infraestrutura já criada:
 
 - **Supabase**: projeto `adere-crm-criativos` (ref `heiwuuqdjxrtmfzeatkv`, região São Paulo, plano Free) com **todas as migrações aplicadas** e o seed dos três perfis.
+  As migrações foram aplicadas pela API com outro número de versão; antes do primeiro `supabase db push`, marque-as como aplicadas para o CLI não tentar rodá-las de novo:
+  `supabase migration repair --status applied 20260928120000 20260928130000 20260928140000 20260928150000 20260928160000 20260928170000 20260928180000 20260928190000`
 
 Passos que dependem de você (não puderam ser feitos daqui):
 
