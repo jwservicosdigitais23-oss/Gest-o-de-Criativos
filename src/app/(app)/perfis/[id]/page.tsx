@@ -23,8 +23,9 @@ const COLUNAS: StatusPost[] = ["rascunho", "aguardando", "em_revisao", "aprovado
 export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
   const { id } = await props.params;
   const sp = await props.searchParams;
-  const { supabase, membro } = await exigirMembro();
+  const { supabase, membro, perfisIds } = await exigirMembro();
   const admin = membro.papel === "admin";
+  if (perfisIds && !perfisIds.includes(id)) notFound(); // "Ver como": fora dos perfis dela
 
   const { data: perfil } = await supabase.from("perfis").select("*").eq("id", id).maybeSingle<Perfil>();
   if (!perfil) notFound();

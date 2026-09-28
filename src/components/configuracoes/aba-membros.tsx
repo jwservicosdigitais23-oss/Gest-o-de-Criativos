@@ -2,9 +2,10 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { KeyRound, MailPlus, MoreHorizontal, Pencil, Power, RotateCw, UserPlus } from "lucide-react";
+import { Eye, KeyRound, MailPlus, MoreHorizontal, Pencil, Power, RotateCw, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { definirAtivo, enviarLinkRedefinicao, reenviarConvite } from "@/app/(app)/configuracoes/actions";
+import { iniciarVerComo } from "@/app/ver-como/actions";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/card";
@@ -44,13 +45,13 @@ export function AbaMembros({
   membros,
   perfis,
   usuarioId,
-  acaoExtra,
+  podeVerComo = false,
 }: {
   membros: MembroConfig[];
   perfis: PerfilConfig[];
   usuarioId: string;
-  /** Itens extras no menu de cada linha (ex.: "Ver como"). */
-  acaoExtra?: (m: MembroConfig) => React.ReactNode;
+  /** Definido no servidor: só o admin, com o segredo do cookie configurado. */
+  podeVerComo?: boolean;
 }) {
   const router = useRouter();
   const [modal, setModal] = useState<Modal>(null);
@@ -141,7 +142,11 @@ export function AbaMembros({
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        {m.ativo && acaoExtra?.(m)}
+                        {podeVerComo && m.ativo && m.papel === "aprovadora" && (
+                          <DropdownMenuItem onSelect={() => void iniciarVerComo(m.id)} data-testid="item-ver-como">
+                            <Eye /> Ver como {m.nome}
+                          </DropdownMenuItem>
+                        )}
                         <DropdownMenuItem onSelect={() => setModal({ tipo: "editar", membro: m })}>
                           <Pencil /> Editar perfis
                         </DropdownMenuItem>

@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Calendário" };
 
 export default async function CalendarioPage(props: PageProps<"/calendario">) {
   const sp = await props.searchParams;
-  const { supabase, membro } = await exigirMembro();
+  const { supabase, membro, perfisIds } = await exigirMembro();
   const hoje = hojeISO();
   const modo = sp.modo === "semana" ? "semana" : "mes";
   const referencia = typeof sp.data === "string" && /^\d{4}-\d{2}-\d{2}$/.test(sp.data) ? sp.data : hoje;
@@ -30,9 +30,10 @@ export default async function CalendarioPage(props: PageProps<"/calendario">) {
     .order("data_publicacao")
     .order("hora_publicacao", { nullsFirst: true });
   if (perfisSel.length) q = q.in("perfil_id", perfisSel);
+  if (perfisIds) q = q.in("perfil_id", perfisIds);
   if (status) q = q.eq("status", status);
 
-  const [{ data: posts }, perfis] = await Promise.all([q.returns<PostCalendario[]>(), carregarPerfis(supabase)]);
+  const [{ data: posts }, perfis] = await Promise.all([q.returns<PostCalendario[]>(), carregarPerfis(supabase, false, perfisIds)]);
 
   return (
     <>

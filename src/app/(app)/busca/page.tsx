@@ -15,15 +15,17 @@ export const metadata: Metadata = { title: "Buscar" };
 export default async function BuscaPage(props: PageProps<"/busca">) {
   const { q } = await props.searchParams;
   const termo = typeof q === "string" ? q.trim().slice(0, 100) : "";
-  const { supabase } = await exigirMembro();
+  const { supabase, perfisIds } = await exigirMembro();
 
   let resultados: PostCardDados[] = [];
   if (termo) {
     const padrao = `%${termo.replace(/[%_,()]/g, " ")}%`;
-    const { data } = await supabase
+    let consulta = supabase
       .from("posts")
       .select("*, perfis(nome)")
-      .or(`tema.ilike.${padrao},legenda.ilike.${padrao},pilar.ilike.${padrao}`)
+      .or(`tema.ilike.${padrao},legenda.ilike.${padrao},pilar.ilike.${padrao}`);
+    if (perfisIds) consulta = consulta.in("perfil_id", perfisIds);
+    const { data } = await consulta
       .order("data_publicacao", { ascending: false })
       .limit(50)
       .returns<(Post & { perfis: { nome: string } | null })[]>();

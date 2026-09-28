@@ -8,13 +8,23 @@ import { Campo, Input } from "@/components/ui/input";
 import { CampoSenha } from "@/components/auth/campo-senha";
 import { createClient } from "@/lib/supabase/client";
 
-export function LoginForm({ next, mostrarPrimeiroAcesso }: { next: string; mostrarPrimeiroAcesso: boolean }) {
+export function LoginForm({
+  next,
+  mostrarPrimeiroAcesso,
+  previa,
+}: {
+  next: string;
+  mostrarPrimeiroAcesso: boolean;
+  /** Pré-visualização do "Ver como": mostra a tela com o e-mail dela, sem entrar. */
+  previa?: { email: string };
+}) {
   const router = useRouter();
   const [erro, setErro] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(false);
 
   async function entrar(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (previa) return;
     setErro(null);
     const form = new FormData(e.currentTarget);
     setCarregando(true);
@@ -43,7 +53,16 @@ export function LoginForm({ next, mostrarPrimeiroAcesso }: { next: string; mostr
         <p className="mt-1 text-body text-text-muted">Entre com o e-mail e a senha cadastrados.</p>
       </div>
       <Campo label="E-mail" htmlFor="email">
-        <Input id="email" name="email" type="email" autoComplete="email" required placeholder="voce@exemplo.com" />
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+          placeholder="voce@exemplo.com"
+          defaultValue={previa?.email}
+          readOnly={Boolean(previa)}
+        />
       </Campo>
       <Campo label="Senha" htmlFor="senha">
         <CampoSenha id="senha" name="senha" autoComplete="current-password" required />
@@ -58,7 +77,7 @@ export function LoginForm({ next, mostrarPrimeiroAcesso }: { next: string; mostr
           {erro}
         </p>
       )}
-      <Button type="submit" size="lg" className="w-full" carregando={carregando}>
+      <Button type="submit" size="lg" className="w-full" carregando={carregando} disabled={Boolean(previa)}>
         Entrar
       </Button>
       {mostrarPrimeiroAcesso && (

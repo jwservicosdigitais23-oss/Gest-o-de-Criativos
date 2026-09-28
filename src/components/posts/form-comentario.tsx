@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { comentar } from "@/app/(app)/posts/decisoes-actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
+import { dicaSomenteLeitura, useSomenteLeitura } from "@/components/ver-como/somente-leitura";
 
 export function FormComentario({
   postId,
@@ -21,6 +22,8 @@ export function FormComentario({
   const [aberto, setAberto] = useState(!compacto);
   const [texto, setTexto] = useState("");
   const [pendente, iniciar] = useTransition();
+  const leitura = useSomenteLeitura();
+  const dica = leitura ? dicaSomenteLeitura(leitura.nome, "comentar") : undefined;
 
   if (!aberto) {
     return (
@@ -35,7 +38,7 @@ export function FormComentario({
       className="mt-2 flex flex-col gap-2"
       onSubmit={(e) => {
         e.preventDefault();
-        if (!texto.trim()) return;
+        if (leitura || !texto.trim()) return;
         iniciar(async () => {
           const r = await comentar({ postId, texto, decisaoId });
           if (!r.ok) {
@@ -57,7 +60,8 @@ export function FormComentario({
         value={texto}
         onChange={(e) => setTexto(e.target.value)}
         rows={compacto ? 2 : 3}
-        placeholder={compacto ? "Responder a esta observação..." : "Escreva um comentário..."}
+        disabled={Boolean(leitura)}
+        placeholder={dica ?? (compacto ? "Responder a esta observação..." : "Escreva um comentário...")}
       />
       <div className="flex justify-end gap-2">
         {compacto && (
@@ -65,7 +69,7 @@ export function FormComentario({
             Cancelar
           </Button>
         )}
-        <Button type="submit" size="sm" disabled={pendente || !texto.trim()}>
+        <Button type="submit" size="sm" disabled={Boolean(leitura) || pendente || !texto.trim()} title={dica}>
           {pendente ? <Loader2 className="animate-spin" /> : <Send />} Comentar
         </Button>
       </div>

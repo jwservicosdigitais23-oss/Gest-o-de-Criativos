@@ -6,6 +6,7 @@ import { AbaSistema, type UsoStorage } from "@/components/configuracoes/aba-sist
 import { AbasConfiguracoes } from "@/components/configuracoes/abas-configuracoes";
 import type { MembroConfig, PerfilConfig } from "@/components/configuracoes/tipos";
 import { exigirAdmin } from "@/lib/auth";
+import { verComoDisponivel } from "@/lib/ver-como";
 import { assinarUrls } from "@/lib/storage";
 import type { Membro, Perfil } from "@/lib/types";
 
@@ -55,7 +56,7 @@ export default async function ConfiguracoesPage(props: PageProps<"/configuracoes
       <AbasConfiguracoes
         abaInicial={abaInicial}
         perfis={<AbaPerfis perfis={perfisConfig} membros={membrosConfig} />}
-        membros={<AbaMembros membros={membrosConfig} perfis={perfisConfig} usuarioId={userId} />}
+        membros={<AbaMembros membros={membrosConfig} perfis={perfisConfig} usuarioId={userId} podeVerComo={verComoDisponivel()} />}
         sistema={<AbaSistema uso={uso as UsoStorage | null} />}
       />
     </>
