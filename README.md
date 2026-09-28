@@ -88,3 +88,10 @@ TEST_DATABASE_URL=postgres://postgres@localhost:54329/adere_test npm test
 - **Perfis**: criar, editar (nome único, tipo, LinkedIn, foto, aprovadoras, modo de aprovação), reordenar arrastando (define a ordem da sidebar), arquivar e excluir. Perfil com posts só sai da sidebar arquivando; a exclusão definitiva exige digitar o nome do perfil (função `excluir_perfil_definitivo`).
 - **Membros**: convidar por e-mail (`supabase.auth.admin.inviteUserByEmail`, executado no servidor com a service role), reenviar convite, editar papel e perfis, desativar (bloqueia o login no Auth sem apagar o histórico).
 - Todas as ações ficam registradas na tabela `historico`.
+
+## Posts, upload e prévia
+
+- **Página do perfil** (`/perfis/[id]`): KPIs (Aguardando, Em revisão, Aprovados no mês, Próximos 7 dias), Kanban/Lista, filtros de status, formato e mês.
+- **Novo/editar post** (só admin): validação com zod, upload direto do navegador para o bucket `midias` em `{perfil_id}/{post_id}/v{versao}/{arquivo}` com barra de progresso, reordenar/remover, link externo (Drive/Canva) para arquivos grandes, aviso de proporção e prévia do LinkedIn ao vivo. O limite de upload fica em `LIMITE_UPLOAD_MB` (`src/lib/constantes.ts`).
+- **Detalhe** (`/posts/[id]`): prévia estilo LinkedIn ("…ver mais" após ~210 caracteres, carrossel em PDF com pdf.js, player de vídeo), copiar legenda, baixar mídia, seletor de versões e ações do admin (editar, duplicar, excluir/arquivar, marcar como publicado).
+- **Versões**: cada envio para aprovação grava um instantâneo em `post_versoes`; as mídias valem de `versao` até `versao_removida`. O status do post só muda pelas funções de transição (`enviar_para_aprovacao`, `marcar_publicado`, `arquivar_post`) — um `UPDATE` direto em `posts.status` é recusado pelo banco.

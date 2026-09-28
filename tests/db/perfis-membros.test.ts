@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { Client } from "pg";
-import { como, conectar, criarAprovadora, criarUsuario, erroDe, perfilPorNome, sql, temBanco } from "./helpers";
+import { como, conectar, criarAprovadora, criarPost, criarUsuario, erroDe, perfilPorNome, sql, temBanco } from "./helpers";
 
 describe.skipIf(!temBanco)("Prompt 2 · perfis e membros", () => {
   let c: Client;
@@ -25,22 +25,17 @@ describe.skipIf(!temBanco)("Prompt 2 · perfis e membros", () => {
   });
 
   async function criarPostComDecisao(perfilId: string) {
-    const [post] = await sql<{ id: string }>(
-      c,
-      `insert into public.posts (perfil_id, data_publicacao, tema, legenda, status, criado_por)
-       values ($1, current_date + 10, 'Tema', 'Legenda', 'aguardando', $2) returning id`,
-      [perfilId, admin],
-    );
+    const post = { id: await criarPost(c, perfilId, admin, { status: "aguardando" }) };
     await sql(c, "insert into public.decisoes (post_id, versao, autor_id, decisao) values ($1, 1, $2, 'aprovado')", [
-      post!.id,
+      post.id,
       aprovadora,
     ]);
     await sql(c, "insert into public.historico (entidade, post_id, perfil_id, acao, autor_id) values ('post', $1, $2, 'criou', $3)", [
-      post!.id,
+      post.id,
       perfilId,
       admin,
     ]);
-    return post!.id;
+    return post.id;
   }
 
   it("admin reordena perfis; aprovadora não", async () => {

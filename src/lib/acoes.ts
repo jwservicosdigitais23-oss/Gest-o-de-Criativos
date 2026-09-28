@@ -26,3 +26,5 @@ export function mensagemErro(e: { code?: string; message?: string } | null | und
       return padrao;
   }
 }
+
+export const CONFLITO = "Este post foi alterado por outra pessoa. Recarregue para ver a versão mais recente.";

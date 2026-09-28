@@ -77,3 +77,25 @@ export async function erroDe(p: Promise<unknown>): Promise<string | undefined> {
     return (e as { code?: string }).code ?? "erro";
   }
 }
+
+/**
+ * Cria um post direto no banco (como superusuário), já no status desejado —
+ * atalho de teste que liga "adere.transicao" para passar pelos triggers de guarda.
+ */
+export async function criarPost(
+  c: Client,
+  perfilId: string,
+  autorId: string,
+  opcoes: { status?: string; versao?: number; formato?: string; tema?: string; data?: string } = {},
+) {
+  await c.query("select set_config('adere.transicao', 'on', true)");
+  const [post] = await sql<{ id: string }>(
+    c,
+    `insert into public.posts (perfil_id, data_publicacao, tema, legenda, formato, status, versao, criado_por)
+     values ($1, coalesce($3::date, current_date + 10), $4, 'Legenda do post', $5::public.formato, $6::public.status_post, $7, $2)
+     returning id`,
+    [perfilId, autorId, opcoes.data ?? null, opcoes.tema ?? "Tema", opcoes.formato ?? "texto", opcoes.status ?? "rascunho", opcoes.versao ?? 1],
+  );
+  await c.query("select set_config('adere.transicao', 'off', true)");
+  return post!.id;
+}
