@@ -82,3 +82,9 @@ TEST_DATABASE_URL=postgres://postgres@localhost:54329/adere_test npm test
 - Português, datas `dd/mm/aaaa`, fuso `America/Sao_Paulo`. Data e hora de publicação são gravadas em colunas `date` e `time` (sem fuso) para não sofrer a conversão de UTC do Postgres.
 - Design System do Grupo Adere configurado como tokens do Tailwind em `src/app/globals.css`.
 - Logo: enquanto `public/logo-adere.svg` não for enviado, o componente `Logo` usa o texto "ADERE" + "Gestão de Negócios".
+
+## Configurações (somente administrador)
+
+- **Perfis**: criar, editar (nome único, tipo, LinkedIn, foto, aprovadoras, modo de aprovação), reordenar arrastando (define a ordem da sidebar), arquivar e excluir. Perfil com posts só sai da sidebar arquivando; a exclusão definitiva exige digitar o nome do perfil (função `excluir_perfil_definitivo`).
+- **Membros**: convidar por e-mail (`supabase.auth.admin.inviteUserByEmail`, executado no servidor com a service role), reenviar convite, editar papel e perfis, desativar (bloqueia o login no Auth sem apagar o histórico).
+- Todas as ações ficam registradas na tabela `historico`.
