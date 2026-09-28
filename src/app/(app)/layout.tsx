@@ -26,7 +26,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="min-h-dvh">
       <a
         href="#conteudo"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[10px] focus:bg-white focus:px-4 focus:py-2"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[var(--radius-control)] focus:bg-surface-solid focus:px-4 focus:py-2"
       >
         Pular para o conteúdo
       </a>

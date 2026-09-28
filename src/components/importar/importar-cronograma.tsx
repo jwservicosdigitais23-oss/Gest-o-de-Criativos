@@ -13,7 +13,7 @@ import {
 } from "@/app/(app)/importar/actions";
 import { Pilula } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Campo, Select } from "@/components/ui/input";
 import {
@@ -35,10 +35,10 @@ import { enviarArquivo, lerDimensoes } from "@/lib/upload";
 import { cn } from "@/lib/utils";
 
 const SELO: Record<Situacao, { rotulo: string; classe: string }> = {
-  novo: { rotulo: "Novo", classe: "bg-st-aguardando-bg text-st-aguardando" },
+  novo: { rotulo: "Novo", classe: "bg-st-aguardando-bg text-st-aguardando-text" },
   atualiza: { rotulo: "Atualiza", classe: "bg-[#e0f6fd] text-[#00709a]" },
-  ignorada: { rotulo: "Ignorada", classe: "bg-st-rascunho-bg text-st-rascunho" },
-  erro: { rotulo: "Erro", classe: "bg-st-reprovado-bg text-st-reprovado" },
+  ignorada: { rotulo: "Ignorada", classe: "bg-st-rascunho-bg text-st-rascunho-text" },
+  erro: { rotulo: "Erro", classe: "bg-st-reprovado-bg text-st-reprovado-text" },
 };
 
 type Etapa = "upload" | "mapeamento" | "previa" | "resumo";
@@ -152,7 +152,7 @@ export function ImportarCronograma({
           if (f) void lerArquivo(f);
         }}
         className={cn(
-          "flex flex-col items-center justify-center gap-3 rounded-[10px] border-2 border-dashed bg-white px-6 py-16 text-center",
+          "flex flex-col items-center justify-center gap-3 rounded-[var(--radius-control)] border-2 border-dashed bg-surface-solid px-6 py-16 text-center",
           arrastando ? "border-azul-claro bg-st-aguardando-bg" : "border-borda",
         )}
       >
@@ -185,7 +185,7 @@ export function ImportarCronograma({
   if (etapa === "mapeamento" && mapa) {
     const faltando = faltandoObrigatorios(mapa);
     return (
-      <Card className="flex flex-col gap-5 p-5">
+      <GlassCard className="flex flex-col gap-5 p-5">
         <div>
           <h2 className="text-lg font-bold">Mapear colunas</h2>
           <p className="text-sm text-texto-2">
@@ -220,7 +220,7 @@ export function ImportarCronograma({
             Continuar para a pré-visualização
           </Button>
         </div>
-      </Card>
+      </GlassCard>
     );
   }
 
@@ -249,7 +249,7 @@ export function ImportarCronograma({
         </div>
 
         {temPassado && (
-          <label className="flex items-start gap-3 rounded-[10px] border border-[#fcd34d] bg-st-revisao-bg p-3 text-sm text-[#78350f]">
+          <label className="flex items-start gap-3 rounded-[var(--radius-control)] border border-[#fcd34d] bg-st-revisao-bg p-3 text-sm text-[#78350f]">
             <Checkbox checked={confirmaPassado} onChange={(e) => setConfirmaPassado(e.target.checked)} className="mt-0.5" />
             <span>
               Algumas linhas têm <strong>data no passado</strong>. Confirmo que quero importá-las mesmo assim.
@@ -257,7 +257,7 @@ export function ImportarCronograma({
           </label>
         )}
 
-        <Card className="overflow-x-auto">
+        <GlassCard className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead className="bg-fundo">
               <tr className="rotulo text-texto-2">
@@ -299,7 +299,7 @@ export function ImportarCronograma({
                       </p>
                     )}
                     {l.avisos.map((a) => (
-                      <p key={a} className="flex items-center gap-1 text-st-revisao">
+                      <p key={a} className="flex items-center gap-1 text-st-revisao-text">
                         <AlertTriangle className="size-3.5 shrink-0" /> {a}
                       </p>
                     ))}
@@ -308,7 +308,7 @@ export function ImportarCronograma({
               ))}
             </tbody>
           </table>
-        </Card>
+        </GlassCard>
         {analise.some((l) => l.perfilDesconhecido) && (
           <p className="text-sm text-texto-2">
             Criou o perfil em outra aba? <button type="button" className="font-semibold text-azul-medio underline" onClick={() => router.refresh()}>Atualizar a lista de perfis</button>.
@@ -406,7 +406,7 @@ function Resumo({ resumo, analise, onNova }: { resumo: ResumoImportacao; analise
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="p-5">
+      <GlassCard className="p-5">
         <div className="flex items-center gap-3">
           <CheckCircle2 className="size-8 text-verde" aria-hidden />
           <div>
@@ -421,7 +421,7 @@ function Resumo({ resumo, analise, onNova }: { resumo: ResumoImportacao; analise
             { r: "Ignorados", v: resumo.ignorados, c: SELO.ignorada.classe },
             { r: "Erros", v: resumo.erros, c: SELO.erro.classe },
           ].map((x) => (
-            <div key={x.r} className={cn("rounded-[10px] p-3", x.c)}>
+            <div key={x.r} className={cn("rounded-[var(--radius-control)] p-3", x.c)}>
               <dt className="text-xs font-semibold">{x.r}</dt>
               <dd className="text-2xl font-bold">{x.v}</dd>
             </div>
@@ -438,10 +438,10 @@ function Resumo({ resumo, analise, onNova }: { resumo: ResumoImportacao; analise
               ))}
           </ul>
         )}
-      </Card>
+      </GlassCard>
 
       {esperados.length > 0 && (
-        <Card className="flex flex-col gap-4 p-5">
+        <GlassCard className="flex flex-col gap-4 p-5">
           <div>
             <h2 className="text-base font-bold">Soltar mídias</h2>
             <p className="text-sm text-texto-2">
@@ -454,7 +454,7 @@ function Resumo({ resumo, analise, onNova }: { resumo: ResumoImportacao; analise
               e.preventDefault();
               void soltar(e.dataTransfer.files);
             }}
-            className="flex flex-col items-center gap-2 rounded-[10px] border-2 border-dashed border-borda bg-fundo px-4 py-8 text-center"
+            className="flex flex-col items-center gap-2 rounded-[var(--radius-control)] border-2 border-dashed border-borda bg-fundo px-4 py-8 text-center"
           >
             <Paperclip className="size-6 text-azul-medio" aria-hidden />
             <p className="text-sm font-semibold text-azul-escuro">Arraste as mídias aqui</p>
@@ -487,7 +487,7 @@ function Resumo({ resumo, analise, onNova }: { resumo: ResumoImportacao; analise
               </li>
             ))}
           </ul>
-        </Card>
+        </GlassCard>
       )}
 
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">

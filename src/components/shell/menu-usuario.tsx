@@ -27,13 +27,13 @@ export function MenuUsuario({ usuario }: { usuario: UsuarioShell }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="flex items-center gap-2 rounded-[10px] p-1 pr-2 hover:bg-fundo"
+        className="transicao flex items-center gap-2 rounded-full p-1 pr-2 hover:bg-bg-app-from"
         aria-label="Menu do usuário"
       >
-        <Avatar nome={usuario.nome} src={usuario.avatarUrl} tamanho={34} className="ring-0" />
+        <Avatar nome={usuario.nome} src={usuario.avatarUrl} size="md" className="ring-0" />
         <span className="hidden text-left leading-tight sm:block">
-          <span className="block max-w-36 truncate text-sm font-semibold text-azul-escuro">{usuario.nome}</span>
-          <span className="block text-xs text-texto-2">{papel}</span>
+          <span className="block max-w-36 truncate text-body font-semibold text-navy-900">{usuario.nome}</span>
+          <span className="block text-label text-text-muted">{papel}</span>
         </span>
         <ChevronDown className="hidden size-4 text-texto-2 sm:block" aria-hidden />
       </DropdownMenuTrigger>

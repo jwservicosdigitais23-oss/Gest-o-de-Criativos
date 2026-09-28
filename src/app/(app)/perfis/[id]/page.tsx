@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarRange, CheckCircle2, Download, Hourglass, Inbox, Plus, RotateCcw } from "lucide-react";
-import { Kpi } from "@/components/kpi";
-import { CardPost, LinhaPost, type PostCardDados } from "@/components/posts/card-post";
+import { ArrowLeft, CalendarRange, CheckCircle2, Download, Hourglass, Inbox, Plus, RotateCcw } from "lucide-react";
+import { ColunaKanban, LinhaPost, type PostCardDados } from "@/components/posts/card-post";
 import { FiltrosPosts } from "@/components/posts/filtros-posts";
-import { EstadoVazio } from "@/components/estado-vazio";
-import { StatusBadge } from "@/components/status-badge";
 import { Avatar, PilhaAvatares } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { KpiCard } from "@/components/ui/kpi-card";
 import { exigirMembro } from "@/lib/auth";
 import { carregarMiniaturas, contarObservacoes } from "@/lib/consultas";
 import { hojeISO, somarDias } from "@/lib/datas";
+import { statusVisual } from "@/lib/status";
 import { assinarUrls } from "@/lib/storage";
 import type { Membro, Perfil, Post, StatusPost } from "@/lib/types";
 
@@ -80,8 +80,9 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
     ...p,
     miniatura: miniaturas[p.id],
     observacoes: observacoes[p.id] ?? 0,
+    statusVisual: statusVisual(p.status, p.prazo_aprovacao, hoje),
     extra: progressoPorPost.has(p.id) ? (
-      <span className="font-semibold text-st-aguardando">
+      <span className="font-semibold text-st-aguardando-text">
         {progressoPorPost.get(p.id)!.aprovacoes} de {progressoPorPost.get(p.id)!.total_aprovadoras} aprovações
       </span>
     ) : undefined,
@@ -93,12 +94,19 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
-          <Avatar nome={perfil.nome} src={perfil.avatar_url ? urls[perfil.avatar_url] : null} tamanho={64} />
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+          <Link
+            href="/"
+            aria-label="Voltar ao painel"
+            className="transicao flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-surface-solid text-navy-900 hover:border-blue-600 hover:text-blue-600"
+          >
+            <ArrowLeft className="size-5" />
+          </Link>
+          <Avatar nome={perfil.nome} src={perfil.avatar_url ? urls[perfil.avatar_url] : null} tamanho={64} className="shadow-card" />
           <div className="min-w-0">
-            <h1 className="text-2xl font-bold sm:text-[28px]">{perfil.nome}</h1>
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-texto-2">
-              <span>{perfil.tipo === "empresa" ? "Empresa" : "Pessoal"}</span>
+            <h1 className="truncate text-2xl font-bold text-navy-900 sm:text-page-title">{perfil.nome}</h1>
+            <div className="mt-1 flex flex-wrap items-center gap-2 text-body text-text-muted">
+              <span>{perfil.tipo === "empresa" ? "Institucional" : "Pessoal"}</span>
               <span aria-hidden>·</span>
               <span>{perfil.modo_aprovacao === "todas" ? "Todas precisam aprovar" : "Qualquer uma aprova"}</span>
               <PilhaAvatares pessoas={aprovadoras.map((a) => ({ nome: a.nome, src: a.avatar_url ? urls[a.avatar_url] : null }))} tamanho={24} />
@@ -122,14 +130,14 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi icone={Hourglass} rotulo="Aguardando" valor={kpis.aguardando} />
-        <Kpi icone={RotateCcw} rotulo="Em revisão" valor={kpis.revisao} tom="ambar" />
-        <Kpi icone={CheckCircle2} rotulo="Aprovados no mês" valor={kpis.aprovadosMes} tom="verde" />
-        <Kpi icone={CalendarRange} rotulo="Próximos 7 dias" valor={kpis.proximos} tom="claro" />
+        <KpiCard icone={Hourglass} rotulo="Aguardando" valor={kpis.aguardando} tom="aguardando" />
+        <KpiCard icone={RotateCcw} rotulo="Em revisão" valor={kpis.revisao} tom="revisao" />
+        <KpiCard icone={CheckCircle2} rotulo="Aprovados no mês" valor={kpis.aprovadosMes} tom="aprovado" />
+        <KpiCard icone={CalendarRange} rotulo="Próximos 7 dias" valor={kpis.proximos} tom="proximos" />
       </div>
 
       {semPosts ? (
-        <EstadoVazio
+        <EmptyState
           icone={Inbox}
           titulo="Nenhum post ainda"
           descricao={admin ? "Crie o primeiro post deste perfil ou importe o cronograma em Excel." : "Quando houver posts para este perfil, eles aparecem aqui."}
@@ -152,32 +160,20 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
         <>
           <FiltrosPosts meses={meses} vista={vista} />
           {cards.length === 0 ? (
-            <EstadoVazio icone={Inbox} titulo="Nenhum post com esses filtros" />
+            <EmptyState icone={Inbox} titulo="Nenhum post com esses filtros" descricao="Troque o status, o formato ou o mês." />
           ) : (
             <>
               {/* Lista: sempre no celular; no desktop quando escolhida */}
-              <Card className={vista === "lista" ? "overflow-hidden" : "overflow-hidden md:hidden"}>
+              <GlassCard className={vista === "lista" ? "overflow-hidden" : "overflow-hidden md:hidden"}>
                 {cards.map((p) => (
-                    <LinhaPost key={p.id} post={p} />
-                  ))}
-              </Card>
+                  <LinhaPost key={p.id} post={p} />
+                ))}
+              </GlassCard>
               {vista === "kanban" && (
-                <div className="hidden gap-4 overflow-x-auto pb-2 md:flex">
-                  {colunas.map((col) => {
-                    const doStatus = cards.filter((p) => p.status === col);
-                    return (
-                      <section key={col} className="flex w-72 shrink-0 flex-col gap-3 rounded-[10px] bg-[#eef1f5] p-3" aria-label={col}>
-                        <header className="flex items-center justify-between px-1">
-                          <StatusBadge status={col} />
-                          <span className="text-xs font-bold text-texto-2">{doStatus.length}</span>
-                        </header>
-                        {doStatus.map((p) => (
-                          <CardPost key={p.id} post={p} />
-                        ))}
-                        {doStatus.length === 0 && <p className="px-1 py-6 text-center text-xs text-texto-2">Nada aqui.</p>}
-                      </section>
-                    );
-                  })}
+                <div className="-mx-1 hidden gap-4 overflow-x-auto px-1 pb-3 md:flex">
+                  {colunas.map((col) => (
+                    <ColunaKanban key={col} status={col} posts={cards.filter((p) => p.status === col)} />
+                  ))}
                 </div>
               )}
             </>

@@ -1,12 +1,12 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import { EstadoVazio } from "@/components/estado-vazio";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
 
 export default function Erro({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
-    <EstadoVazio
+    <EmptyState
       icone={AlertTriangle}
       titulo="Algo deu errado"
       descricao={

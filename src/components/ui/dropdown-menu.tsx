@@ -14,7 +14,7 @@ export function DropdownMenuContent({ className, align = "end", ...props }: Reac
         align={align}
         sideOffset={6}
         className={cn(
-          "z-50 min-w-48 overflow-hidden rounded-[10px] border border-borda bg-white p-1 shadow-lg",
+          "z-50 min-w-48 overflow-hidden rounded-[var(--radius-control)] border border-border bg-surface-solid p-1 shadow-elevated",
           className,
         )}
         {...props}

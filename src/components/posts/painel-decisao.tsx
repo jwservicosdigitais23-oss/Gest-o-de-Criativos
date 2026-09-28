@@ -68,7 +68,7 @@ export function PainelDecisao({ postId, versao, fixoNoCelular = true }: { postId
         className={cn(
           "flex flex-col gap-2 sm:flex-row",
           fixoNoCelular &&
-            "fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-20 border-t border-borda bg-white p-3 shadow-[0_-4px_12px_rgb(0_31_77/0.08)] sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none lg:bottom-0",
+            "fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-20 border-t border-borda bg-surface-solid p-3 shadow-[0_-4px_12px_rgb(0_31_77/0.08)] sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none lg:bottom-0",
         )}
       >
         <Button variant="aprovar" size="decisao" className="flex-1" onClick={() => abrir("aprovado")}>
@@ -113,7 +113,7 @@ export function PainelDecisao({ postId, versao, fixoNoCelular = true }: { postId
                         key={i.valor}
                         className={cn(
                           "flex min-h-11 cursor-pointer items-center gap-2 rounded-full border px-4 text-sm font-medium",
-                          itens.includes(i.valor) ? "border-ambar bg-st-revisao-bg text-st-revisao" : "border-borda",
+                          itens.includes(i.valor) ? "border-ambar bg-st-revisao-bg text-st-revisao-text" : "border-borda",
                         )}
                       >
                         <Checkbox

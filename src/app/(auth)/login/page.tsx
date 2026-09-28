@@ -11,7 +11,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
   return (
     <>
       {erro === "link" && (
-        <p role="alert" className="mb-5 rounded-[10px] bg-st-revisao-bg px-3 py-2 text-sm text-st-revisao">
+        <p role="alert" className="mb-5 rounded-[var(--radius-control)] bg-st-revisao-bg px-3 py-2 text-sm text-st-revisao-text">
           O link expirou ou já foi usado. Peça um novo convite ou redefina a senha.
         </p>
       )}

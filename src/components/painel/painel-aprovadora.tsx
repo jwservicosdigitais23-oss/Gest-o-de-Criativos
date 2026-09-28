@@ -3,7 +3,8 @@ import { CheckCircle2, Eye } from "lucide-react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { Pilula } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
+import { SectionHeader } from "@/components/ui/page-header";
 import { carregarMiniaturas } from "@/lib/consultas";
 import { formatarData, formatarDataHora, formatarHora, hojeISO, somarDias } from "@/lib/datas";
 import type { Decisao, Post } from "@/lib/types";
@@ -11,9 +12,9 @@ import { cn, trecho } from "@/lib/utils";
 
 const DECISAO_LABEL = { aprovado: "Aprovou", revisar: "Pediu revisão", reprovado: "Reprovou" } as const;
 const DECISAO_COR = {
-  aprovado: "bg-st-aprovado-bg text-st-aprovado",
-  revisar: "bg-st-revisao-bg text-st-revisao",
-  reprovado: "bg-st-reprovado-bg text-st-reprovado",
+  aprovado: "bg-st-aprovado-bg text-st-aprovado-text",
+  revisar: "bg-st-revisao-bg text-st-revisao-text",
+  reprovado: "bg-st-reprovado-bg text-st-reprovado-text",
 } as const;
 
 export async function PainelAprovadora({ supabase, membroId }: { supabase: SupabaseClient; membroId: string }) {
@@ -36,12 +37,9 @@ export async function PainelAprovadora({ supabase, membroId }: { supabase: Supab
 
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-      <Card>
-        <CardHeader>
-          <CardTitle>Para você aprovar</CardTitle>
-          <span className="text-xs font-bold text-texto-2">{lista.length}</span>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
+      <GlassCard className="flex flex-col gap-4 p-5">
+        <SectionHeader titulo="Para você aprovar" contador={lista.length} rotuloContador="posts" />
+        <div className="flex flex-col gap-3">
           {lista.length === 0 && (
             <div className="flex flex-col items-center gap-2 py-10 text-center">
               <CheckCircle2 className="size-10 text-verde" aria-hidden />
@@ -55,7 +53,7 @@ export async function PainelAprovadora({ supabase, membroId }: { supabase: Supab
             const venceHoje = p.prazo_aprovacao === hoje;
             const m = mini[p.id];
             return (
-              <div key={p.id} className="flex flex-col gap-3 rounded-[10px] border border-borda p-3 sm:flex-row sm:items-center">
+              <div key={p.id} className="flex flex-col gap-3 rounded-[var(--radius-control)] border border-border bg-surface-solid p-3 sm:flex-row sm:items-center">
                 <div className="flex min-w-0 flex-1 items-center gap-3">
                   <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md bg-fundo">
                     {m?.src ? (
@@ -72,13 +70,13 @@ export async function PainelAprovadora({ supabase, membroId }: { supabase: Supab
                       {p.hora_publicacao && ` às ${formatarHora(p.hora_publicacao)}`} · v{p.versao}
                     </p>
                     <div className="mt-1 flex flex-wrap gap-1">
-                      {atrasado && <Pilula className="bg-st-reprovado-bg text-st-reprovado">Atrasado</Pilula>}
-                      {venceHoje && <Pilula className="bg-st-reprovado-bg text-st-reprovado">Vence hoje</Pilula>}
-                      {venceAmanha && <Pilula className="bg-st-revisao-bg text-st-revisao">Vence amanhã</Pilula>}
+                      {atrasado && <Pilula className="bg-st-reprovado-bg text-st-reprovado-text">Atrasado</Pilula>}
+                      {venceHoje && <Pilula className="bg-st-reprovado-bg text-st-reprovado-text">Vence hoje</Pilula>}
+                      {venceAmanha && <Pilula className="bg-st-revisao-bg text-st-revisao-text">Vence amanhã</Pilula>}
                       {!atrasado && !venceHoje && !venceAmanha && p.prazo_aprovacao && (
                         <Pilula className="bg-fundo text-texto-2">Prazo {formatarData(p.prazo_aprovacao)}</Pilula>
                       )}
-                      {p.versao > 1 && <Pilula className="bg-st-aguardando-bg text-st-aguardando">Ajustado</Pilula>}
+                      {p.versao > 1 && <Pilula className="bg-st-aguardando-bg text-st-aguardando-text">Ajustado</Pilula>}
                     </div>
                   </div>
                 </div>
@@ -88,14 +86,12 @@ export async function PainelAprovadora({ supabase, membroId }: { supabase: Supab
               </div>
             );
           })}
-        </CardContent>
-      </Card>
+        </div>
+      </GlassCard>
 
-      <Card className="self-start">
-        <CardHeader>
-          <CardTitle>Suas últimas decisões</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <GlassCard className="flex flex-col gap-3 self-start p-5">
+        <SectionHeader titulo="Suas últimas decisões" />
+        <div>
           {(ultimas ?? []).length === 0 ? (
             <p className="py-6 text-center text-sm text-texto-2">Você ainda não registrou decisões.</p>
           ) : (
@@ -114,8 +110,8 @@ export async function PainelAprovadora({ supabase, membroId }: { supabase: Supab
               ))}
             </ul>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </GlassCard>
     </div>
   );
 }

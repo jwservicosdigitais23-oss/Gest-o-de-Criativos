@@ -72,12 +72,12 @@ export function SinoNotificacoes({ usuarioId, naoLidasIniciais }: { usuarioId: s
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="relative flex size-10 items-center justify-center rounded-[10px] text-texto hover:bg-fundo"
+        className="transicao relative flex size-10 items-center justify-center rounded-full text-text hover:bg-bg-app-from"
         aria-label={`Notificações${naoLidas ? ` (${naoLidas} não lidas)` : ""}`}
       >
         <Bell className="size-5" />
         {naoLidas > 0 && (
-          <span className="absolute right-1.5 top-1.5 min-w-4 rounded-full bg-vermelho px-1 text-center text-[10px] font-bold leading-4 text-white">
+          <span className="absolute right-1 top-1 min-w-5 rounded-full bg-danger px-1 ring-2 ring-surface-solid text-center text-xs font-bold leading-4 text-white">
             {naoLidas > 99 ? "99+" : naoLidas}
           </span>
         )}
@@ -99,7 +99,7 @@ export function SinoNotificacoes({ usuarioId, naoLidasIniciais }: { usuarioId: s
               <span className="min-w-0 flex-1">
                 <span className={cn("block text-sm", n.lida ? "text-texto" : "font-semibold text-azul-escuro")}>{n.titulo}</span>
                 {n.corpo && <span className="line-clamp-2 block text-xs text-texto-2">{n.corpo}</span>}
-                <span className="block text-[11px] text-texto-2">{tempoRelativo(n.created_at)}</span>
+                <span className="block text-xs text-texto-2">{tempoRelativo(n.created_at)}</span>
               </span>
             </DropdownMenuItem>
           ))}

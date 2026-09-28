@@ -1,50 +1,150 @@
 @import "tailwindcss";
 
-/* Design System Grupo Adere — tokens do Manual da Marca (seção 02 do blueprint) */
+/*
+ * DESIGN SYSTEM v2 · Grupo Adere
+ * Tailwind 4 é configurado direto no CSS (@theme): os tokens abaixo viram
+ * utilitários (bg-navy-900, text-text-muted, rounded-card, shadow-card...).
+ * Nenhuma cor solta nos componentes: use sempre um token.
+ * Valores conferidos nas imagens de referência — ver plano.md.
+ */
 @theme {
   --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 
-  --color-azul-escuro: #001f4d;
-  --color-azul-medio: #004c97;
-  --color-azul-claro: #00aeef;
-  --color-texto: #2e3a59;
-  --color-texto-2: #5e6d84; /* #6B7A90 escurecido para contraste AA */
-  --color-fundo: #f5f7fa;
-  --color-superficie: #ffffff;
-  --color-borda: #e3e8ef;
+  /* Marca */
+  --color-navy-900: #001f4d;
+  --color-navy-700: #03356e; /* fim do gradiente da sidebar (amostrado) */
+  --color-blue-600: #004c97;
+  --color-blue-500: #1466d6; /* fim do gradiente do botão primário */
+  --color-cyan-400: #00aeef;
 
-  /* Status (funcionais) */
-  --color-st-rascunho: #5e6d84;
+  /* Neutros */
+  --color-text: #2e3a59;
+  --color-text-muted: #5e6d84; /* #6B7A90 escurecido p/ contraste AA (ver plano.md) */
+  --color-border: #e3e8ef;
+  --color-surface-solid: #ffffff;
+  --color-bg-app-from: #eef4fc;
+  --color-bg-app-to: #dce9fa;
+
+  /* Status — cor da marca (ícone/borda), fundo e texto AA */
+  --color-st-rascunho: #6b7a90;
   --color-st-rascunho-bg: #eef1f5;
+  --color-st-rascunho-text: #5e6d84;
   --color-st-aguardando: #004c97;
   --color-st-aguardando-bg: #e6eef7;
-  --color-st-revisao: #b45309; /* #D97706 escurecido para contraste AA em texto */
+  --color-st-aguardando-text: #004c97;
+  --color-st-revisao: #d97706;
   --color-st-revisao-bg: #fef3c7;
-  --color-st-aprovado: #15803d; /* #16A34A escurecido para contraste AA em texto */
+  --color-st-revisao-text: #b45309;
+  --color-st-atrasado: #dc2626;
+  --color-st-atrasado-bg: #fee2e2;
+  --color-st-atrasado-text: #b91c1c;
+  --color-st-aprovado: #16a34a;
   --color-st-aprovado-bg: #dcfce7;
-  --color-st-reprovado: #b91c1c; /* #DC2626 escurecido para contraste AA em texto */
+  --color-st-aprovado-text: #15803d;
+  --color-st-reprovado: #dc2626;
   --color-st-reprovado-bg: #fee2e2;
+  --color-st-reprovado-text: #b91c1c;
   --color-st-publicado: #001f4d;
   --color-st-publicado-bg: #e0e7f1;
+  --color-st-publicado-text: #001f4d;
+  --color-st-proximos: #00aeef;
+  --color-st-proximos-bg: #e0f6fd;
+  --color-st-proximos-text: #00709a;
 
-  /* Botões de decisão: tons AA com texto branco (marca: #16A34A / #D97706) */
-  --color-verde: #15803d;
-  --color-ambar: #b45309;
-  --color-vermelho: #dc2626;
+  /* Ações de decisão (texto branco com contraste AA) */
+  --color-success: #15803d;
+  --color-success-hover: #166534;
+  --color-warning: #b45309;
+  --color-warning-hover: #92400e;
+  --color-danger: #dc2626;
+  --color-danger-hover: #b91c1c;
+  --color-danger-soft: #fef2f2;
+  --color-danger-border: #fecaca;
+  --color-overlay: rgb(0 31 77 / 0.45);
 
-  --radius-adere: 10px;
-  --shadow-card: 0 1px 2px rgb(0 31 77 / 0.04), 0 2px 8px rgb(0 31 77 / 0.05);
+  /* Forma */
+  --radius-card: 16px;
+  --radius-control: 12px;
+  --shadow-card: 0 8px 24px rgb(0 31 77 / 0.08);
+  --shadow-elevated: 0 24px 64px rgb(0 31 77 / 0.18), 0 4px 12px rgb(0 31 77 / 0.08);
+
+  /* Tipografia (px → rem) */
+  --text-page-title: 1.75rem;
+  --text-page-title--line-height: 2.25rem;
+  --text-page-title--font-weight: 700;
+  --text-card-title: 1rem;
+  --text-card-title--line-height: 1.5rem;
+  --text-card-title--font-weight: 700;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.375rem;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1rem;
+  --text-label--font-weight: 500;
+  --text-nav-section: 0.75rem; /* 11px no plano; mínimo de 12px aplicado */
+  --text-kpi: 1.75rem;
+  --text-kpi--line-height: 2rem;
+  --text-kpi--font-weight: 700;
+
+  --ease-padrao: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Apelidos da v1 — as telas atuais passam a usar os valores da v2. */
+@theme inline {
+  --color-azul-escuro: var(--color-navy-900);
+  --color-azul-medio: var(--color-blue-600);
+  --color-azul-claro: var(--color-cyan-400);
+  --color-texto: var(--color-text);
+  --color-texto-2: var(--color-text-muted);
+  --color-fundo: var(--color-bg-app-from);
+  --color-superficie: var(--color-surface-solid);
+  --color-borda: var(--color-border);
+  --color-verde: var(--color-success);
+  --color-ambar: var(--color-warning);
+  --color-vermelho: var(--color-danger);
+  --radius-adere: var(--radius-control);
 }
 
 @utility bg-gradiente-marca {
-  background-image: linear-gradient(135deg, #001f4d 0%, #004c97 55%, #00aeef 100%);
+  background-image: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-blue-600) 55%, var(--color-cyan-400) 100%);
+}
+
+@utility bg-gradiente-sidebar {
+  background-image: linear-gradient(180deg, var(--color-navy-900) 0%, var(--color-navy-700) 100%);
+}
+
+@utility bg-gradiente-primario {
+  background-image: linear-gradient(90deg, var(--color-blue-600) 0%, var(--color-blue-500) 100%);
+}
+
+@utility bg-app {
+  background-image: linear-gradient(160deg, var(--color-bg-app-from) 0%, var(--color-bg-app-to) 100%);
+  background-attachment: fixed;
+}
+
+/* Vidro: branco 85% + blur 16px + borda branca 60%, com fallback sólido. */
+@utility surface-glass {
+  background-color: var(--color-surface-solid);
+  border: 1px solid var(--color-border);
+  @supports ((backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px))) {
+    background-color: rgb(255 255 255 / 0.85);
+    border-color: rgb(255 255 255 / 0.6);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
 }
 
 @utility rotulo {
-  font-size: 0.6875rem;
+  font-size: var(--text-nav-section);
+  line-height: 1rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+@utility transicao {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: 180ms;
+  transition-timing-function: var(--ease-padrao);
 }
 
 @layer base {
@@ -52,17 +152,28 @@
     color-scheme: light;
   }
   body {
-    background: var(--color-fundo);
-    color: var(--color-texto);
+    background-color: var(--color-bg-app-from);
+    background-image: linear-gradient(160deg, var(--color-bg-app-from) 0%, var(--color-bg-app-to) 100%);
+    background-attachment: fixed;
+    color: var(--color-text);
     font-family: var(--font-sans);
+    font-size: var(--text-body);
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4 {
-    color: var(--color-azul-escuro);
+    color: var(--color-navy-900);
     font-weight: 700;
   }
   :focus-visible {
-    outline: 2px solid var(--color-azul-claro);
+    outline: 2px solid var(--color-cyan-400);
     outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

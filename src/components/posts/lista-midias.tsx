@@ -147,7 +147,7 @@ export function ListaMidias({
           if (e.dataTransfer.files.length) void adicionarArquivos(e.dataTransfer.files);
         }}
         className={cn(
-          "flex flex-col items-center justify-center gap-2 rounded-[10px] border-2 border-dashed px-4 py-8 text-center transition-colors",
+          "flex flex-col items-center justify-center gap-2 rounded-[var(--radius-control)] border-2 border-dashed px-4 py-8 text-center transition-colors",
           arrastando ? "border-azul-claro bg-st-aguardando-bg" : "border-borda bg-fundo",
         )}
       >
@@ -178,7 +178,7 @@ export function ListaMidias({
       </div>
 
       {linkAberto && (
-        <div className="grid gap-3 rounded-[10px] border border-borda p-3 sm:grid-cols-[1fr_200px_auto] sm:items-end">
+        <div className="grid gap-3 rounded-[var(--radius-control)] border border-borda p-3 sm:grid-cols-[1fr_200px_auto] sm:items-end">
           <Campo label="Link (Google Drive, Canva...)" htmlFor="link-url">
             <Input id="link-url" type="url" placeholder="https://" value={link.url} onChange={(e) => setLink((l) => ({ ...l, url: e.target.value }))} />
           </Campo>
@@ -194,7 +194,7 @@ export function ListaMidias({
           {itens.map((m, i) => {
             const aviso = avisoProporcao(m.tipo, m.largura, m.altura);
             return (
-              <li key={m.chave} className={cn("flex flex-col overflow-hidden rounded-[10px] border bg-white", m.erro ? "border-vermelho" : "border-borda")}>
+              <li key={m.chave} className={cn("flex flex-col overflow-hidden rounded-[var(--radius-control)] border bg-surface-solid", m.erro ? "border-vermelho" : "border-borda")}>
                 <div className="relative flex aspect-square items-center justify-center bg-fundo">
                   {m.tipo === "imagem" && m.src ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -204,28 +204,28 @@ export function ListaMidias({
                   ) : (
                     <IconeTipo tipo={m.tipo} />
                   )}
-                  <span className="absolute left-2 top-2 rounded-full bg-azul-escuro/80 px-2 text-[11px] font-bold text-white">{i + 1}</span>
+                  <span className="absolute left-2 top-2 rounded-full bg-azul-escuro/80 px-2 text-xs font-bold text-white">{i + 1}</span>
                   {m.progresso !== undefined && (
                     <div className="absolute inset-x-0 bottom-0 bg-white/90 p-2">
                       <div className="h-1.5 overflow-hidden rounded-full bg-borda" role="progressbar" aria-valuenow={m.progresso} aria-valuemin={0} aria-valuemax={100} aria-label={`Enviando ${m.nome_arquivo}`}>
                         <div className="h-full bg-azul-claro transition-[width]" style={{ width: `${m.progresso}%` }} />
                       </div>
-                      <p className="mt-1 text-center text-[11px] font-semibold text-azul-escuro">{m.progresso}%</p>
+                      <p className="mt-1 text-center text-xs font-semibold text-azul-escuro">{m.progresso}%</p>
                     </div>
                   )}
                 </div>
                 <div className="flex flex-1 flex-col gap-1 p-2">
                   <p className="truncate text-xs font-semibold text-azul-escuro" title={m.nome_arquivo}>{m.nome_arquivo}</p>
-                  <p className="text-[11px] text-texto-2">
+                  <p className="text-xs text-texto-2">
                     {m.tipo === "link" ? "Link externo" : formatarTamanho(m.tamanho)}
                     {m.largura && m.altura ? ` · ${m.largura}×${m.altura}` : ""}
                   </p>
                   {aviso && (
-                    <p className="flex gap-1 text-[11px] font-medium text-st-revisao">
+                    <p className="flex gap-1 text-xs font-medium text-st-revisao-text">
                       <AlertTriangle className="mt-px size-3 shrink-0" /> {aviso}
                     </p>
                   )}
-                  {m.erro && <p className="text-[11px] font-medium text-vermelho">{m.erro}</p>}
+                  {m.erro && <p className="text-xs font-medium text-vermelho">{m.erro}</p>}
                   <div className="mt-auto flex justify-between pt-1">
                     <div className="flex">
                       <Button type="button" variant="ghost" size="icon" className="size-8" onClick={() => mover(i, -1)} disabled={i === 0} aria-label="Mover para a esquerda">

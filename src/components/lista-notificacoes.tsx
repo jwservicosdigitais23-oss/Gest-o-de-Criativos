@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { BellOff, CheckCheck } from "lucide-react";
-import { EstadoVazio } from "@/components/estado-vazio";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
 import { formatarDataHora } from "@/lib/datas";
 import { createClient } from "@/lib/supabase/client";
 import type { Notificacao } from "@/lib/types";
@@ -23,7 +23,7 @@ export function ListaNotificacoes({ itens, usuarioId }: { itens: Notificacao[]; 
     });
   }
 
-  if (itens.length === 0) return <EstadoVazio icone={BellOff} titulo="Nenhuma notificação" descricao="Quando algo acontecer nos seus posts, aparece aqui." />;
+  if (itens.length === 0) return <EmptyState icone={BellOff} titulo="Nenhuma notificação" descricao="Quando algo acontecer nos seus posts, aparece aqui." />;
 
   return (
     <div className="flex flex-col gap-3">
@@ -32,7 +32,7 @@ export function ListaNotificacoes({ itens, usuarioId }: { itens: Notificacao[]; 
           <CheckCheck /> Marcar todas como lidas
         </Button>
       )}
-      <Card className="divide-y divide-borda overflow-hidden">
+      <GlassCard className="divide-y divide-borda overflow-hidden">
         {itens.map((n) => (
           <div key={n.id} className={cn("flex gap-3 px-4 py-3", !n.lida && "bg-st-aguardando-bg/40")}>
             <span className={cn("mt-2 size-2 shrink-0 rounded-full", n.lida ? "bg-transparent" : "bg-azul-claro")} aria-hidden />
@@ -55,7 +55,7 @@ export function ListaNotificacoes({ itens, usuarioId }: { itens: Notificacao[]; 
             )}
           </div>
         ))}
-      </Card>
+      </GlassCard>
     </div>
   );
 }

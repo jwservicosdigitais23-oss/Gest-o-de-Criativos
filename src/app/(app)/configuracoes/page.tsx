@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CabecalhoPagina } from "@/components/cabecalho-pagina";
+import { PageHeader } from "@/components/ui/page-header";
 import { AbaMembros } from "@/components/configuracoes/aba-membros";
 import { AbaPerfis } from "@/components/configuracoes/aba-perfis";
 import { AbaSistema, type UsoStorage } from "@/components/configuracoes/aba-sistema";
@@ -50,7 +50,7 @@ export default async function ConfiguracoesPage(props: PageProps<"/configuracoes
 
   return (
     <>
-      <CabecalhoPagina titulo="Configurações" subtitulo="Perfis do LinkedIn, membros, acessos e sistema." />
+      <PageHeader titulo="Configurações" subtitulo="Perfis do LinkedIn, membros, acessos e sistema." />
       <AbasConfiguracoes
         abaInicial={abaInicial}
         perfis={<AbaPerfis perfis={perfisConfig} membros={membrosConfig} />}

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { UserSquare2 } from "lucide-react";
-import { CabecalhoPagina } from "@/components/cabecalho-pagina";
-import { EstadoVazio } from "@/components/estado-vazio";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 import { FormPost } from "@/components/posts/form-post";
 import { Button } from "@/components/ui/button";
 import { exigirAdmin } from "@/lib/auth";
@@ -17,7 +17,7 @@ export default async function NovoPostPage(props: PageProps<"/posts/novo">) {
 
   if (perfis.length === 0) {
     return (
-      <EstadoVazio
+      <EmptyState
         icone={UserSquare2}
         titulo="Cadastre um perfil primeiro"
         descricao="Os posts pertencem a um perfil do LinkedIn."
@@ -32,7 +32,7 @@ export default async function NovoPostPage(props: PageProps<"/posts/novo">) {
 
   return (
     <>
-      <CabecalhoPagina titulo="Novo post" subtitulo="Preencha os dados, envie a mídia e confira a prévia do LinkedIn." />
+      <PageHeader titulo="Novo post" subtitulo="Preencha os dados, envie a mídia e confira a prévia do LinkedIn." />
       <FormPost
         perfis={perfis.map((p) => ({ id: p.id, nome: p.nome, avatarSrc: p.avatarSrc, tipo: p.tipo }))}
         post={null}

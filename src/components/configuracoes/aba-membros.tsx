@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { definirAtivo, reenviarConvite } from "@/app/(app)/configuracoes/actions";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,7 +53,7 @@ export function AbaMembros({
           <UserPlus /> Convidar membro
         </Button>
       </div>
-      <Card className="overflow-hidden">
+      <GlassCard className="overflow-hidden">
         <table className="w-full text-left">
           <thead className="bg-fundo">
             <tr className="rotulo text-texto-2">
@@ -76,6 +76,9 @@ export function AbaMembros({
                         {m.nome} {m.id === usuarioId && <span className="text-xs font-normal text-texto-2">(você)</span>}
                       </p>
                       <p className="truncate text-xs text-texto-2">{m.email}</p>
+                      <p className="text-label text-text-muted sm:hidden">
+                        {m.papel === "admin" ? "Administrador" : "Aprovadora"} · {m.ativo ? "Ativo" : "Inativo"}
+                      </p>
                     </div>
                   </div>
                 </td>
@@ -93,7 +96,7 @@ export function AbaMembros({
                   <span
                     className={cn(
                       "rounded-full px-2.5 py-0.5 text-xs font-semibold",
-                      m.ativo ? "bg-st-aprovado-bg text-st-aprovado" : "bg-st-rascunho-bg text-st-rascunho",
+                      m.ativo ? "bg-st-aprovado-bg text-st-aprovado-text" : "bg-st-rascunho-bg text-st-rascunho-text",
                     )}
                   >
                     {m.ativo ? "Ativo" : "Inativo"}
@@ -140,7 +143,7 @@ export function AbaMembros({
             ))}
           </tbody>
         </table>
-      </Card>
+      </GlassCard>
       {modal.aberto && (
         <ModalMembro
           key={modal.membro?.id ?? "novo"}

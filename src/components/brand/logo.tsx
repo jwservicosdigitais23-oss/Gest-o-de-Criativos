@@ -1,35 +1,32 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /**
- * Logo do Grupo Adere. Enquanto o arquivo oficial (public/logo-adere.svg) não
- * for enviado, usa o texto "ADERE" + "Gestão de Negócios" (Montserrat).
+ * Logo oficial do Grupo Adere (public/logo-adere.png, proporção 452×160).
+ * Versão colorida sobre fundo claro e branca (monocromática) sobre fundos
+ * escuros, conforme o manual. Largura mínima de 150px, sem distorcer.
  */
+const LARGURAS = { sm: 150, md: 170, lg: 220 } as const;
+
 export function Logo({
   variante = "cor",
+  tamanho = "md",
   className,
 }: {
   variante?: "cor" | "branco";
+  tamanho?: keyof typeof LARGURAS;
   className?: string;
 }) {
-  const branco = variante === "branco";
+  const largura = LARGURAS[tamanho];
   return (
-    <div className={cn("flex min-w-[150px] flex-col leading-none", className)} aria-label="Adere · Gestão de Negócios">
-      <span
-        className={cn(
-          "text-2xl font-bold uppercase tracking-[0.18em]",
-          branco ? "text-white" : "text-azul-escuro",
-        )}
-      >
-        Adere
-      </span>
-      <span
-        className={cn(
-          "mt-1 text-[11px] font-normal tracking-[0.04em]",
-          branco ? "text-white/80" : "text-texto",
-        )}
-      >
-        Gestão de Negócios
-      </span>
-    </div>
+    <Image
+      src={variante === "branco" ? "/logo-adere-branco.png" : "/logo-adere.png"}
+      alt="Adere · Gestão de Negócios"
+      width={largura}
+      height={Math.round((largura * 160) / 452)}
+      priority
+      className={cn("h-auto max-w-none", className)}
+      style={{ width: largura }}
+    />
   );
 }

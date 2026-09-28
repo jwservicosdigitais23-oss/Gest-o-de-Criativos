@@ -52,7 +52,7 @@ export function ModalExcluirPerfil({
           </>
         ) : (
           <div className="flex flex-col gap-5">
-            <div className="rounded-[10px] bg-st-aguardando-bg p-4">
+            <div className="rounded-[var(--radius-control)] bg-st-aguardando-bg p-4">
               <p className="text-sm">
                 Este perfil tem <strong>{perfil.totalPosts} post(s)</strong>. O recomendado é <strong>arquivar</strong>: ele some da
                 sidebar e o histórico fica guardado.
@@ -65,7 +65,7 @@ export function ModalExcluirPerfil({
                 <Archive /> Arquivar perfil
               </Button>
             </div>
-            <div className="rounded-[10px] border border-[#fecaca] p-4">
+            <div className="rounded-[var(--radius-control)] border border-[#fecaca] p-4">
               <p className="text-sm font-semibold text-vermelho">Exclusão definitiva</p>
               <p className="mt-1 text-sm text-texto-2">
                 Apaga o perfil, todos os posts, mídias, decisões e comentários. Não pode ser desfeita.

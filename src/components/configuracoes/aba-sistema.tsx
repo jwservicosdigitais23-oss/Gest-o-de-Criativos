@@ -6,7 +6,7 @@ import { HardDrive, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { limparOrfaos } from "@/app/(app)/configuracoes/actions";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
 import { formatarTamanho } from "@/lib/posts";
 
 export interface UsoStorage {
@@ -35,9 +35,9 @@ export function AbaSistema({ uso }: { uso: UsoStorage | null }) {
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <Card className="flex flex-col gap-4 p-5">
+      <GlassCard className="flex flex-col gap-4 p-5">
         <div className="flex items-center gap-3">
-          <span className="flex size-10 items-center justify-center rounded-[10px] bg-st-aguardando-bg text-azul-medio">
+          <span className="flex size-10 items-center justify-center rounded-[var(--radius-control)] bg-st-aguardando-bg text-azul-medio">
             <HardDrive className="size-5" aria-hidden />
           </span>
           <div>
@@ -65,9 +65,9 @@ export function AbaSistema({ uso }: { uso: UsoStorage | null }) {
           ))}
         </ul>
         <p className="text-xs text-texto-2">Plano Free: 1 GB de Storage e até 50 MB por arquivo.</p>
-      </Card>
+      </GlassCard>
 
-      <Card className="flex flex-col gap-4 p-5">
+      <GlassCard className="flex flex-col gap-4 p-5">
         <div>
           <h2 className="text-base font-bold">Arquivos órfãos</h2>
           <p className="text-sm text-texto-2">
@@ -95,7 +95,7 @@ export function AbaSistema({ uso }: { uso: UsoStorage | null }) {
         >
           {pendente ? <Loader2 className="animate-spin" /> : <Trash2 />} Limpar órfãos
         </Button>
-      </Card>
+      </GlassCard>
     </div>
   );
 }

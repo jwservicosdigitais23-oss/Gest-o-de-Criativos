@@ -44,14 +44,14 @@ export function ListaDownloads({ midias }: { midias: { id: string; nome: string;
     );
   }
   return (
-    <details className="rounded-[10px] border border-borda">
+    <details className="rounded-[var(--radius-control)] border border-borda">
       <summary className="flex h-10 cursor-pointer list-none items-center justify-center gap-2 text-sm font-semibold text-azul-escuro">
         <Download className="size-4" /> Baixar mídia ({baixaveis.length})
       </summary>
       <ul className="border-t border-borda p-2">
         {baixaveis.map((m) => (
           <li key={m.id}>
-            <a href={m.download!} download={m.nome} className="block truncate rounded-md px-2 py-1.5 text-sm text-azul-medio hover:bg-fundo">
+            <a href={m.download!} download={m.nome} className="block truncate rounded-[calc(var(--radius-control)-4px)] px-2 py-1.5 text-sm text-azul-medio hover:bg-fundo">
               {m.nome}
             </a>
           </li>

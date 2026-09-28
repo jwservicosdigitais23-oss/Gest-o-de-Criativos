@@ -14,8 +14,8 @@ export default async function SemAcessoPage() {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-8 px-6 text-center">
       <Logo />
-      <div className="flex max-w-md flex-col items-center gap-3 rounded-[10px] border border-borda bg-white p-8 shadow-card">
-        <span className="flex size-12 items-center justify-center rounded-full bg-st-revisao-bg text-st-revisao">
+      <div className="flex max-w-md flex-col items-center gap-3 rounded-[var(--radius-control)] border border-borda bg-white p-8 shadow-card">
+        <span className="flex size-12 items-center justify-center rounded-full bg-st-revisao-bg text-st-revisao-text">
           <Lock className="size-6" aria-hidden />
         </span>
         <h1 className="text-xl font-bold">Seu acesso ainda não foi liberado. Fale com o Jonathan.</h1>
