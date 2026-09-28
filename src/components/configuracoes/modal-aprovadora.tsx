@@ -131,7 +131,7 @@ export function ModalAprovadora({ perfis, onOpenChange }: { perfis: PerfilConfig
                     aria-checked={ativo}
                     onClick={() => setForma(valor)}
                     className={cn(
-                      "transicao relative flex flex-col gap-1.5 rounded-[var(--radius-control)] border p-3 text-left",
+                      "transicao flex flex-col gap-1.5 rounded-[var(--radius-control)] border p-3 text-left",
                       ativo ? "border-blue-600 bg-st-aguardando-bg/50 shadow-card" : "border-border hover:bg-bg-app-from",
                     )}
                   >
@@ -148,9 +148,7 @@ export function ModalAprovadora({ perfis, onOpenChange }: { perfis: PerfilConfig
                     </span>
                     <span className="text-label text-text-muted">{texto}</span>
                     {selo && (
-                      <span className="absolute right-2 top-2 rounded-full bg-st-aprovado-bg px-2 py-0.5 text-[11px] font-bold text-st-aprovado-text">
-                        {selo}
-                      </span>
+                      <span className="self-start rounded-full bg-st-aprovado-bg px-2 py-0.5 text-[11px] font-bold text-st-aprovado-text">{selo}</span>
                     )}
                   </button>
                 );

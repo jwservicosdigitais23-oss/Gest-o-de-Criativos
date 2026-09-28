@@ -32,6 +32,7 @@ Configure no `.env.local` (já está no `.gitignore`) **e** na Vercel (Project �
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | navegador e servidor |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | navegador e servidor (respeita o RLS) |
+| `VER_COMO_SECRET` | opcional, **somente no servidor** — chave do cookie assinado do "Ver como". Sem ela, é derivada da `SUPABASE_SERVICE_ROLE_KEY`. |
 | `SUPABASE_SERVICE_ROLE_KEY` | **somente no servidor** — convites, primeiro acesso e limpeza do Storage. O módulo `src/lib/supabase/admin.ts` importa `server-only`, então o build falha se alguém tentar usá-la no navegador. |
 
 ## Banco de dados e migrações
@@ -57,7 +58,7 @@ A primeira migração cria as tabelas (`membros`, `perfis`, `perfil_aprovadoras`
 
 ### Primeiro acesso
 
-O **primeiro usuário cadastrado vira administrador**. Com o banco vazio, a tela de login mostra o link *"Criar o acesso de administrador"* (`/primeiro-acesso`). Depois disso, as demais pessoas só entram por convite, então o cadastro público pode (e deve) ficar desligado em *Supabase › Authentication › Sign In / Providers › Allow new users to sign up*.
+O **primeiro usuário cadastrado vira administrador**. Com o banco vazio, a tela de login mostra o link *"Criar o acesso de administrador"* (`/instalar`). Depois disso, as demais pessoas só entram por convite, então o cadastro público pode (e deve) ficar desligado em *Supabase › Authentication › Sign In / Providers › Allow new users to sign up*.
 
 ## Testes
 
@@ -86,8 +87,19 @@ TEST_DATABASE_URL=postgres://postgres@localhost:54329/adere_test npm test
 ## Configurações (somente administrador)
 
 - **Perfis**: criar, editar (nome único, tipo, LinkedIn, foto, aprovadoras, modo de aprovação), reordenar arrastando (define a ordem da sidebar), arquivar e excluir. Perfil com posts só sai da sidebar arquivando; a exclusão definitiva exige digitar o nome do perfil (função `excluir_perfil_definitivo`).
-- **Membros**: convidar por e-mail (`supabase.auth.admin.inviteUserByEmail`, executado no servidor com a service role), reenviar convite, editar papel e perfis, desativar (bloqueia o login no Auth sem apagar o histórico).
+- **Membros**: *+ Adicionar aprovadora* (ver abaixo), reenviar convite, gerar nova senha provisória, enviar link de redefinição, editar perfis, desativar (bloqueia o login no Auth sem apagar o histórico) e *Ver como*.
 - Todas as ações ficam registradas na tabela `historico`.
+
+## Acessos das aprovadoras e "Ver como" (Prompt 9)
+
+- **Visibilidade no banco**: a aprovadora só vê e decide nos perfis de `perfil_aprovadoras` (Edna → Edna Queiroz + Grupo Adere; Daniela → Daniela Quintana + Grupo Adere). O RLS de perfis, posts, mídias, decisões, comentários, histórico, notificações, membros e do bucket `midias` garante isso; `tests/db/acessos.test.ts` prova.
+- **+ Adicionar aprovadora**: nome, e-mail, perfis e forma de acesso — *convite por e-mail* (`inviteUserByEmail`, link cai em `/primeiro-acesso`) ou *senha provisória* (`admin.createUser` com `email_confirm`; botão *Gerar senha*; mínimo de 10 caracteres com letras e números). A senha aparece **uma única vez** com *Copiar*; vai só para o Supabase Auth e nunca para tabela, histórico ou log (`src/lib/acessos.test.ts`). Nos dois casos `membros.deve_trocar_senha = true`.
+- **Status**: *Convite pendente* (ainda não criou a própria senha), *Ativa* e *Desativada*, com o último acesso.
+- **Primeiro acesso** (`/primeiro-acesso`): enquanto `deve_trocar_senha` for verdadeiro, o middleware manda a pessoa para lá. Ela cria a senha (força + regras visíveis), `concluir_troca_senha()` baixa a flag e registra no histórico, e um tour de 3 passos apresenta o CRM.
+- **Minha conta** (menu do avatar): trocar a senha confirmando a atual.
+- **Ver como** (só admin): menu do avatar ou linha do membro. Não há login como ela: um cookie assinado (HMAC, 30 min) guarda quem está sendo visualizado, e o servidor monta sidebar, painel, perfis, posts, calendário, busca e notificações só com os perfis dela. Faixa âmbar no topo, botões de decisão e comentário desabilitados ("Apenas a Edna pode decidir") e **toda server action de gravação é recusada** (`exigirMembro({ gravacao: true })`, conferido em `src/lib/auth.test.ts`). Pré-visualizações: tela de login, e-mail de convite e primeiro acesso. Entrada e saída ficam no histórico ("Jonathan visualizou como Edna Queiroz").
+- **E-mails**: `src/lib/emails.ts` é a fonte; `npm run emails` regrava `supabase/templates/*.html`.
+- **E2E**: `npm run build && npm run e2e` (Playwright). Os fluxos com login real rodam quando as variáveis `E2E_*` do topo de `e2e/acessos.spec.ts` estão definidas (ex.: `E2E_BASE_URL` apontando para o preview).
 
 ## Posts, upload e prévia
 
@@ -147,20 +159,20 @@ Infraestrutura já criada:
 
 - **Supabase**: projeto `adere-crm-criativos` (ref `heiwuuqdjxrtmfzeatkv`, região São Paulo, plano Free) com **todas as migrações aplicadas** e o seed dos três perfis.
   As migrações foram aplicadas pela API com outro número de versão; antes do primeiro `supabase db push`, marque-as como aplicadas para o CLI não tentar rodá-las de novo:
-  `supabase migration repair --status applied 20260928120000 20260928130000 20260928140000 20260928150000 20260928160000 20260928170000 20260928180000 20260928190000`
+  `supabase migration repair --status applied 20260928120000 20260928130000 20260928140000 20260928150000 20260928160000 20260928170000 20260928180000 20260928190000 20260928200000 20260929100000`
 
 Passos que dependem de você (não puderam ser feitos daqui):
 
 1. **Vercel ↔ GitHub**: instale o app da Vercel no GitHub (https://github.com/apps/vercel) com acesso a este repositório. Depois, na Vercel (time `jw-servicos`), importe o repositório como projeto `adere-crm-criativos` (framework Next.js). Confirme que o time está no plano **Pro** (o Hobby não permite uso comercial).
 2. **Variáveis na Vercel** (Production e Preview): `NEXT_PUBLIC_SUPABASE_URL=https://heiwuuqdjxrtmfzeatkv.supabase.co`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (Supabase › Project Settings › API Keys › anon) e `SUPABASE_SERVICE_ROLE_KEY` (mesma tela, **service_role**; marque como *Sensitive*).
 3. **Deployment Protection**: em Project › Settings › Deployment Protection, deixe a "Vercel Authentication" só para *Preview*, senão as aprovadoras precisariam de conta na Vercel.
-4. **Supabase Auth** (Authentication › URL Configuration): Site URL = URL de produção da Vercel; Redirect URLs = `https://<produção>/**` e `http://localhost:3000/**`. Em *Email Templates*, cole `supabase/templates/convite.html` (Invite) e `supabase/templates/recuperacao.html` (Reset password) — eles usam `token_hash`, necessário para o link funcionar no celular da pessoa. Em *Sign In / Providers*, desligue "Allow new users to sign up". (Ou rode `supabase config push` com o `supabase/config.toml`.)
+4. **Supabase Auth** (Authentication › URL Configuration): Site URL = `https://gest-o-de-criativos.vercel.app`; Redirect URLs = `https://<produção>/**` e `http://localhost:3000/**`. Em *Email Templates*, cole `supabase/templates/convite.html` (Invite) e `supabase/templates/recuperacao.html` (Reset password) — eles usam `token_hash`, necessário para o link funcionar no celular da pessoa. Em *Sign In / Providers*, desligue "Allow new users to sign up". (Ou rode `supabase config push` com o `supabase/config.toml`.)
 5. **Merge na `main`**: a branch de trabalho é `claude/crm-sprints-prompts-f5mt16`; ao fazer o merge, a Vercel publica em produção.
 6. Envie o logo oficial para `public/logo-adere.svg` e troque o texto no componente `Logo`.
 
 ### Primeiro acesso e convites
 
-1. Abra a URL de produção › "Criar o acesso de administrador" (Jonathan). Só aparece enquanto não houver admin.
-2. **Configurações › Membros › Convidar membro**: Edna Queiroz (papel Aprovadora, perfis *Edna Queiroz* e *Grupo Adere*) e Daniela Quintana (Aprovadora, *Daniela Quintana* e *Grupo Adere*).
-3. Elas recebem o e-mail "Criar minha senha", definem a senha e já caem no painel com a fila "Para você aprovar".
+1. Abra a URL de produção › "Criar o acesso de administrador" (`/instalar`, Jonathan). Só funciona enquanto não houver admin.
+2. **Configurações › Membros › + Adicionar aprovadora**: Edna Queiroz (perfis *Edna Queiroz* e *Grupo Adere*) e Daniela Quintana (*Daniela Quintana* e *Grupo Adere*), por convite ou senha provisória.
+3. Elas recebem o e-mail "Criar minha senha" (ou a senha provisória por WhatsApp), criam a senha em `/primeiro-acesso`, veem o tour e caem no painel com a fila "Para você aprovar".
 4. Confira em **Configurações › Perfis** se o Grupo Adere deve exigir as duas ("Todas precisam aprovar", padrão) ou qualquer uma.

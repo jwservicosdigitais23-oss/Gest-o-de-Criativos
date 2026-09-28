@@ -135,13 +135,17 @@ export async function PainelAprovadora({
                 <Avatar nome={p.nome} src={p.avatarSrc} size="lg" />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-card-title text-navy-900">{p.nome}</span>
-                  <span className="block text-label text-text-muted">{p.tipo === "empresa" ? "Institucional" : "Pessoal"}</span>
+                  <span className="mt-1 flex flex-wrap items-center gap-2 text-label text-text-muted">
+                    {p.tipo === "empresa" ? "Institucional" : "Pessoal"}
+                    {pend > 0 ? (
+                      <span className="rounded-full bg-st-aguardando-bg px-2 py-0.5 font-bold text-st-aguardando-text">{pend} para aprovar</span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-st-aprovado-bg px-2 py-0.5 font-bold text-st-aprovado-text">
+                        <CheckCheck className="size-3.5" aria-hidden /> Em dia
+                      </span>
+                    )}
+                  </span>
                 </span>
-                {pend > 0 ? (
-                  <span className="rounded-full bg-st-aguardando-bg px-2.5 py-1 text-label font-bold text-st-aguardando-text">{pend} para aprovar</span>
-                ) : (
-                  <CheckCheck className="size-5 text-st-aprovado" aria-label="Em dia" />
-                )}
                 <ArrowRight className="transicao size-4 text-blue-600 group-hover:translate-x-0.5" aria-hidden />
               </Link>
             );
