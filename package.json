@@ -10,7 +10,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "db:test-reset": "./scripts/db-test-reset.sh",
-    "postinstall": "node scripts/copiar-pdf-worker.mjs"
+    "postinstall": "node scripts/copiar-pdf-worker.mjs",
+    "fixture": "node scripts/gerar-fixture.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

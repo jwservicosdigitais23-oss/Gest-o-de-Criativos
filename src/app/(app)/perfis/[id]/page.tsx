@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarRange, CheckCircle2, Hourglass, Inbox, Plus, RotateCcw } from "lucide-react";
+import { CalendarRange, CheckCircle2, Download, Hourglass, Inbox, Plus, RotateCcw } from "lucide-react";
 import { Kpi } from "@/components/kpi";
 import { CardPost, LinhaPost, type PostCardDados } from "@/components/posts/card-post";
 import { FiltrosPosts } from "@/components/posts/filtros-posts";
@@ -105,13 +105,20 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
             </div>
           </div>
         </div>
-        {admin && (
-          <Button asChild>
-            <Link href={`/posts/novo?perfil=${perfil.id}`}>
-              <Plus /> Novo post
-            </Link>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="secondary">
+            <a href={`/exportar?perfil=${perfil.id}`}>
+              <Download /> Exportar cronograma
+            </a>
           </Button>
-        )}
+          {admin && (
+            <Button asChild>
+              <Link href={`/posts/novo?perfil=${perfil.id}`}>
+                <Plus /> Novo post
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">

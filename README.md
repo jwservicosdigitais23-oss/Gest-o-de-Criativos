@@ -118,3 +118,12 @@ TEST_DATABASE_URL=postgres://postgres@localhost:54329/adere_test npm test
 - **Painel da aprovadora**: fila "Para você aprovar" (`fila_aprovadora()`, ordenada por prazo, selos "Vence amanhã"/"Atrasado") e "Suas últimas decisões".
 - **Notificações**: geradas por triggers (envio, reenvio, decisão, comentário) na tabela `notificacoes` (RLS: cada um vê e marca como lida só as suas). O sino da topbar usa Supabase Realtime — contador e lista atualizam sem recarregar.
 - **WhatsApp**: no detalhe do post aguardando, "Copiar link para WhatsApp" gera o texto pronto para cada aprovadora que ainda não decidiu.
+
+## Importação e exportação do cronograma (Excel)
+
+- **Importar** (`/importar`, só admin): lê o .xlsx/.csv **no navegador** com SheetJS. Colunas: Data · Hora · Perfil · Tema · Legenda · Formato · Pilar · CTA · Arquivo · ID (reconhece variações como "Data de publicação", "Copy", "Script", "Texto"; se faltar coluna obrigatória, abre o mapeamento manual).
+- Pré-visualização com selos **Novo / Atualiza / Ignorada / Erro** e motivo. Nada é gravado antes de "Importar {n} posts"; a gravação é feita pela função `importar_cronograma` numa única transação e registrada em `importacoes`.
+- Regras: chave = coluna ID (ou Perfil + Data + Tema); chave existente atualiza em vez de duplicar; posts Aprovados/Publicados nunca são sobrescritos; perfil não cadastrado vira erro com atalho "Criar perfil agora"; data passada pede confirmação; legenda acima de 3.000 caracteres gera aviso; importados entram como Rascunho com origem `importacao`.
+- **Anexo em lote**: após importar, solte as mídias — cada arquivo vai para o post cuja coluna Arquivo tem o mesmo nome. Depois, "Enviar para aprovação os que já têm mídia".
+- **Exportar**: `/exportar` (com `?perfil=`, `?de=`, `?ate=`) gera o .xlsx com as mesmas colunas + Status, Versão e Última observação. `/exportar/modelo` baixa o modelo vazio.
+- Planilha de exemplo para os testes: `fixtures/cronograma-exemplo.xlsx` (`npm run fixture` recria).
