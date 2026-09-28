@@ -30,6 +30,14 @@ test.describe("sem sessão", () => {
   }
 });
 
+test("link do e-mail padrão (sessão no #fragmento) passa por /auth/callback", async ({ page }) => {
+  const vistos: string[] = [];
+  page.on("framenavigated", (f) => f === page.mainFrame() && vistos.push(f.url()));
+  await page.goto("/auth/confirm?next=/primeiro-acesso#access_token=invalido&refresh_token=invalido&type=invite");
+  await expect(page).toHaveURL(/\/login\?erro=link/);
+  expect(vistos.some((u) => u.includes("/auth/callback"))).toBe(true);
+});
+
 test.describe("aprovadoras", () => {
   test.skip(!temAprovadoras, "defina E2E_EDNA_* e E2E_DANIELA_*");
 

@@ -14,6 +14,13 @@ export async function GET(request: NextRequest) {
   const nextParam = searchParams.get("next") ?? "/";
   const next = nextParam.startsWith("/") && !nextParam.startsWith("//") ? nextParam : "/";
 
+  // E-mails padrão do Supabase (sem SMTP próprio) trazem a sessão no
+  // fragmento (#access_token=...), invisível aqui. O navegador mantém o
+  // fragmento no redirecionamento, e /auth/callback conclui o login.
+  if (!tokenHash && !code) {
+    return NextResponse.redirect(`${origin}/auth/callback?next=${encodeURIComponent(next)}`);
+  }
+
   const supabase = await createClient();
   let ok = false;
   if (tokenHash && type) {
