@@ -9,6 +9,7 @@ import { BUCKET_MIDIAS } from "@/lib/constantes";
 import { registrarHistorico } from "@/lib/historico";
 import { createClient as createSupabaseJs } from "@supabase/supabase-js";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/supabase/env";
 
 function revalidar() {
   revalidatePath("/", "layout");
@@ -244,7 +245,7 @@ export async function reenviarConvite(membroId: string): Promise<Resultado> {
   if (error) {
     // Já confirmou o convite antes: manda o link de redefinição de senha.
     // Cliente sem cookies/PKCE, para o link funcionar no aparelho da pessoa.
-    const anon = createSupabaseJs(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+    const anon = createSupabaseJs(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: { flowType: "implicit", persistSession: false, autoRefreshToken: false },
     });
     const { error: erroReset } = await anon.auth.resetPasswordForEmail(membro.email, { redirectTo });

@@ -28,14 +28,25 @@ export async function criarPrimeiroAdmin(
   const { data: temAdmin } = await supabase.rpc("sistema_tem_admin");
   if (temAdmin) return { erro: "O administrador já foi cadastrado. Faça login." };
 
-  const admin = createAdminClient();
-  const { error } = await admin.auth.admin.createUser({
-    email: parsed.data.email,
-    password: parsed.data.senha,
-    email_confirm: true,
-    user_metadata: { nome: parsed.data.nome },
-  });
-  if (error) return { erro: "Não foi possível criar o acesso: " + error.message };
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    const admin = createAdminClient();
+    const { error } = await admin.auth.admin.createUser({
+      email: parsed.data.email,
+      password: parsed.data.senha,
+      email_confirm: true,
+      user_metadata: { nome: parsed.data.nome },
+    });
+    if (error) return { erro: "Não foi possível criar o acesso: " + error.message };
+  } else {
+    // Sem a service role: cadastro comum. O banco confirma o e-mail do
+    // primeiro usuário e o torna administrador (triggers em auth.users).
+    const { error } = await supabase.auth.signUp({
+      email: parsed.data.email,
+      password: parsed.data.senha,
+      options: { data: { nome: parsed.data.nome } },
+    });
+    if (error) return { erro: "Não foi possível criar o acesso: " + error.message };
+  }
 
   const { error: loginErro } = await supabase.auth.signInWithPassword({
     email: parsed.data.email,

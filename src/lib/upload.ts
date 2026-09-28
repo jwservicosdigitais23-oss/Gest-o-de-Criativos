@@ -2,6 +2,7 @@
 
 import { BUCKET_MIDIAS } from "./constantes";
 import { createClient } from "./supabase/client";
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "./supabase/env";
 
 /**
  * Upload direto do navegador para o bucket privado, com progresso.
@@ -18,7 +19,7 @@ export async function enviarArquivo(
   const token = data.session?.access_token;
   if (!token) throw new Error("Sessão expirada. Entre novamente.");
 
-  const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/${BUCKET_MIDIAS}/${caminho
+  const url = `${SUPABASE_URL}/storage/v1/object/${BUCKET_MIDIAS}/${caminho
     .split("/")
     .map(encodeURIComponent)
     .join("/")}`;
@@ -27,7 +28,7 @@ export async function enviarArquivo(
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url);
     xhr.setRequestHeader("authorization", `Bearer ${token}`);
-    xhr.setRequestHeader("apikey", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+    xhr.setRequestHeader("apikey", SUPABASE_ANON_KEY);
     xhr.setRequestHeader("x-upsert", "false");
     xhr.setRequestHeader("cache-control", "max-age=3600");
     xhr.setRequestHeader("content-type", arquivo.type || "application/octet-stream");
