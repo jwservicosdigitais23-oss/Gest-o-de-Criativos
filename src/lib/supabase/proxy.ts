@@ -5,7 +5,7 @@ import { supabaseEnv } from "./env";
 const ROTAS_PUBLICAS = [
   "/login",
   "/esqueci-senha",
-  "/primeiro-acesso",
+  "/instalar",
   "/auth",
 ];
 
@@ -47,12 +47,39 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(destino);
   }
 
-  if (logado && (pathname === "/login" || pathname === "/primeiro-acesso")) {
+  if (logado && (pathname === "/login" || pathname === "/instalar")) {
     const destino = request.nextUrl.clone();
     destino.pathname = "/";
     destino.search = "";
     return NextResponse.redirect(destino);
   }
 
+  // Senha provisória ou convite recém-aceito: troca obrigatória antes de usar o CRM.
+  if (logado && precisaChecarTroca(request, pathname)) {
+    const { data: membro } = await supabase
+      .from("membros")
+      .select("deve_trocar_senha")
+      .eq("id", data!.claims.sub as string)
+      .maybeSingle();
+    if (membro?.deve_trocar_senha) {
+      const destino = request.nextUrl.clone();
+      destino.pathname = "/primeiro-acesso";
+      destino.search = "";
+      return copiarCookies(response, NextResponse.redirect(destino));
+    }
+  }
   return response;
+}
+
+/** Só navegações de página (não server actions nem prefetch) fora das telas de senha. */
+function precisaChecarTroca(request: NextRequest, pathname: string) {
+  if (pathname === "/primeiro-acesso" || ehPublica(pathname)) return false;
+  if (request.method !== "GET") return false;
+  if (request.headers.get("next-router-prefetch")) return false;
+  return true;
+}
+
+function copiarCookies(de: NextResponse, para: NextResponse) {
+  de.cookies.getAll().forEach((c) => para.cookies.set(c));
+  return para;
 }

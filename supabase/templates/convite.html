@@ -1,20 +1,27 @@
-<div style="font-family: Montserrat, Arial, sans-serif; max-width: 520px; margin: 0 auto; color: #2E3A59;">
-  <div style="background: linear-gradient(135deg, #001F4D 0%, #004C97 55%, #00AEEF 100%); padding: 28px 32px; border-radius: 10px 10px 0 0;">
-    <p style="margin: 0; color: #FFFFFF; font-size: 22px; font-weight: 700; letter-spacing: 4px;">ADERE</p>
-    <p style="margin: 4px 0 0; color: #FFFFFF; font-size: 12px;">Gestão de Negócios</p>
+<!doctype html>
+<html lang="pt-BR">
+<body style="margin: 0; padding: 24px 12px; background: #EEF3FA;">
+<div style="font-family: Montserrat, 'Segoe UI', Arial, sans-serif; max-width: 560px; margin: 0 auto; color: #2E3A59;">
+  <div style="background: #001F4D linear-gradient(135deg, #001F4D 0%, #004C97 60%, #00AEEF 100%); padding: 28px 32px; border-radius: 16px 16px 0 0;">
+    <img src="{{ .SiteURL }}/logo-adere-branco.png" width="170" height="60" alt="Adere · Gestão de Negócios" style="display: block; border: 0; width: 170px; height: auto;" />
+    <p style="margin: 18px 0 0; display: inline-block; padding: 5px 12px; border: 1px solid rgba(0,174,239,0.6); border-radius: 999px; color: #FFFFFF; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">Aprovação de criativos</p>
   </div>
-  <div style="background: #FFFFFF; padding: 32px; border: 1px solid #E3E8EF; border-top: 0; border-radius: 0 0 10px 10px;">
-    <h1 style="margin: 0 0 12px; color: #001F4D; font-size: 20px;">Você foi convidada(o) para o CRM</h1>
-    <p style="margin: 0 0 20px; line-height: 1.6;">
-      Olá{{ if .Data.nome }}, {{ .Data.nome }}{{ end }}! O Jonathan liberou seu acesso ao <strong>CRM de Aprovação de Criativos</strong>
-      do Grupo Adere. É por lá que os posts do LinkedIn chegam para você aprovar, pedir ajustes ou reprovar.
+  <div style="background: #FFFFFF; padding: 32px; border: 1px solid #DCE3EE; border-top: 0; border-radius: 0 0 16px 16px;">
+    <h1 style="margin: 0 0 12px; color: #001F4D; font-size: 22px;">Olá, {{ .Data.nome }}! Seu acesso está pronto</h1>
+    <p style="margin: 0 0 16px; line-height: 1.6;">
+      Você foi convidada para o <strong>CRM de Aprovação de Criativos</strong> do Grupo Adere. É por lá que os posts do LinkedIn chegam para você aprovar, pedir ajustes ou reprovar.
     </p>
+    <div style="margin: 0 0 24px; padding: 14px 16px; background: #EEF3FA; border-radius: 12px;">
+      <p style="margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #5E6D84;">Perfis que você vai aprovar</p>
+      <p style="margin: 4px 0 0; font-size: 16px; font-weight: 700; color: #001F4D;">{{ .Data.perfis }}</p>
+    </div>
     <p style="margin: 0 0 24px;">
-      <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite&next=/auth/nova-senha"
-         style="display: inline-block; background: #004C97; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 12px 22px; border-radius: 10px;">
-        Criar minha senha
-      </a>
+      <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite&next=/primeiro-acesso" style="display: inline-block; background: #004C97; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px; padding: 14px 26px; border-radius: 12px;">Criar minha senha</a>
     </p>
+    <p style="margin: 0 0 8px; font-size: 13px; line-height: 1.5; color: #5E6D84;">O link vale por 24 horas. Depois de criar a senha, é só entrar com o seu e-mail.</p>
     <p style="margin: 0; font-size: 12px; color: #5E6D84;">Se você não esperava este convite, pode ignorar este e-mail.</p>
   </div>
+  <p style="margin: 16px 0 0; text-align: center; font-size: 11px; color: #5E6D84;">Grupo Adere · Gestão de Negócios</p>
 </div>
+</body>
+</html>

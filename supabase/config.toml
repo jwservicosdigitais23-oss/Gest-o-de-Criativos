@@ -5,16 +5,16 @@ project_id = "adere-crm-criativos"
 
 [auth]
 # URL de produção da Vercel (troque se usar domínio próprio).
-site_url = "https://adere-crm-criativos.vercel.app"
+site_url = "https://gest-o-de-criativos.vercel.app"
 additional_redirect_urls = [
-  "https://adere-crm-criativos.vercel.app/**",
+  "https://gest-o-de-criativos.vercel.app/**",
   "https://*-jw-servicos.vercel.app/**",
   "http://localhost:3000/**",
 ]
-# Cadastro público desligado: só o primeiro admin (pela tela Primeiro acesso,
+# Cadastro público desligado: só o primeiro admin (pela tela /instalar,
 # via service role) e convites.
 enable_signup = false
-minimum_password_length = 8
+minimum_password_length = 10
 
 [auth.email]
 enable_signup = false

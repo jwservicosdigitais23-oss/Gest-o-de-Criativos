@@ -12,7 +12,8 @@
     "db:test-reset": "./scripts/db-test-reset.sh",
     "postinstall": "node scripts/copiar-pdf-worker.mjs",
     "fixture": "node scripts/gerar-fixture.mjs",
-    "check:bundle": "node scripts/verificar-bundle.mjs"
+    "check:bundle": "node scripts/verificar-bundle.mjs",
+    "emails": "node --experimental-strip-types scripts/gerar-emails.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

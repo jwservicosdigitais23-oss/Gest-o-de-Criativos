@@ -64,7 +64,7 @@ export function LoginForm({ next, mostrarPrimeiroAcesso }: { next: string; mostr
       {mostrarPrimeiroAcesso && (
         <p className="text-center text-sm text-texto-2">
           Primeira vez no sistema?{" "}
-          <Link href="/primeiro-acesso" className="font-semibold text-azul-medio hover:underline">
+          <Link href="/instalar" className="font-semibold text-azul-medio hover:underline">
             Criar o acesso de administrador
           </Link>
         </p>

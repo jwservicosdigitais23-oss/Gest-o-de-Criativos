@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 const schema = z.object({
   nome: z.string().trim().min(2, "Informe seu nome."),
   email: z.string().trim().email("E-mail inválido."),
-  senha: z.string().min(8, "A senha precisa ter pelo menos 8 caracteres."),
+  senha: z.string().min(10, "A senha precisa ter pelo menos 10 caracteres, com letras e números."),
 });
 
 export type EstadoPrimeiroAcesso = { erro?: string; ok?: boolean };

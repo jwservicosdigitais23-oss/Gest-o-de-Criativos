@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, LogOut } from "lucide-react";
+import { ChevronDown, LogOut, UserRound } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -42,6 +43,12 @@ export function MenuUsuario({ usuario }: { usuario: UsuarioShell }) {
           <span className="block font-semibold text-azul-escuro">{usuario.nome}</span>
           {papel}
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/minha-conta">
+            <UserRound /> Minha conta
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={sair}>
           <LogOut /> Sair

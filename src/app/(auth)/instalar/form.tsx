@@ -22,7 +22,7 @@ export function PrimeiroAcessoForm() {
   return (
     <form action={acao} className="flex flex-col gap-5">
       <div>
-        <h2 className="text-2xl font-bold text-azul-escuro">Primeiro acesso</h2>
+        <h2 className="text-2xl font-bold text-navy-900">Instalar o CRM</h2>
         <p className="mt-1 text-sm text-texto-2">
           Crie a conta do administrador. Depois disso, as demais pessoas entram só por convite.
         </p>
@@ -33,8 +33,8 @@ export function PrimeiroAcessoForm() {
       <Campo label="E-mail" htmlFor="email">
         <Input id="email" name="email" type="email" required autoComplete="email" />
       </Campo>
-      <Campo label="Senha" htmlFor="senha" ajuda="Mínimo de 8 caracteres.">
-        <CampoSenha id="senha" name="senha" required minLength={8} autoComplete="new-password" />
+      <Campo label="Senha" htmlFor="senha" ajuda="Mínimo de 10 caracteres, com letras e números.">
+        <CampoSenha id="senha" name="senha" required minLength={10} autoComplete="new-password" />
       </Campo>
       {estado.erro && <p role="alert" className="text-sm text-vermelho">{estado.erro}</p>}
       <Button type="submit" size="lg" className="w-full" disabled={pendente}>

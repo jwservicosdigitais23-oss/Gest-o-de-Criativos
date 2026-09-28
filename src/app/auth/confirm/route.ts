@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (!ok) return NextResponse.redirect(`${origin}/login?erro=link`);
-  // Convite e recuperação levam para a tela de definir senha.
-  const destino = type === "invite" || type === "recovery" ? "/auth/nova-senha" : next;
+  // Convite → primeiro acesso (cria a senha); recuperação → nova senha.
+  const destino = type === "invite" ? "/primeiro-acesso" : type === "recovery" && next === "/" ? "/auth/nova-senha" : next;
   return NextResponse.redirect(`${origin}${destino}`);
 }
