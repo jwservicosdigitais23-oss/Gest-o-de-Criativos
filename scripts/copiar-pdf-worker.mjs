@@ -1,5 +1,9 @@
 // Copia o worker do pdf.js para /public (usado na prévia de carrossel em PDF).
-import { copyFileSync, existsSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync } from "node:fs";
 
 const origem = "node_modules/pdfjs-dist/build/pdf.worker.min.mjs";
-if (existsSync(origem)) copyFileSync(origem, "public/pdf.worker.min.mjs");
+if (existsSync(origem)) {
+  // Num clone novo a pasta public/ pode não existir (o worker está no .gitignore).
+  mkdirSync("public", { recursive: true });
+  copyFileSync(origem, "public/pdf.worker.min.mjs");
+}
