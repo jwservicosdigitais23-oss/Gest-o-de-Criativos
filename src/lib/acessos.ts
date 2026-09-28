@@ -47,6 +47,9 @@ function mensagemAuth(erro: ErroAuth, padrao: string) {
   if (/already (been )?registered|already exists/i.test(msg)) {
     return "Esse e-mail já tem conta no Supabase Auth. Remova-o em Authentication › Users ou use outro e-mail.";
   }
+  if (/rate limit/i.test(msg)) {
+    return "O Supabase atingiu o limite de e-mails por hora (o envio padrão, sem SMTP próprio, é bem restrito). Use “Definir senha provisória” ou tente de novo mais tarde.";
+  }
   return `${padrao}${msg ? `: ${msg}` : ""}`;
 }
 

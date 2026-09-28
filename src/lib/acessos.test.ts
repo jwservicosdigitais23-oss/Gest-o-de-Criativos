@@ -90,6 +90,13 @@ describe("Prompt 9 · cadastro de aprovadoras", () => {
     expect(f.auth).toHaveLength(0);
   });
 
+  it("limite de e-mails do Supabase vira mensagem clara, sugerindo a senha provisória", async () => {
+    const f = fakes();
+    f.deps.convidar = async () => ({ id: null, erro: { message: "email rate limit exceeded" } });
+    const r = await criarAprovadora(f.deps, { nome: "Daniela", email: "d@a.com", perfis: PERFIS, forma: "convite" }, contexto);
+    expect(r).toEqual({ ok: false, erro: expect.stringContaining("Definir senha provisória") });
+  });
+
   it("status: Desativada > Convite pendente > Ativa", () => {
     expect(statusMembro({ ativo: false, deve_trocar_senha: true })).toBe("desativada");
     expect(statusMembro({ ativo: true, deve_trocar_senha: true })).toBe("pendente");

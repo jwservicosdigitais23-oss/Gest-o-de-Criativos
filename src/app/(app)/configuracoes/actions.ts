@@ -203,7 +203,9 @@ function depsAcesso(supabase: Awaited<ReturnType<typeof exigirAdmin>>["supabase"
       return { id: data.user?.id ?? null, erro: error };
     },
     async definirSenha(id, senha) {
-      const { error } = await admin.auth.admin.updateUserById(id, { password: senha });
+      // Confirma o e-mail junto: quem foi convidada e nunca abriu o link
+      // também passa a entrar com a senha provisória.
+      const { error } = await admin.auth.admin.updateUserById(id, { password: senha, email_confirm: true });
       return { erro: error };
     },
     async inserirMembro(m) {
