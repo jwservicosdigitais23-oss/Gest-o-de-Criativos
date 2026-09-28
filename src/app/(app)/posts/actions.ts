@@ -6,6 +6,7 @@ import { CONFLITO, falha, mensagemErro, type Resultado } from "@/lib/acoes";
 import { exigirAdmin } from "@/lib/auth";
 import { BUCKET_MIDIAS } from "@/lib/constantes";
 import { registrarHistorico } from "@/lib/historico";
+import { prazoPadrao } from "@/lib/datas";
 import { midiasDaVersao, podeEditar, versaoDeEdicao } from "@/lib/posts";
 import type { Midia, Post } from "@/lib/types";
 import { midiaSchema, postSchema, type DadosMidia, type DadosPost } from "@/lib/validacao";
@@ -149,4 +150,40 @@ export async function arquivarPost(postId: string): Promise<Resultado> {
   if (error) return falha(mensagemErro(error, "Não foi possível arquivar o post."));
   revalidar();
   return { ok: true };
+}
+
+/**
+ * Calendário: muda a data de publicação (arrastar para outro dia).
+ * Post aprovado volta para aprovação (nova versão). Publicados não mudam.
+ */
+export async function reagendarPost(postId: string, novaData: string): Promise<Resultado<{ voltouParaAprovacao: boolean }>> {
+  const { supabase, userId } = await exigirAdmin();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(novaData)) return falha("Data inválida.");
+  const { data: post } = await supabase.from("posts").select("*").eq("id", postId).maybeSingle<Post>();
+  if (!post) return falha("Post não encontrado.");
+  if (["publicado", "reprovado", "arquivado"].includes(post.status)) {
+    return falha("Posts publicados, reprovados ou arquivados não mudam de data.");
+  }
+  const { error } = await supabase
+    .from("posts")
+    .update({ data_publicacao: novaData, prazo_aprovacao: prazoPadrao(novaData) })
+    .eq("id", postId);
+  if (error) return falha(mensagemErro(error, "Não foi possível mudar a data."));
+  await registrarHistorico(supabase, userId, {
+    entidade: "post",
+    entidade_id: postId,
+    post_id: postId,
+    perfil_id: post.perfil_id,
+    acao: "reagendou",
+    versao: post.versao,
+    detalhes: { de: post.data_publicacao, para: novaData },
+  });
+  let voltou = false;
+  if (post.status === "aprovado") {
+    const { error: e2 } = await supabase.rpc("enviar_para_aprovacao", { p_post_id: postId });
+    if (e2) return falha(mensagemErro(e2, "Data alterada, mas não foi possível reenviar para aprovação."));
+    voltou = true;
+  }
+  revalidar();
+  return { ok: true, dados: { voltouParaAprovacao: voltou } };
 }

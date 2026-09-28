@@ -31,7 +31,11 @@ export async function carregarDetalhePost(supabase: SupabaseClient, id: string, 
   const snapshot = versoes.find((v) => v.versao === versao);
 
   // Conteúdo exibido: o instantâneo enviado daquela versão; em rascunho, o próprio post.
-  const conteudo = snapshot ?? {
+  // Data/hora são agendamento (não conteúdo): na versão atual valem as do post.
+  const base = snapshot && versao === post.versao
+    ? { ...snapshot, data_publicacao: post.data_publicacao, hora_publicacao: post.hora_publicacao }
+    : snapshot;
+  const conteudo = base ?? {
     tema: post.tema,
     legenda: post.legenda,
     formato: post.formato,

@@ -127,3 +127,7 @@ TEST_DATABASE_URL=postgres://postgres@localhost:54329/adere_test npm test
 - **Anexo em lote**: após importar, solte as mídias — cada arquivo vai para o post cuja coluna Arquivo tem o mesmo nome. Depois, "Enviar para aprovação os que já têm mídia".
 - **Exportar**: `/exportar` (com `?perfil=`, `?de=`, `?ate=`) gera o .xlsx com as mesmas colunas + Status, Versão e Última observação. `/exportar/modelo` baixa o modelo vazio.
 - Planilha de exemplo para os testes: `fixtures/cronograma-exemplo.xlsx` (`npm run fixture` recria).
+
+## Calendário
+
+`/calendario`: visão Mês/Semana com navegação e "Hoje", filtros por perfil (chips com avatar) e status, pílulas com avatar + hora + tema na cor do status, "+n" abre a lista do dia, dia de hoje com borda `#00AEEF`, "+" para o admin criar post na data, arrastar um post para outro dia (confirmação; se aprovado, volta para aprovação) e "Exportar cronograma" do período. No celular, a grade vira lista agrupada por dia. As datas são colunas `date` puras, então não há conversão de UTC.
