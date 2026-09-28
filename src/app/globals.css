@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/* Design System Grupo Adere — tokens do Manual da Marca (seção 02 do blueprint) */
+@theme {
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+
+  --color-azul-escuro: #001f4d;
+  --color-azul-medio: #004c97;
+  --color-azul-claro: #00aeef;
+  --color-texto: #2e3a59;
+  --color-texto-2: #6b7a90;
+  --color-fundo: #f5f7fa;
+  --color-superficie: #ffffff;
+  --color-borda: #e3e8ef;
+
+  /* Status (funcionais) */
+  --color-st-rascunho: #6b7a90;
+  --color-st-rascunho-bg: #eef1f5;
+  --color-st-aguardando: #004c97;
+  --color-st-aguardando-bg: #e6eef7;
+  --color-st-revisao: #b45309; /* #D97706 escurecido para contraste AA em texto */
+  --color-st-revisao-bg: #fef3c7;
+  --color-st-aprovado: #15803d; /* #16A34A escurecido para contraste AA em texto */
+  --color-st-aprovado-bg: #dcfce7;
+  --color-st-reprovado: #dc2626;
+  --color-st-reprovado-bg: #fee2e2;
+  --color-st-publicado: #001f4d;
+  --color-st-publicado-bg: #e0e7f1;
+
+  --color-verde: #16a34a;
+  --color-ambar: #d97706;
+  --color-vermelho: #dc2626;
+
+  --radius-adere: 10px;
+  --shadow-card: 0 1px 2px rgb(0 31 77 / 0.04), 0 2px 8px rgb(0 31 77 / 0.05);
+}
+
+@utility bg-gradiente-marca {
+  background-image: linear-gradient(135deg, #001f4d 0%, #004c97 55%, #00aeef 100%);
+}
+
+@utility rotulo {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  body {
+    background: var(--color-fundo);
+    color: var(--color-texto);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    color: var(--color-azul-escuro);
+    font-weight: 700;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-azul-claro);
+    outline-offset: 2px;
+  }
+}
