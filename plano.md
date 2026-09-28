@@ -45,15 +45,21 @@ Todos os pontos acima foram aprovados.
 
 ## Etapa 2 · Shell e Login (entregue)
 
-- Logo no estilo das referências (triângulo no lugar do "A"), em `components/brand/logo.tsx` — substituir pelo arquivo oficial quando chegar.
+- Logo: ~~triângulo provisório~~ → **logo oficial** enviado em 28/09 (`public/logo-adere.png` colorido e `public/logo-adere-branco.png` monocromático para fundos escuros).
 - Sidebar: gradiente navy-900 → navy-700, `NavItem` com ícone/avatar, contador e item ativo em cyan; cartão "Criativos em dia" / "{n} aguardando aprovação" no rodapé.
 - Topbar de vidro: `SearchField` em pílula, "+ Novo post" (admin), sino com contador e avatar com nome + papel.
 - Menu inferior do celular com o gradiente da sidebar.
 - Login: foto da cidade (`public/imagens/login-cidade.webp`) em tela cheia com sobreposição azul; textos à esquerda; formulário em cartão de vidro à direita (empilhado no celular).
 - Banner do painel salvo em `public/imagens/banner-painel.webp` para a etapa 3.
 
+## Etapa 3 · Painel e Por perfil (entregue)
+
+- Banner com a arte da marca (`banner-painel.webp`), véu claro para leitura, saudação e os 5 KPIs em cartões de vidro (o mockup mostra 4; mantidos os 5 do blueprint: Aguardando, Em revisão, Atrasados, Aprovados para a semana, Tempo médio).
+- "Precisa da sua ação" e "Próximos 7 dias" em cartões de vidro, com estado vazio ilustrado, horário em mini-cartão e selo de status.
+- "Por perfil": um cartão por perfil com avatar, tipo, 6 mini-cartões de status (StatusTile) e "Ver posts"; filtro "Todos os meses" (conta só os posts do mês escolhido).
+- Painel da aprovadora com o mesmo banner, KPI "Para você aprovar" e cartões de vidro.
+
 ## Próximas etapas
 
-3. Painel (KpiCard glass, banner) e Por perfil (StatusTile).
 4. Página do perfil / Kanban e detalhe do post.
 5. Calendário, Importar, Configurações e revisão mobile.
