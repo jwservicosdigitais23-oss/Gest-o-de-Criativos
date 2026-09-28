@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarClock, Clock, ExternalLink, Layers } from "lucide-react";
 import { AcoesAdmin, BotaoCopiarLegenda, ListaDownloads } from "@/components/posts/acoes-post";
+import { BotaoWhatsApp } from "@/components/posts/botao-whatsapp";
 import { LinhaDoTempo } from "@/components/posts/linha-do-tempo";
 import { ObservacoesAnteriores } from "@/components/posts/observacoes-anteriores";
 import { PainelDecisao } from "@/components/posts/painel-decisao";
@@ -169,6 +170,15 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
             <div className="mt-4 flex flex-col gap-2">
               <BotaoCopiarLegenda legenda={conteudo.legenda} />
               <ListaDownloads midias={midias.map((m) => ({ id: m.id, nome: m.nome_arquivo, download: m.download }))} />
+              {admin && post.status === "aguardando" && (
+                <BotaoWhatsApp
+                  postId={post.id}
+                  tema={post.tema}
+                  aprovadoras={d.aprovadoras
+                    .filter((a) => !d.decisoes.some((x) => x.versao === post.versao && x.autor_id === a!.id))
+                    .map((a) => a!.nome)}
+                />
+              )}
             </div>
           </Card>
 

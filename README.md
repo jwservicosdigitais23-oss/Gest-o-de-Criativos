@@ -111,3 +111,10 @@ TEST_DATABASE_URL=postgres://postgres@localhost:54329/adere_test npm test
 - **Modo "todas"** (ex.: Grupo Adere): fica aguardando até todas as aprovadoras ativas aprovarem a versão atual ("1 de 2 aprovações"); qualquer revisão → Em revisão; reprovação prevalece. **Modo "qualquer uma"**: a primeira decisão define o status.
 - Linha do tempo com todas as ações, observações em destaque âmbar, respostas do Jonathan como comentários e a observação da versão anterior exibida junto da nova versão.
 - Testes das transições: `tests/db/fluxo-aprovacao.test.ts`.
+
+## Painel e notificações
+
+- **Painel do administrador**: 5 KPIs calculados no banco pela função `painel_kpis()` (Aguardando aprovação — também por aprovadora —, Em revisão, Aprovados para a semana, Atrasados, Tempo médio de aprovação), bloco "Precisa da sua ação" (posts em revisão com a observação), "Próximos 7 dias" (vermelho se vai ao ar em até 24h sem aprovação) e "Por perfil" (view `perfis_status`).
+- **Painel da aprovadora**: fila "Para você aprovar" (`fila_aprovadora()`, ordenada por prazo, selos "Vence amanhã"/"Atrasado") e "Suas últimas decisões".
+- **Notificações**: geradas por triggers (envio, reenvio, decisão, comentário) na tabela `notificacoes` (RLS: cada um vê e marca como lida só as suas). O sino da topbar usa Supabase Realtime — contador e lista atualizam sem recarregar.
+- **WhatsApp**: no detalhe do post aguardando, "Copiar link para WhatsApp" gera o texto pronto para cada aprovadora que ainda não decidiu.
