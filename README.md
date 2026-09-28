@@ -131,3 +131,34 @@ TEST_DATABASE_URL=postgres://postgres@localhost:54329/adere_test npm test
 ## Calendário
 
 `/calendario`: visão Mês/Semana com navegação e "Hoje", filtros por perfil (chips com avatar) e status, pílulas com avatar + hora + tema na cor do status, "+n" abre a lista do dia, dia de hoje com borda `#00AEEF`, "+" para o admin criar post na data, arrastar um post para outro dia (confirmação; se aprovado, volta para aprovação) e "Exportar cronograma" do período. No celular, a grade vira lista agrupada por dia. As datas são colunas `date` puras, então não há conversão de UTC.
+
+## Segurança e qualidade (Prompt 8)
+
+- RLS revisado em todas as tabelas e no bucket `midias`; testes em `tests/db/seguranca.test.ts` provam que a aprovadora não lê posts de perfis que não são dela, não grava decisão em nome de outra pessoa e não altera posts, e que ninguém (nem o admin) altera ou apaga `decisoes` e `historico`.
+- **Security Advisor do Supabase**: executado após as migrações. Os alertas corrigidos estão em `20260928190000_security_advisor.sql`. Restam avisos intencionais (nível WARN) de funções `SECURITY DEFINER` executáveis por usuários logados: as auxiliares do RLS (`is_admin`, `pode_ver_post`…, necessárias para as políticas e que só revelam o acesso de quem chama), `registrar_acesso`, e as de admin (`uso_storage`, `arquivos_orfaos`, `excluir_perfil_definitivo`), que conferem `is_admin()` por dentro. `sistema_tem_admin()` é pública de propósito (tela de primeiro acesso).
+- `SUPABASE_SERVICE_ROLE_KEY` só em `src/lib/supabase/admin.ts` (com `server-only`); `npm run check:bundle` confere o bundle do navegador.
+- Conflito de edição: o formulário envia o `updated_at` lido; se o post mudou, aparece "Este post foi alterado por outra pessoa" com o botão Recarregar.
+- Contraste AA: tons escurecidos para texto secundário (#5E6D84), selos e botões de decisão (verde #15803D, âmbar #B45309); foco visível em #00AEEF; navegação por teclado; estados vazios, de erro e skeletons.
+- CI: `.github/workflows/ci.yml` roda lint, tipos, migrações + testes num Postgres, build e a verificação do bundle a cada pull request.
+
+## Colocar no ar
+
+Infraestrutura já criada:
+
+- **Supabase**: projeto `adere-crm-criativos` (ref `heiwuuqdjxrtmfzeatkv`, região São Paulo, plano Free) com **todas as migrações aplicadas** e o seed dos três perfis.
+
+Passos que dependem de você (não puderam ser feitos daqui):
+
+1. **Vercel ↔ GitHub**: instale o app da Vercel no GitHub (https://github.com/apps/vercel) com acesso a este repositório. Depois, na Vercel (time `jw-servicos`), importe o repositório como projeto `adere-crm-criativos` (framework Next.js). Confirme que o time está no plano **Pro** (o Hobby não permite uso comercial).
+2. **Variáveis na Vercel** (Production e Preview): `NEXT_PUBLIC_SUPABASE_URL=https://heiwuuqdjxrtmfzeatkv.supabase.co`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (Supabase › Project Settings › API Keys › anon) e `SUPABASE_SERVICE_ROLE_KEY` (mesma tela, **service_role**; marque como *Sensitive*).
+3. **Deployment Protection**: em Project › Settings › Deployment Protection, deixe a "Vercel Authentication" só para *Preview*, senão as aprovadoras precisariam de conta na Vercel.
+4. **Supabase Auth** (Authentication › URL Configuration): Site URL = URL de produção da Vercel; Redirect URLs = `https://<produção>/**` e `http://localhost:3000/**`. Em *Email Templates*, cole `supabase/templates/convite.html` (Invite) e `supabase/templates/recuperacao.html` (Reset password) — eles usam `token_hash`, necessário para o link funcionar no celular da pessoa. Em *Sign In / Providers*, desligue "Allow new users to sign up". (Ou rode `supabase config push` com o `supabase/config.toml`.)
+5. **Merge na `main`**: a branch de trabalho é `claude/crm-sprints-prompts-f5mt16`; ao fazer o merge, a Vercel publica em produção.
+6. Envie o logo oficial para `public/logo-adere.svg` e troque o texto no componente `Logo`.
+
+### Primeiro acesso e convites
+
+1. Abra a URL de produção › "Criar o acesso de administrador" (Jonathan). Só aparece enquanto não houver admin.
+2. **Configurações › Membros › Convidar membro**: Edna Queiroz (papel Aprovadora, perfis *Edna Queiroz* e *Grupo Adere*) e Daniela Quintana (Aprovadora, *Daniela Quintana* e *Grupo Adere*).
+3. Elas recebem o e-mail "Criar minha senha", definem a senha e já caem no painel com a fila "Para você aprovar".
+4. Confira em **Configurações › Perfis** se o Grupo Adere deve exigir as duas ("Todas precisam aprovar", padrão) ou qualquer uma.
