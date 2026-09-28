@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { CabecalhoPagina } from "@/components/cabecalho-pagina";
+import { PageHeader } from "@/components/ui/page-header";
 import { FormPost } from "@/components/posts/form-post";
 import type { ItemMidia } from "@/components/posts/lista-midias";
 import { exigirAdmin } from "@/lib/auth";
@@ -39,7 +39,7 @@ export default async function EditarPostPage(props: PageProps<"/posts/[id]/edita
 
   return (
     <>
-      <CabecalhoPagina titulo="Editar post" subtitulo={post.tema} />
+      <PageHeader titulo="Editar post" subtitulo={post.tema} />
       <FormPost
         perfis={perfis
           .filter((p) => !p.arquivado || p.id === post.perfil_id)

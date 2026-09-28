@@ -10,11 +10,12 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Select } from "@/components/ui/input";
-import { StatusBadge } from "@/components/status-badge";
+import { StatusPill } from "@/components/ui/status-pill";
 import { STATUS_CLASSES, STATUS_COR, STATUS_LABEL } from "@/lib/constantes";
 import { formatarData, formatarDiaCurto, formatarHora, nomeMes } from "@/lib/datas";
 import type { StatusPost } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { navegar as navegarData } from "@/lib/calendario";
 
 export interface PostCalendario {
@@ -139,22 +140,15 @@ export function Calendario({
       {/* Barra de navegação */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex rounded-[var(--radius-control)] border border-borda bg-white p-1" role="group" aria-label="Visualização">
-            {(["mes", "semana"] as const).map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => irPara({ modo: m === "mes" ? null : m })}
-                aria-pressed={modo === m}
-                className={cn(
-                  "h-8 rounded-md px-3 text-sm font-semibold",
-                  modo === m ? "bg-azul-medio text-white" : "text-texto-2 hover:text-azul-escuro",
-                )}
-              >
-                {m === "mes" ? "Mês" : "Semana"}
-              </button>
-            ))}
-          </div>
+          <SegmentedControl
+            rotulo="Visualização"
+            valor={modo}
+            onChange={(m) => irPara({ modo: m === "mes" ? null : m })}
+            opcoes={[
+              { valor: "mes", rotulo: "Mês" },
+              { valor: "semana", rotulo: "Semana" },
+            ]}
+          />
           <Button variant="secondary" size="icon" onClick={() => irPara({ data: navegarData(modo, referencia, -1) })} aria-label="Anterior">
             <ChevronLeft />
           </Button>
@@ -164,7 +158,7 @@ export function Calendario({
           <Button variant="secondary" size="icon" onClick={() => irPara({ data: navegarData(modo, referencia, 1) })} aria-label="Próximo">
             <ChevronRight />
           </Button>
-          <h2 className="ml-1 text-lg font-bold capitalize">{titulo}</h2>
+          <h2 className="ml-1 text-card-title text-navy-900 sm:text-lg">{titulo}</h2>
         </div>
         <Button asChild variant="secondary">
           <a href={exportarHref}>
@@ -186,7 +180,7 @@ export function Calendario({
                 aria-pressed={ativo}
                 className={cn(
                   "flex h-9 items-center gap-2 rounded-full border pl-1 pr-3 text-sm font-semibold transition-colors",
-                  ativo ? "border-azul-medio bg-st-aguardando-bg text-azul-medio" : "border-borda bg-white text-texto hover:border-azul-claro",
+                  ativo ? "border-blue-600 bg-st-aguardando-bg text-blue-600" : "border-border bg-surface-solid text-text hover:border-cyan-400",
                 )}
               >
                 <Avatar nome={p.nome} src={p.avatarSrc} tamanho={26} className="ring-0" />
@@ -198,7 +192,7 @@ export function Calendario({
         <label htmlFor="cal-status" className="sr-only">
           Status
         </label>
-        <Select id="cal-status" value={status} onChange={(e) => irPara({ status: e.target.value || null })} className="sm:ml-auto sm:w-56">
+        <Select id="cal-status" value={status} onChange={(e) => irPara({ status: e.target.value || null })} className="w-auto sm:ml-auto">
           <option value="">Todos os status</option>
           {(["rascunho", "aguardando", "em_revisao", "aprovado", "publicado", "reprovado"] as StatusPost[]).map((s) => (
             <option key={s} value={s}>
@@ -209,8 +203,8 @@ export function Calendario({
       </div>
 
       {/* Grade (desktop / semana) */}
-      <div className="hidden overflow-hidden rounded-[var(--radius-control)] border border-borda bg-white shadow-card md:block">
-        <div className="grid grid-cols-7 border-b border-borda bg-fundo">
+      <div className="surface-glass hidden overflow-hidden rounded-[var(--radius-card)] shadow-card md:block">
+        <div className="grid grid-cols-7 border-b border-border bg-bg-app-from/70">
           {DIAS.map((d) => (
             <div key={d} className="rotulo px-2 py-2 text-center text-texto-2">
               {d}
@@ -261,7 +255,7 @@ export function Calendario({
                     <Link
                       href={`/posts/novo?data=${dia}`}
                       className={cn(
-                        "flex size-6 items-center justify-center rounded-md text-texto-2 hover:bg-fundo hover:text-azul-medio",
+                        "flex size-6 items-center justify-center rounded-[calc(var(--radius-control)-4px)] text-texto-2 hover:bg-fundo hover:text-azul-medio",
                         lista.length > 0 && "opacity-0 group-hover:opacity-100 focus:opacity-100",
                       )}
                       aria-label={`Novo post em ${formatarData(dia)}`}
@@ -292,7 +286,7 @@ export function Calendario({
       {(
         <div className="flex flex-col gap-4 md:hidden">
           {dias.filter((d) => (modo === "semana" || Number(d.slice(5, 7)) === mesRef) && (porDia.get(d)?.length ?? 0) > 0).length === 0 && (
-            <p className="rounded-[var(--radius-control)] border border-dashed border-borda bg-white p-8 text-center text-sm text-texto-2">
+            <p className="surface-glass rounded-[var(--radius-card)] border-dashed p-8 text-center text-body text-text-muted">
               {modo === "mes" ? "Nenhum post neste mês." : "Nenhum post nesta semana."}
             </p>
           )}
@@ -304,7 +298,7 @@ export function Calendario({
                   {dia === hoje ? "Hoje · " : ""}
                   {formatarDiaCurto(dia)}
                 </h3>
-                <ul className="overflow-hidden rounded-[var(--radius-control)] border border-borda bg-white">
+                <ul className="surface-glass overflow-hidden rounded-[var(--radius-card)] shadow-card">
                   {porDia.get(dia)!.map((p) => {
                     const perfil = perfilPorId.get(p.perfil_id);
                     return (
@@ -314,7 +308,7 @@ export function Calendario({
                           {perfil && <Avatar nome={perfil.nome} src={perfil.avatarSrc} tamanho={28} />}
                           <span className="min-w-0 flex-1">
                             <span className="block truncate text-sm font-semibold text-azul-escuro">{p.tema}</span>
-                            <StatusBadge status={p.status} className="mt-0.5" />
+                            <StatusPill status={p.status} className="mt-0.5" />
                           </span>
                         </Link>
                       </li>

@@ -85,7 +85,7 @@ export function LinhaDoTempo({ eventos, postId }: { eventos: EventoLinha[]; post
                   </div>
                 )}
                 {e.texto && (
-                  <div className="mt-2 rounded-[var(--radius-control)] border border-borda bg-white p-3 text-sm">
+                  <div className="mt-2 rounded-[var(--radius-control)] border border-borda bg-surface-solid p-3 text-sm">
                     {e.respondeA && <p className="mb-1 text-xs font-semibold text-texto-2">Em resposta a {e.respondeA}</p>}
                     <p className="whitespace-pre-wrap">{e.texto}</p>
                   </div>

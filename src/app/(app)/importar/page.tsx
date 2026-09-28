@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Download, History } from "lucide-react";
-import { CabecalhoPagina } from "@/components/cabecalho-pagina";
+import { PageHeader } from "@/components/ui/page-header";
 import { ImportarCronograma } from "@/components/importar/importar-cronograma";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
 import { exigirAdmin } from "@/lib/auth";
 import type { PostExistente } from "@/lib/cronograma";
 import { formatarDataHora } from "@/lib/datas";
@@ -23,7 +23,7 @@ export default async function ImportarPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <CabecalhoPagina
+      <PageHeader
         titulo="Importar cronograma"
         subtitulo="Suba o Excel e o CRM cria os posts nas datas certas."
         acoes={
@@ -50,7 +50,7 @@ export default async function ImportarPage() {
         {(historico ?? []).length === 0 ? (
           <p className="text-sm text-texto-2">Nenhuma importação ainda.</p>
         ) : (
-          <Card className="overflow-x-auto">
+          <GlassCard className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead className="bg-fundo">
                 <tr className="rotulo text-texto-2">
@@ -77,7 +77,7 @@ export default async function ImportarPage() {
                 ))}
               </tbody>
             </table>
-          </Card>
+          </GlassCard>
         )}
       </section>
     </div>

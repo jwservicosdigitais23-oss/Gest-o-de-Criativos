@@ -6,7 +6,7 @@ import { AlertTriangle, Loader2, Send, Save } from "lucide-react";
 import { toast } from "sonner";
 import { salvarPost } from "@/app/(app)/posts/actions";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
 import { Campo, Input, Select, Textarea } from "@/components/ui/input";
 import { CONFLITO } from "@/lib/acoes";
 import { FORMATO_LABEL, LIMITE_LEGENDA } from "@/lib/constantes";
@@ -191,7 +191,7 @@ export function FormPost({
           </div>
         )}
 
-        <Card className="flex flex-col gap-5 p-5">
+        <GlassCard className="flex flex-col gap-5 p-5">
           <h2 className="text-base font-bold">Informações do post</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Campo label="Perfil *" htmlFor="perfil" erro={erros.perfil_id}>
@@ -255,9 +255,9 @@ export function FormPost({
               />
             </Campo>
           </div>
-        </Card>
+        </GlassCard>
 
-        <Card className="flex flex-col gap-4 p-5">
+        <GlassCard className="flex flex-col gap-4 p-5">
           <div>
             <h2 className="text-base font-bold">Mídia</h2>
             <p className="text-sm text-texto-2">
@@ -265,7 +265,7 @@ export function FormPost({
             </p>
           </div>
           <ListaMidias itens={midias} onChange={setMidias} perfilId={perfilId} postId={id} versao={versaoEdicao} />
-        </Card>
+        </GlassCard>
 
         <div className="sticky bottom-20 z-10 flex flex-col-reverse gap-2 rounded-[var(--radius-control)] border border-borda bg-white/95 p-3 shadow-card backdrop-blur sm:flex-row sm:justify-end lg:bottom-4">
           <Button type="button" variant="secondary" onClick={() => router.back()} disabled={pendente}>

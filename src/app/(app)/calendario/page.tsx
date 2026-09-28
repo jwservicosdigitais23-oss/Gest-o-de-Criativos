@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CabecalhoPagina } from "@/components/cabecalho-pagina";
+import { PageHeader } from "@/components/ui/page-header";
 import { Calendario, type PostCalendario } from "@/components/calendario/calendario";
 import { exigirMembro } from "@/lib/auth";
 import { gradeDoMes, semanaDe } from "@/lib/calendario";
@@ -36,7 +36,7 @@ export default async function CalendarioPage(props: PageProps<"/calendario">) {
 
   return (
     <>
-      <CabecalhoPagina titulo="Calendário" subtitulo="Tudo o que vai ao ar, por data e por perfil." />
+      <PageHeader titulo="Calendário" subtitulo="Tudo o que vai ao ar, por data e por perfil." />
       <Calendario
         modo={modo}
         referencia={referencia}

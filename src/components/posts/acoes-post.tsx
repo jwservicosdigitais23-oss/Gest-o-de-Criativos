@@ -51,7 +51,7 @@ export function ListaDownloads({ midias }: { midias: { id: string; nome: string;
       <ul className="border-t border-borda p-2">
         {baixaveis.map((m) => (
           <li key={m.id}>
-            <a href={m.download!} download={m.nome} className="block truncate rounded-md px-2 py-1.5 text-sm text-azul-medio hover:bg-fundo">
+            <a href={m.download!} download={m.nome} className="block truncate rounded-[calc(var(--radius-control)-4px)] px-2 py-1.5 text-sm text-azul-medio hover:bg-fundo">
               {m.nome}
             </a>
           </li>

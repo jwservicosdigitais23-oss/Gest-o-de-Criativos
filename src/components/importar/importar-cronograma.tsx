@@ -13,7 +13,7 @@ import {
 } from "@/app/(app)/importar/actions";
 import { Pilula } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Campo, Select } from "@/components/ui/input";
 import {
@@ -152,7 +152,7 @@ export function ImportarCronograma({
           if (f) void lerArquivo(f);
         }}
         className={cn(
-          "flex flex-col items-center justify-center gap-3 rounded-[var(--radius-control)] border-2 border-dashed bg-white px-6 py-16 text-center",
+          "flex flex-col items-center justify-center gap-3 rounded-[var(--radius-control)] border-2 border-dashed bg-surface-solid px-6 py-16 text-center",
           arrastando ? "border-azul-claro bg-st-aguardando-bg" : "border-borda",
         )}
       >
@@ -185,7 +185,7 @@ export function ImportarCronograma({
   if (etapa === "mapeamento" && mapa) {
     const faltando = faltandoObrigatorios(mapa);
     return (
-      <Card className="flex flex-col gap-5 p-5">
+      <GlassCard className="flex flex-col gap-5 p-5">
         <div>
           <h2 className="text-lg font-bold">Mapear colunas</h2>
           <p className="text-sm text-texto-2">
@@ -220,7 +220,7 @@ export function ImportarCronograma({
             Continuar para a pré-visualização
           </Button>
         </div>
-      </Card>
+      </GlassCard>
     );
   }
 
@@ -257,7 +257,7 @@ export function ImportarCronograma({
           </label>
         )}
 
-        <Card className="overflow-x-auto">
+        <GlassCard className="overflow-x-auto">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead className="bg-fundo">
               <tr className="rotulo text-texto-2">
@@ -308,7 +308,7 @@ export function ImportarCronograma({
               ))}
             </tbody>
           </table>
-        </Card>
+        </GlassCard>
         {analise.some((l) => l.perfilDesconhecido) && (
           <p className="text-sm text-texto-2">
             Criou o perfil em outra aba? <button type="button" className="font-semibold text-azul-medio underline" onClick={() => router.refresh()}>Atualizar a lista de perfis</button>.
@@ -406,7 +406,7 @@ function Resumo({ resumo, analise, onNova }: { resumo: ResumoImportacao; analise
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="p-5">
+      <GlassCard className="p-5">
         <div className="flex items-center gap-3">
           <CheckCircle2 className="size-8 text-verde" aria-hidden />
           <div>
@@ -438,10 +438,10 @@ function Resumo({ resumo, analise, onNova }: { resumo: ResumoImportacao; analise
               ))}
           </ul>
         )}
-      </Card>
+      </GlassCard>
 
       {esperados.length > 0 && (
-        <Card className="flex flex-col gap-4 p-5">
+        <GlassCard className="flex flex-col gap-4 p-5">
           <div>
             <h2 className="text-base font-bold">Soltar mídias</h2>
             <p className="text-sm text-texto-2">
@@ -487,7 +487,7 @@ function Resumo({ resumo, analise, onNova }: { resumo: ResumoImportacao; analise
               </li>
             ))}
           </ul>
-        </Card>
+        </GlassCard>
       )}
 
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">

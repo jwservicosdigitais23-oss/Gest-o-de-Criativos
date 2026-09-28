@@ -68,6 +68,12 @@ Todos os pontos acima foram aprovados.
 - Lista (e celular) com o mesmo padrão.
 - Detalhe do post: voltar com avatar do perfil, seletor de versões, selo com ícone, cartões de vidro (Sua decisão, Linha do tempo, Detalhes fixo ao rolar no desktop, Ações do administrador).
 
-## Próximas etapas
+## Etapa 5 · Calendário, Importar, Configurações e revisão mobile (entregue)
 
-5. Calendário, Importar, Configurações e revisão mobile.
+- Calendário: `SegmentedControl` Mês/Semana, grade em vidro, chips de perfil com avatar, filtro de status sem corte, lista agrupada por dia no celular.
+- Importar cronograma, Configurações (Perfis, Membros, Sistema), Busca, Notificações, formulário de post e telas de erro/404: cartões de vidro, `StatusPill`, `EmptyState` e `PageHeader` no lugar dos componentes antigos; tokens no lugar de `bg-white`.
+- Revisão em 360–390px: nenhuma tela com rolagem lateral; Membros mostra papel e situação no celular.
+
+## Redesign concluído
+
+Todas as etapas entregues na branch `redesign-ux` (PR #1). Nenhuma mudança em banco, RLS, migrações, API ou regras do fluxo de aprovação.

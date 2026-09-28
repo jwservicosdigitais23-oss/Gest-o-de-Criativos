@@ -194,7 +194,7 @@ export function ListaMidias({
           {itens.map((m, i) => {
             const aviso = avisoProporcao(m.tipo, m.largura, m.altura);
             return (
-              <li key={m.chave} className={cn("flex flex-col overflow-hidden rounded-[var(--radius-control)] border bg-white", m.erro ? "border-vermelho" : "border-borda")}>
+              <li key={m.chave} className={cn("flex flex-col overflow-hidden rounded-[var(--radius-control)] border bg-surface-solid", m.erro ? "border-vermelho" : "border-borda")}>
                 <div className="relative flex aspect-square items-center justify-center bg-fundo">
                   {m.tipo === "imagem" && m.src ? (
                     // eslint-disable-next-line @next/next/no-img-element

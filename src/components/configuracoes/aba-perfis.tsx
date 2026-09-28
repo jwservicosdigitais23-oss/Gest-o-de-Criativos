@@ -24,7 +24,7 @@ import { toast } from "sonner";
 import { arquivarPerfil, reordenarPerfis } from "@/app/(app)/configuracoes/actions";
 import { Avatar, PilhaAvatares } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ModalExcluirPerfil } from "./modal-excluir-perfil";
 import { ModalPerfil } from "./modal-perfil";
@@ -47,12 +47,12 @@ function LinhaPerfil({
     <tr
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={cn("border-t border-borda bg-white", isDragging && "relative z-10 shadow-lg")}
+      className={cn("border-t border-borda bg-surface-solid", isDragging && "relative z-10 shadow-lg")}
     >
       <td className="w-10 pl-3">
         <button
           type="button"
-          className="flex size-9 cursor-grab items-center justify-center rounded-md text-texto-2 hover:bg-fundo active:cursor-grabbing"
+          className="flex size-9 cursor-grab items-center justify-center rounded-[calc(var(--radius-control)-4px)] text-texto-2 hover:bg-fundo active:cursor-grabbing"
           aria-label={`Reordenar ${perfil.nome}`}
           {...attributes}
           {...listeners}
@@ -152,7 +152,7 @@ export function AbaPerfis({ perfis, membros }: { perfis: PerfilConfig[]; membros
           <Plus /> Novo perfil
         </Button>
       </div>
-      <Card className="overflow-hidden">
+      <GlassCard className="overflow-hidden">
         <table className="w-full text-left">
           <thead className="bg-fundo">
             <tr className="rotulo text-texto-2">
@@ -188,12 +188,12 @@ export function AbaPerfis({ perfis, membros }: { perfis: PerfilConfig[]; membros
             </SortableContext>
           </DndContext>
         </table>
-      </Card>
+      </GlassCard>
 
       {arquivados.length > 0 && (
         <div className="flex flex-col gap-2">
           <h3 className="rotulo text-texto-2">Arquivados</h3>
-          <Card className="divide-y divide-borda">
+          <GlassCard className="divide-y divide-borda">
             {arquivados.map((p) => (
               <div key={p.id} className="flex items-center gap-3 px-4 py-3">
                 <Avatar nome={p.nome} src={p.avatarSrc} tamanho={30} className="opacity-60" />
@@ -208,7 +208,7 @@ export function AbaPerfis({ perfis, membros }: { perfis: PerfilConfig[]; membros
                 </Button>
               </div>
             ))}
-          </Card>
+          </GlassCard>
         </div>
       )}
 

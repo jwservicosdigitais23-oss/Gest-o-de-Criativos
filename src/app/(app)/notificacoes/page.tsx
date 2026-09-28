@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CabecalhoPagina } from "@/components/cabecalho-pagina";
+import { PageHeader } from "@/components/ui/page-header";
 import { ListaNotificacoes } from "@/components/lista-notificacoes";
 import { exigirMembro } from "@/lib/auth";
 import type { Notificacao } from "@/lib/types";
@@ -16,7 +16,7 @@ export default async function NotificacoesPage() {
     .returns<Notificacao[]>();
   return (
     <>
-      <CabecalhoPagina titulo="Notificações" subtitulo="Envios, decisões e comentários dos seus posts." />
+      <PageHeader titulo="Notificações" subtitulo="Envios, decisões e comentários dos seus posts." />
       <ListaNotificacoes itens={data ?? []} usuarioId={membro.id} />
     </>
   );

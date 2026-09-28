@@ -6,7 +6,7 @@ export default function Carregando() {
       <Skeleton className="h-5 w-40" />
       <Skeleton className="h-9 w-2/3" />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="mx-auto flex w-full max-w-[555px] flex-col gap-3 rounded-[var(--radius-control)] border border-borda bg-white p-4">
+        <div className="mx-auto flex w-full max-w-[555px] flex-col gap-3 rounded-[var(--radius-control)] border border-borda bg-surface-solid p-4">
           <div className="flex gap-2">
             <Skeleton className="size-12 rounded-full" />
             <div className="flex flex-1 flex-col gap-2">

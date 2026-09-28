@@ -7,7 +7,7 @@ export default function Carregando() {
       <Skeleton className="h-10 w-full max-w-lg" />
       <div className="grid grid-cols-7 gap-px overflow-hidden rounded-[var(--radius-control)] border border-borda bg-borda">
         {Array.from({ length: 35 }).map((_, i) => (
-          <div key={i} className="min-h-24 bg-white p-2">
+          <div key={i} className="min-h-24 bg-surface-solid p-2">
             <Skeleton className="h-4 w-5" />
           </div>
         ))}

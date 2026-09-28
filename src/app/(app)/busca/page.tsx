@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Search, SearchX } from "lucide-react";
-import { CabecalhoPagina } from "@/components/cabecalho-pagina";
-import { EstadoVazio } from "@/components/estado-vazio";
+import { PageHeader } from "@/components/ui/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 import { LinhaPost, type PostCardDados } from "@/components/posts/card-post";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { exigirMembro } from "@/lib/auth";
@@ -37,7 +37,7 @@ export default async function BuscaPage(props: PageProps<"/busca">) {
 
   return (
     <>
-      <CabecalhoPagina titulo="Buscar" subtitulo="Procure por tema, legenda ou pilar." />
+      <PageHeader titulo="Buscar" subtitulo="Procure por tema, legenda ou pilar." />
       <form className="mb-6 flex gap-2" role="search">
         <label htmlFor="q" className="sr-only">Buscar</label>
         <Input id="q" name="q" defaultValue={termo} placeholder="Buscar post, tema, legenda..." autoFocus className="max-w-xl" />
@@ -51,14 +51,14 @@ export default async function BuscaPage(props: PageProps<"/busca">) {
             <p className="mb-3 text-sm text-texto-2">
               {resultados.length} resultado(s) para “{termo}”
             </p>
-            <Card className="overflow-hidden">
+            <GlassCard className="overflow-hidden">
               {resultados.map((p) => (
                 <LinhaPost key={p.id} post={p} />
               ))}
-            </Card>
+            </GlassCard>
           </>
         ) : (
-          <EstadoVazio icone={SearchX} titulo="Nada encontrado" descricao={`Nenhum post com “${termo}”.`} />
+          <EmptyState icone={SearchX} titulo="Nada encontrado" descricao={`Nenhum post com “${termo}”.`} />
         ))}
     </>
   );
