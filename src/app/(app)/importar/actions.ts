@@ -37,7 +37,7 @@ export async function importarCronograma(
   linhas: z.input<typeof linhaSchema>[],
   rejeitadas: { linha: number; resultado: string; motivo?: string }[],
 ): Promise<Resultado<ResumoImportacao>> {
-  const { supabase } = await exigirAdmin();
+  const { supabase } = await exigirAdmin({ gravacao: true });
   const parsed = z.array(linhaSchema).max(2000, "Máximo de 2.000 linhas por importação.").safeParse(linhas);
   if (!parsed.success) return falha("Há linhas inválidas na planilha: " + parsed.error.issues[0]!.message);
   const { data, error } = await supabase.rpc("importar_cronograma", {
@@ -52,7 +52,7 @@ export async function importarCronograma(
 
 /** Anexo em lote: registra a mídia enviada ao Storage no post correspondente. */
 export async function anexarMidia(postId: string, midia: DadosMidia): Promise<Resultado> {
-  const { supabase } = await exigirAdmin();
+  const { supabase } = await exigirAdmin({ gravacao: true });
   const parsed = midiaSchema.safeParse(midia);
   if (!parsed.success) return falha(parsed.error.issues[0]!.message);
   const { data: post } = await supabase.from("posts").select("*").eq("id", postId).maybeSingle<Post>();
@@ -78,7 +78,7 @@ export async function anexarMidia(postId: string, midia: DadosMidia): Promise<Re
 
 /** Envia para aprovação os posts importados que já têm mídia (ou são só texto). */
 export async function enviarImportadosComMidia(postIds: string[]): Promise<Resultado<{ enviados: number; semMidia: number }>> {
-  const { supabase } = await exigirAdmin();
+  const { supabase } = await exigirAdmin({ gravacao: true });
   const ids = z.array(z.string().uuid()).parse(postIds);
   if (ids.length === 0) return { ok: true, dados: { enviados: 0, semMidia: 0 } };
   const [{ data: posts }, { data: midias }] = await Promise.all([

@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { obterSessao } from "@/lib/auth";
+import { obterSessao, obterVerComo } from "@/lib/auth";
 import { hojeISO } from "@/lib/datas";
 import { gerarCronogramaXlsx, respostaXlsx } from "@/lib/exportacao";
 
@@ -14,7 +14,14 @@ export async function GET(request: NextRequest) {
   const perfilId = p.get("perfil");
   const de = p.get("de");
   const ate = p.get("ate");
-  const perfis = p.get("perfis")?.split(",").filter((x) => UUID.test(x)) ?? null;
+  let perfis = p.get("perfis")?.split(",").filter((x) => UUID.test(x)) ?? null;
+  // "Ver como": exporta só o que a aprovadora veria.
+  const verComo = await obterVerComo();
+  if (verComo) {
+    if (perfilId && !verComo.perfisIds.includes(perfilId)) return new Response("Não encontrado", { status: 404 });
+    perfis = (perfis ?? verComo.perfisIds).filter((x) => verComo.perfisIds.includes(x));
+    if (!perfis.length) perfis = ["00000000-0000-0000-0000-000000000000"];
+  }
   const buffer = await gerarCronogramaXlsx(supabase, {
     perfilId: perfilId && UUID.test(perfilId) ? perfilId : null,
     de: de && DATA.test(de) ? de : null,

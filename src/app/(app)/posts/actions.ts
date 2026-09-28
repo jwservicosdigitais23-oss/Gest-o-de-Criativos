@@ -25,7 +25,7 @@ export async function salvarPost(
   midias: DadosMidia[],
   enviar: boolean,
 ): Promise<Resultado<{ id: string }>> {
-  const { supabase, userId } = await exigirAdmin();
+  const { supabase, userId } = await exigirAdmin({ gravacao: true });
   const parsed = postSchema.safeParse(dados);
   if (!parsed.success) return falha(parsed.error.issues[0]!.message);
   const listaMidias = z.array(midiaSchema).safeParse(midias);
@@ -111,7 +111,7 @@ export async function salvarPost(
 }
 
 export async function enviarParaAprovacao(postId: string): Promise<Resultado> {
-  const { supabase } = await exigirAdmin();
+  const { supabase } = await exigirAdmin({ gravacao: true });
   const { error } = await supabase.rpc("enviar_para_aprovacao", { p_post_id: postId });
   if (error) return falha(mensagemErro(error, "Não foi possível enviar para aprovação."));
   revalidar();
@@ -119,7 +119,7 @@ export async function enviarParaAprovacao(postId: string): Promise<Resultado> {
 }
 
 export async function marcarPublicado(postId: string, link: string): Promise<Resultado> {
-  const { supabase } = await exigirAdmin();
+  const { supabase } = await exigirAdmin({ gravacao: true });
   const { error } = await supabase.rpc("marcar_publicado", { p_post_id: postId, p_link: link });
   if (error) return falha(mensagemErro(error, "Não foi possível marcar como publicado."));
   revalidar();
@@ -127,7 +127,7 @@ export async function marcarPublicado(postId: string, link: string): Promise<Res
 }
 
 export async function duplicarPost(postId: string): Promise<Resultado<{ id: string }>> {
-  const { supabase } = await exigirAdmin();
+  const { supabase } = await exigirAdmin({ gravacao: true });
   const { data, error } = await supabase.rpc("duplicar_post", { p_post_id: postId });
   if (error) return falha(mensagemErro(error, "Não foi possível duplicar o post."));
   revalidar();
@@ -135,7 +135,7 @@ export async function duplicarPost(postId: string): Promise<Resultado<{ id: stri
 }
 
 export async function excluirPost(postId: string): Promise<Resultado> {
-  const { supabase } = await exigirAdmin();
+  const { supabase } = await exigirAdmin({ gravacao: true });
   const { data, error } = await supabase.rpc("excluir_post", { p_post_id: postId });
   if (error) return falha(mensagemErro(error, "Não foi possível excluir o post."));
   const caminhos = (data as string[] | null) ?? [];
@@ -145,7 +145,7 @@ export async function excluirPost(postId: string): Promise<Resultado> {
 }
 
 export async function arquivarPost(postId: string): Promise<Resultado> {
-  const { supabase } = await exigirAdmin();
+  const { supabase } = await exigirAdmin({ gravacao: true });
   const { error } = await supabase.rpc("arquivar_post", { p_post_id: postId });
   if (error) return falha(mensagemErro(error, "Não foi possível arquivar o post."));
   revalidar();
@@ -157,7 +157,7 @@ export async function arquivarPost(postId: string): Promise<Resultado> {
  * Post aprovado volta para aprovação (nova versão). Publicados não mudam.
  */
 export async function reagendarPost(postId: string, novaData: string): Promise<Resultado<{ voltouParaAprovacao: boolean }>> {
-  const { supabase, userId } = await exigirAdmin();
+  const { supabase, userId } = await exigirAdmin({ gravacao: true });
   if (!/^\d{4}-\d{2}-\d{2}$/.test(novaData)) return falha("Data inválida.");
   const { data: post } = await supabase.from("posts").select("*").eq("id", postId).maybeSingle<Post>();
   if (!post) return falha("Post não encontrado.");

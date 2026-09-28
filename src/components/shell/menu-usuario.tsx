@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, LogOut } from "lucide-react";
+import { ChevronDown, Eye, EyeOff, LogOut, UserRound } from "lucide-react";
+import { iniciarVerComo, sairVerComo } from "@/app/ver-como/actions";
 import { Avatar } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -14,7 +16,16 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import type { UsuarioShell } from "./tipos";
 
-export function MenuUsuario({ usuario }: { usuario: UsuarioShell }) {
+export function MenuUsuario({
+  usuario,
+  verComo = false,
+  aprovadorasVerComo = [],
+}: {
+  usuario: UsuarioShell;
+  verComo?: boolean;
+  /** Preenchido pelo servidor só quando quem está logado é admin. */
+  aprovadorasVerComo?: { id: string; nome: string }[];
+}) {
   const router = useRouter();
   const papel = usuario.papel === "admin" ? "Administrador" : "Aprovadora";
 
@@ -43,9 +54,32 @@ export function MenuUsuario({ usuario }: { usuario: UsuarioShell }) {
           {papel}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={sair}>
-          <LogOut /> Sair
+        <DropdownMenuItem asChild>
+          <Link href="/minha-conta">
+            <UserRound /> Minha conta
+          </Link>
         </DropdownMenuItem>
+        {aprovadorasVerComo.length > 0 && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Ver o CRM como…</DropdownMenuLabel>
+            {aprovadorasVerComo.map((a) => (
+              <DropdownMenuItem key={a.id} onSelect={() => void iniciarVerComo(a.id)} data-testid="item-ver-como">
+                <Eye /> Ver como {a.nome}
+              </DropdownMenuItem>
+            ))}
+          </>
+        )}
+        <DropdownMenuSeparator />
+        {verComo ? (
+          <DropdownMenuItem onSelect={() => void sairVerComo("/configuracoes?aba=membros")}>
+            <EyeOff /> Sair da visualização
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem onSelect={sair}>
+            <LogOut /> Sair
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -2,9 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Send } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { convidarMembro, editarMembro } from "@/app/(app)/configuracoes/actions";
+import { editarMembro } from "@/app/(app)/configuracoes/actions";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -18,16 +18,15 @@ export function ModalMembro({
   perfis,
   onOpenChange,
 }: {
-  membro: MembroConfig | null;
+  membro: MembroConfig;
   perfis: PerfilConfig[];
   onOpenChange: (v: boolean) => void;
 }) {
   const router = useRouter();
-  const novo = !membro;
-  const [nome, setNome] = useState(membro?.nome ?? "");
-  const [email, setEmail] = useState(membro?.email ?? "");
-  const [papel, setPapel] = useState<Papel>(membro?.papel ?? "aprovadora");
-  const [selecionados, setSelecionados] = useState<string[]>(membro?.perfis ?? []);
+  const [nome, setNome] = useState(membro.nome ?? "");
+  const [email, setEmail] = useState(membro.email ?? "");
+  const [papel, setPapel] = useState<Papel>(membro.papel ?? "aprovadora");
+  const [selecionados, setSelecionados] = useState<string[]>(membro.perfis ?? []);
   const [erro, setErro] = useState<string | null>(null);
   const [pendente, iniciar] = useTransition();
 
@@ -35,11 +34,9 @@ export function ModalMembro({
     e.preventDefault();
     setErro(null);
     iniciar(async () => {
-      const r = novo
-        ? await convidarMembro({ nome, email, papel, perfis: selecionados })
-        : await editarMembro({ id: membro.id, nome, papel, perfis: selecionados });
+      const r = await editarMembro({ id: membro.id, nome, papel, perfis: selecionados });
       if (!r.ok) return setErro(r.erro);
-      toast.success(novo ? `Convite enviado para ${email}` : "Membro atualizado");
+      toast.success("Membro atualizado");
       onOpenChange(false);
       router.refresh();
     });
@@ -48,8 +45,7 @@ export function ModalMembro({
   return (
     <Dialog open onOpenChange={onOpenChange}>
       <DialogContent
-        titulo={novo ? "Convidar membro" : "Editar membro"}
-        descricao={novo ? "A pessoa recebe um e-mail para definir a senha." : undefined}
+        titulo="Editar membro"
         telaCheiaNoCelular
       >
         <form onSubmit={salvar} className="flex flex-col gap-4">
@@ -63,7 +59,7 @@ export function ModalMembro({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={!novo}
+              disabled
             />
           </Campo>
           <Campo label="Papel" htmlFor="membro-papel">
@@ -101,8 +97,8 @@ export function ModalMembro({
               Cancelar
             </Button>
             <Button type="submit" disabled={pendente}>
-              {pendente ? <Loader2 className="animate-spin" /> : novo ? <Send /> : null}
-              {novo ? "Enviar convite" : "Salvar"}
+              {pendente && <Loader2 className="animate-spin" />}
+              Salvar
             </Button>
           </DialogFooter>
         </form>

@@ -17,25 +17,42 @@ import type { Notificacao } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /** Sino da topbar: contador e lista atualizam em tempo real (Supabase Realtime). */
-export function SinoNotificacoes({ usuarioId, naoLidasIniciais }: { usuarioId: string; naoLidasIniciais: number }) {
+export function SinoNotificacoes({
+  usuarioId,
+  naoLidasIniciais,
+  somenteLeitura = false,
+}: {
+  usuarioId: string;
+  naoLidasIniciais: number;
+  /** "Ver como": lista as notificações dela (leitura via RPC do admin), sem marcar como lidas. */
+  somenteLeitura?: boolean;
+}) {
   const router = useRouter();
   const [lista, setLista] = useState<Notificacao[]>([]);
   const [naoLidas, setNaoLidas] = useState(naoLidasIniciais);
 
   const carregar = useCallback(async () => {
     const supabase = createClient();
+    if (somenteLeitura) {
+      const { data } = await supabase.rpc("notificacoes_de", { p_membro: usuarioId, p_limite: 15 });
+      const itens = (data as Notificacao[] | null) ?? [];
+      setLista(itens);
+      setNaoLidas((n) => Math.max(n, itens.filter((x) => !x.lida).length));
+      return;
+    }
     const [{ data }, { count }] = await Promise.all([
       supabase.from("notificacoes").select("*").order("created_at", { ascending: false }).limit(15),
       supabase.from("notificacoes").select("id", { count: "exact", head: true }).eq("lida", false),
     ]);
     setLista((data as Notificacao[]) ?? []);
     setNaoLidas(count ?? 0);
-  }, []);
+  }, [somenteLeitura, usuarioId]);
 
   useEffect(() => {
     const supabase = createClient();
     // eslint-disable-next-line react-hooks/set-state-in-effect -- carga inicial vinda do Supabase
     void carregar();
+    if (somenteLeitura) return;
     const canal = supabase
       .channel(`notificacoes:${usuarioId}`)
       .on(
@@ -54,10 +71,10 @@ export function SinoNotificacoes({ usuarioId, naoLidasIniciais }: { usuarioId: s
     return () => {
       void supabase.removeChannel(canal);
     };
-  }, [usuarioId, carregar, router]);
+  }, [usuarioId, carregar, router, somenteLeitura]);
 
   async function abrir(n: Notificacao) {
-    if (!n.lida) {
+    if (!n.lida && !somenteLeitura) {
       await createClient().from("notificacoes").update({ lida: true }).eq("id", n.id);
       void carregar();
     }
@@ -85,7 +102,7 @@ export function SinoNotificacoes({ usuarioId, naoLidasIniciais }: { usuarioId: s
       <DropdownMenuContent className="w-[min(380px,calc(100vw-1rem))] p-0">
         <div className="flex items-center justify-between border-b border-borda px-4 py-3">
           <p className="font-bold text-azul-escuro">Notificações</p>
-          {naoLidas > 0 && (
+          {naoLidas > 0 && !somenteLeitura && (
             <button type="button" onClick={marcarTodas} className="inline-flex items-center gap-1 text-xs font-semibold text-azul-medio hover:underline">
               <CheckCheck className="size-3.5" /> Marcar todas como lidas
             </button>

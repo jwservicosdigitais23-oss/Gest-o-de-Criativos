@@ -7,9 +7,19 @@ import { MenuUsuario } from "./menu-usuario";
 import { SinoNotificacoes } from "./sino-notificacoes";
 import type { UsuarioShell } from "./tipos";
 
-export function Topbar({ usuario, naoLidas }: { usuario: UsuarioShell; naoLidas: number }) {
+export function Topbar({
+  usuario,
+  naoLidas,
+  verComo = null,
+  aprovadorasVerComo = [],
+}: {
+  usuario: UsuarioShell;
+  naoLidas: number;
+  verComo?: { alvoId: string } | null;
+  aprovadorasVerComo?: { id: string; nome: string }[];
+}) {
   return (
-    <header className="surface-glass sticky top-0 z-20 border-x-0 border-t-0">
+    <header className="surface-glass sticky top-[var(--faixa,0px)] z-20 border-x-0 border-t-0">
       <div className="flex h-16 items-center gap-3 px-4 sm:px-6 lg:px-8">
         <Link href="/" className="rounded-[var(--radius-control)] lg:hidden" aria-label="Painel">
           <Logo tamanho="sm" className="min-w-0" />
@@ -32,8 +42,8 @@ export function Topbar({ usuario, naoLidas }: { usuario: UsuarioShell; naoLidas:
               </Link>
             </Button>
           )}
-          <SinoNotificacoes usuarioId={usuario.id} naoLidasIniciais={naoLidas} />
-          <MenuUsuario usuario={usuario} />
+          <SinoNotificacoes usuarioId={usuario.id} naoLidasIniciais={naoLidas} somenteLeitura={Boolean(verComo)} />
+          <MenuUsuario usuario={usuario} verComo={Boolean(verComo)} aprovadorasVerComo={aprovadorasVerComo} />
         </div>
       </div>
     </header>

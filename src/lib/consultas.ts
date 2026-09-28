@@ -10,9 +10,14 @@ export interface PerfilComAvatar extends Perfil {
   avatarSrc: string | null;
 }
 
-export async function carregarPerfis(supabase: SupabaseClient, incluirArquivados = false): Promise<PerfilComAvatar[]> {
+export async function carregarPerfis(
+  supabase: SupabaseClient,
+  incluirArquivados = false,
+  perfisIds: string[] | null = null,
+): Promise<PerfilComAvatar[]> {
   let q = supabase.from("perfis").select("*").order("ordem").order("nome");
   if (!incluirArquivados) q = q.eq("arquivado", false);
+  if (perfisIds) q = q.in("id", perfisIds); // "Ver como": só os perfis dela
   const { data } = await q.returns<Perfil[]>();
   const urls = await assinarUrls(supabase, (data ?? []).map((p) => p.avatar_url));
   return (data ?? []).map((p) => ({ ...p, avatarSrc: p.avatar_url ? (urls[p.avatar_url] ?? null) : null }));

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Loader2, RotateCcw, X } from "lucide-react";
+import { Check, Loader2, Lock, RotateCcw, X } from "lucide-react";
 import { toast } from "sonner";
 import { registrarDecisao } from "@/app/(app)/posts/decisoes-actions";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Campo, Textarea } from "@/components/ui/input";
 import { ITENS_REVISAO } from "@/lib/constantes";
 import { cn } from "@/lib/utils";
+import { dicaSomenteLeitura, useSomenteLeitura } from "@/components/ver-como/somente-leitura";
 
 type Tipo = "aprovado" | "revisar" | "reprovado";
 
@@ -28,8 +29,11 @@ export function PainelDecisao({ postId, versao, fixoNoCelular = true }: { postId
   const [itens, setItens] = useState<string[]>([]);
   const [erro, setErro] = useState<string | null>(null);
   const [pendente, iniciar] = useTransition();
+  const leitura = useSomenteLeitura();
+  const dica = leitura ? dicaSomenteLeitura(leitura.nome) : undefined;
 
   function abrir(t: Tipo) {
+    if (leitura) return;
     setObservacao("");
     setItens([]);
     setErro(null);
@@ -71,18 +75,23 @@ export function PainelDecisao({ postId, versao, fixoNoCelular = true }: { postId
             "fixed inset-x-0 bottom-[calc(64px+env(safe-area-inset-bottom))] z-20 border-t border-borda bg-surface-solid p-3 shadow-[0_-4px_12px_rgb(0_31_77/0.08)] sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none lg:bottom-0",
         )}
       >
-        <Button variant="aprovar" size="decisao" className="flex-1" onClick={() => abrir("aprovado")}>
+        <Button variant="aprovar" size="decisao" className="flex-1" onClick={() => abrir("aprovado")} disabled={Boolean(leitura)} title={dica}>
           <Check /> Aprovar
         </Button>
         <div className="grid grid-cols-2 gap-2 sm:contents">
-          <Button variant="revisar" size="decisao" className="flex-1" onClick={() => abrir("revisar")}>
+          <Button variant="revisar" size="decisao" className="flex-1" onClick={() => abrir("revisar")} disabled={Boolean(leitura)} title={dica}>
             <RotateCcw /> Revisar
           </Button>
-          <Button variant="reprovar" size="decisao" className="flex-1" onClick={() => abrir("reprovado")}>
+          <Button variant="reprovar" size="decisao" className="flex-1" onClick={() => abrir("reprovado")} disabled={Boolean(leitura)} title={dica}>
             <X /> Reprovar
           </Button>
         </div>
       </div>
+      {dica && (
+        <p className="flex items-center gap-1.5 text-label font-semibold text-st-revisao-text" data-testid="dica-somente-leitura">
+          <Lock className="size-3.5" aria-hidden /> {dica}
+        </p>
+      )}
 
       <Dialog open={aberto !== null} onOpenChange={(v) => !v && setAberto(null)}>
         {aberto && (

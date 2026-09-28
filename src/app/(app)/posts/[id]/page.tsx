@@ -33,9 +33,10 @@ function Linha({ rotulo, children }: { rotulo: string; children: React.ReactNode
 export default async function PostPage(props: PageProps<"/posts/[id]">) {
   const { id } = await props.params;
   const { v } = await props.searchParams;
-  const { supabase, membro } = await exigirMembro();
+  const { supabase, membro, perfisIds } = await exigirMembro();
   const d = await carregarDetalhePost(supabase, id, typeof v === "string" ? Number(v) : undefined);
   if (!d) notFound();
+  if (perfisIds && !perfisIds.includes(d.perfil.id)) notFound(); // "Ver como": fora dos perfis dela
   const { post, perfil, conteudo, midias, versao } = d;
   const admin = membro.papel === "admin";
   const versaoAntiga = versao !== post.versao;

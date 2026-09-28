@@ -11,11 +11,20 @@ import { createClient } from "@/lib/supabase/client";
 import type { Notificacao } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export function ListaNotificacoes({ itens, usuarioId }: { itens: Notificacao[]; usuarioId: string }) {
+export function ListaNotificacoes({
+  itens,
+  usuarioId,
+  somenteLeitura = false,
+}: {
+  itens: Notificacao[];
+  usuarioId: string;
+  somenteLeitura?: boolean;
+}) {
   const router = useRouter();
   const [, iniciar] = useTransition();
 
   function marcar(ids: string[] | "todas") {
+    if (somenteLeitura) return;
     iniciar(async () => {
       const q = createClient().from("notificacoes").update({ lida: true }).eq("destinatario_id", usuarioId);
       await (ids === "todas" ? q.eq("lida", false) : q.in("id", ids));
@@ -27,7 +36,7 @@ export function ListaNotificacoes({ itens, usuarioId }: { itens: Notificacao[]; 
 
   return (
     <div className="flex flex-col gap-3">
-      {itens.some((n) => !n.lida) && (
+      {itens.some((n) => !n.lida) && !somenteLeitura && (
         <Button variant="secondary" className="self-end" onClick={() => marcar("todas")}>
           <CheckCheck /> Marcar todas como lidas
         </Button>
@@ -48,7 +57,7 @@ export function ListaNotificacoes({ itens, usuarioId }: { itens: Notificacao[]; 
               {n.corpo && <span className="block text-sm text-texto-2">{n.corpo}</span>}
               <span className="block text-xs text-texto-2">{formatarDataHora(n.created_at)}</span>
             </button>
-            {!n.lida && (
+            {!n.lida && !somenteLeitura && (
               <Button variant="ghost" size="sm" onClick={() => marcar([n.id])}>
                 Marcar como lida
               </Button>

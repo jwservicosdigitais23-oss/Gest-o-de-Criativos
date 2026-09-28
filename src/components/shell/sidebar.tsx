@@ -51,7 +51,7 @@ export function Sidebar({ perfis, usuario }: { perfis: PerfilMenu[]; usuario: Us
   const aguardandoTotal = perfis.reduce((s, p) => s + p.aguardando, 0);
 
   return (
-    <aside className="bg-gradiente-sidebar fixed inset-y-0 left-0 z-30 hidden w-64 flex-col shadow-elevated lg:flex">
+    <aside className="bg-gradiente-sidebar fixed bottom-0 left-0 top-[var(--faixa,0px)] z-30 hidden w-64 flex-col shadow-elevated lg:flex">
       <div className="px-6 pb-6 pt-7">
         <Link href="/" aria-label="Painel" className="inline-block rounded-[var(--radius-control)]">
           <Logo variante="branco" />
