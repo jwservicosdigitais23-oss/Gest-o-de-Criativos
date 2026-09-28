@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Campo, Input } from "@/components/ui/input";
 import { CampoSenha } from "@/components/auth/campo-senha";
@@ -40,8 +39,8 @@ export function LoginForm({ next, mostrarPrimeiroAcesso }: { next: string; mostr
   return (
     <form onSubmit={entrar} className="flex flex-col gap-5" noValidate>
       <div>
-        <h2 className="text-2xl font-bold text-azul-escuro">Acessar o CRM</h2>
-        <p className="mt-1 text-sm text-texto-2">Entre com o e-mail e a senha cadastrados.</p>
+        <h2 className="text-2xl font-bold text-navy-900">Acessar o CRM</h2>
+        <p className="mt-1 text-body text-text-muted">Entre com o e-mail e a senha cadastrados.</p>
       </div>
       <Campo label="E-mail" htmlFor="email">
         <Input id="email" name="email" type="email" autoComplete="email" required placeholder="voce@exemplo.com" />
@@ -50,7 +49,7 @@ export function LoginForm({ next, mostrarPrimeiroAcesso }: { next: string; mostr
         <CampoSenha id="senha" name="senha" autoComplete="current-password" required />
       </Campo>
       <div className="-mt-2 flex justify-end">
-        <Link href="/esqueci-senha" className="text-sm font-semibold text-azul-medio hover:underline">
+        <Link href="/esqueci-senha" className="text-label font-semibold text-blue-600 hover:underline">
           Esqueci minha senha
         </Link>
       </div>
@@ -59,8 +58,7 @@ export function LoginForm({ next, mostrarPrimeiroAcesso }: { next: string; mostr
           {erro}
         </p>
       )}
-      <Button type="submit" size="lg" className="w-full" disabled={carregando}>
-        {carregando && <Loader2 className="animate-spin" />}
+      <Button type="submit" size="lg" className="w-full" carregando={carregando}>
         Entrar
       </Button>
       {mostrarPrimeiroAcesso && (

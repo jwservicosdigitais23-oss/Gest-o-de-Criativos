@@ -39,9 +39,21 @@ Algumas combinações do plano não atingem contraste **AA (4,5:1)** em texto de
 - nav-section: o plano pede 11px, mas a regra "proibido texto abaixo de 12px" prevalece → 12px.
 - A prévia do LinkedIn mantém as cores e fontes do próprio LinkedIn (é uma simulação do feed), por isso não usa tokens.
 
-## Próximas etapas (a aprovar)
+## Etapa 1 aprovada (28/09/2026)
 
-2. Shell (sidebar com gradiente, topbar de vidro, SearchField) e Login.
+Todos os pontos acima foram aprovados.
+
+## Etapa 2 · Shell e Login (entregue)
+
+- Logo no estilo das referências (triângulo no lugar do "A"), em `components/brand/logo.tsx` — substituir pelo arquivo oficial quando chegar.
+- Sidebar: gradiente navy-900 → navy-700, `NavItem` com ícone/avatar, contador e item ativo em cyan; cartão "Criativos em dia" / "{n} aguardando aprovação" no rodapé.
+- Topbar de vidro: `SearchField` em pílula, "+ Novo post" (admin), sino com contador e avatar com nome + papel.
+- Menu inferior do celular com o gradiente da sidebar.
+- Login: foto da cidade (`public/imagens/login-cidade.webp`) em tela cheia com sobreposição azul; textos à esquerda; formulário em cartão de vidro à direita (empilhado no celular).
+- Banner do painel salvo em `public/imagens/banner-painel.webp` para a etapa 3.
+
+## Próximas etapas
+
 3. Painel (KpiCard glass, banner) e Por perfil (StatusTile).
 4. Página do perfil / Kanban e detalhe do post.
 5. Calendário, Importar, Configurações e revisão mobile.

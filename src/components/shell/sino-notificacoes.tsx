@@ -72,12 +72,12 @@ export function SinoNotificacoes({ usuarioId, naoLidasIniciais }: { usuarioId: s
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="relative flex size-10 items-center justify-center rounded-[var(--radius-control)] text-texto hover:bg-fundo"
+        className="transicao relative flex size-10 items-center justify-center rounded-full text-text hover:bg-bg-app-from"
         aria-label={`Notificações${naoLidas ? ` (${naoLidas} não lidas)` : ""}`}
       >
         <Bell className="size-5" />
         {naoLidas > 0 && (
-          <span className="absolute right-1.5 top-1.5 min-w-4 rounded-full bg-vermelho px-1 text-center text-xs font-bold leading-4 text-white">
+          <span className="absolute right-1 top-1 min-w-5 rounded-full bg-danger px-1 ring-2 ring-surface-solid text-center text-xs font-bold leading-4 text-white">
             {naoLidas > 99 ? "99+" : naoLidas}
           </span>
         )}

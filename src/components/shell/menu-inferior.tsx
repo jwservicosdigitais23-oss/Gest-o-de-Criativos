@@ -32,7 +32,7 @@ export function MenuInferior({
   return (
     <>
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-white/10 bg-azul-escuro pb-[env(safe-area-inset-bottom)] lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-white/10 bg-gradiente-sidebar pb-[env(safe-area-inset-bottom)] lg:hidden"
         aria-label="Menu principal"
       >
         <Link href="/" className={item(pathname === "/")} aria-current={pathname === "/" ? "page" : undefined}>
