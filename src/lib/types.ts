@@ -20,6 +20,7 @@ export interface Membro {
   avatar_url: string | null;
   ativo: boolean;
   ultimo_acesso: string | null;
+  deve_trocar_senha: boolean;
   created_at: string;
   updated_at: string;
 }
