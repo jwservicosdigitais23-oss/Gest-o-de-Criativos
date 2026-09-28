@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CabecalhoPagina } from "@/components/cabecalho-pagina";
 import { AbaMembros } from "@/components/configuracoes/aba-membros";
 import { AbaPerfis } from "@/components/configuracoes/aba-perfis";
+import { AbaSistema, type UsoStorage } from "@/components/configuracoes/aba-sistema";
 import { AbasConfiguracoes } from "@/components/configuracoes/abas-configuracoes";
 import type { MembroConfig, PerfilConfig } from "@/components/configuracoes/tipos";
 import { exigirAdmin } from "@/lib/auth";
@@ -14,11 +15,12 @@ export default async function ConfiguracoesPage(props: PageProps<"/configuracoes
   const { supabase, userId } = await exigirAdmin();
   const { aba } = await props.searchParams;
 
-  const [{ data: perfis }, { data: membros }, { data: vinculos }, { data: resumo }] = await Promise.all([
+  const [{ data: perfis }, { data: membros }, { data: vinculos }, { data: resumo }, { data: uso }] = await Promise.all([
     supabase.from("perfis").select("*").order("ordem").order("nome").returns<Perfil[]>(),
     supabase.from("membros").select("*").order("papel").order("nome").returns<Membro[]>(),
     supabase.from("perfil_aprovadoras").select("perfil_id, membro_id"),
     supabase.from("perfis_resumo").select("perfil_id, total_posts"),
+    supabase.rpc("uso_storage"),
   ]);
 
   const urls = await assinarUrls(supabase, [
@@ -48,11 +50,12 @@ export default async function ConfiguracoesPage(props: PageProps<"/configuracoes
 
   return (
     <>
-      <CabecalhoPagina titulo="Configurações" subtitulo="Perfis do LinkedIn, membros e acessos." />
+      <CabecalhoPagina titulo="Configurações" subtitulo="Perfis do LinkedIn, membros, acessos e sistema." />
       <AbasConfiguracoes
         abaInicial={abaInicial}
         perfis={<AbaPerfis perfis={perfisConfig} membros={membrosConfig} />}
         membros={<AbaMembros membros={membrosConfig} perfis={perfisConfig} usuarioId={userId} />}
+        sistema={<AbaSistema uso={uso as UsoStorage | null} />}
       />
     </>
   );

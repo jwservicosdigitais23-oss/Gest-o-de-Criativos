@@ -1,0 +1,29 @@
+# Configuração do Supabase Auth para o CRM.
+# Aplicar no projeto remoto: `supabase config push` (Supabase CLI ≥ 2.x),
+# ou copiar os valores em Authentication › URL Configuration / Email Templates.
+project_id = "adere-crm-criativos"
+
+[auth]
+# URL de produção da Vercel (troque se usar domínio próprio).
+site_url = "https://adere-crm-criativos.vercel.app"
+additional_redirect_urls = [
+  "https://adere-crm-criativos.vercel.app/**",
+  "https://*-jw-servicos.vercel.app/**",
+  "http://localhost:3000/**",
+]
+# Cadastro público desligado: só o primeiro admin (pela tela Primeiro acesso,
+# via service role) e convites.
+enable_signup = false
+minimum_password_length = 8
+
+[auth.email]
+enable_signup = false
+enable_confirmations = true
+
+[auth.email.template.invite]
+subject = "Seu acesso ao CRM de Aprovação de Criativos · Grupo Adere"
+content_path = "./supabase/templates/convite.html"
+
+[auth.email.template.recovery]
+subject = "Redefinir sua senha · Adere Aprovação de Criativos"
+content_path = "./supabase/templates/recuperacao.html"

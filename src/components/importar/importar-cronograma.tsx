@@ -36,7 +36,7 @@ import { cn } from "@/lib/utils";
 
 const SELO: Record<Situacao, { rotulo: string; classe: string }> = {
   novo: { rotulo: "Novo", classe: "bg-st-aguardando-bg text-st-aguardando" },
-  atualiza: { rotulo: "Atualiza", classe: "bg-[#e0f6fd] text-[#0079a8]" },
+  atualiza: { rotulo: "Atualiza", classe: "bg-[#e0f6fd] text-[#00709a]" },
   ignorada: { rotulo: "Ignorada", classe: "bg-st-rascunho-bg text-st-rascunho" },
   erro: { rotulo: "Erro", classe: "bg-st-reprovado-bg text-st-reprovado" },
 };

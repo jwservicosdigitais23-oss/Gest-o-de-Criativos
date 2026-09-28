@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  qualidade:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 54329:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://exemplo.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: chave-anon-de-ci
+      SUPABASE_SERVICE_ROLE_KEY: segredo-service-role-de-ci
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Instalar dependências
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Tipos
+        run: npm run typecheck
+      - name: Banco de testes (migrações)
+        run: sudo apt-get install -y postgresql-client >/dev/null && npm run db:test-reset
+        env:
+          TEST_DATABASE_URL: postgres://postgres@localhost:54329/postgres
+      - name: Testes (unitários + RLS/transições)
+        run: npm test
+        env:
+          TEST_DATABASE_URL: postgres://postgres@localhost:54329/adere_test
+      - name: Build
+        run: npm run build
+      - name: A service role não vaza para o navegador
+        run: npm run check:bundle

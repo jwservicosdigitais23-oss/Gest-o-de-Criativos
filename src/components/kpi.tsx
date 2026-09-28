@@ -16,7 +16,7 @@ export function Kpi({
 }) {
   const tons = {
     azul: "bg-st-aguardando-bg text-azul-medio",
-    claro: "bg-[#e0f6fd] text-[#0079a8]",
+    claro: "bg-[#e0f6fd] text-[#00709a]",
     ambar: "bg-st-revisao-bg text-st-revisao",
     verde: "bg-st-aprovado-bg text-st-aprovado",
     vermelho: "bg-st-reprovado-bg text-st-reprovado",

@@ -8,13 +8,13 @@
   --color-azul-medio: #004c97;
   --color-azul-claro: #00aeef;
   --color-texto: #2e3a59;
-  --color-texto-2: #6b7a90;
+  --color-texto-2: #5e6d84; /* #6B7A90 escurecido para contraste AA */
   --color-fundo: #f5f7fa;
   --color-superficie: #ffffff;
   --color-borda: #e3e8ef;
 
   /* Status (funcionais) */
-  --color-st-rascunho: #6b7a90;
+  --color-st-rascunho: #5e6d84;
   --color-st-rascunho-bg: #eef1f5;
   --color-st-aguardando: #004c97;
   --color-st-aguardando-bg: #e6eef7;
@@ -22,13 +22,14 @@
   --color-st-revisao-bg: #fef3c7;
   --color-st-aprovado: #15803d; /* #16A34A escurecido para contraste AA em texto */
   --color-st-aprovado-bg: #dcfce7;
-  --color-st-reprovado: #dc2626;
+  --color-st-reprovado: #b91c1c; /* #DC2626 escurecido para contraste AA em texto */
   --color-st-reprovado-bg: #fee2e2;
   --color-st-publicado: #001f4d;
   --color-st-publicado-bg: #e0e7f1;
 
-  --color-verde: #16a34a;
-  --color-ambar: #d97706;
+  /* Botões de decisão: tons AA com texto branco (marca: #16A34A / #D97706) */
+  --color-verde: #15803d;
+  --color-ambar: #b45309;
   --color-vermelho: #dc2626;
 
   --radius-adere: 10px;

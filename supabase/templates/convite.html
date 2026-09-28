@@ -1,0 +1,20 @@
+<div style="font-family: Montserrat, Arial, sans-serif; max-width: 520px; margin: 0 auto; color: #2E3A59;">
+  <div style="background: linear-gradient(135deg, #001F4D 0%, #004C97 55%, #00AEEF 100%); padding: 28px 32px; border-radius: 10px 10px 0 0;">
+    <p style="margin: 0; color: #FFFFFF; font-size: 22px; font-weight: 700; letter-spacing: 4px;">ADERE</p>
+    <p style="margin: 4px 0 0; color: #FFFFFF; font-size: 12px;">Gestão de Negócios</p>
+  </div>
+  <div style="background: #FFFFFF; padding: 32px; border: 1px solid #E3E8EF; border-top: 0; border-radius: 0 0 10px 10px;">
+    <h1 style="margin: 0 0 12px; color: #001F4D; font-size: 20px;">Você foi convidada(o) para o CRM</h1>
+    <p style="margin: 0 0 20px; line-height: 1.6;">
+      Olá{{ if .Data.nome }}, {{ .Data.nome }}{{ end }}! O Jonathan liberou seu acesso ao <strong>CRM de Aprovação de Criativos</strong>
+      do Grupo Adere. É por lá que os posts do LinkedIn chegam para você aprovar, pedir ajustes ou reprovar.
+    </p>
+    <p style="margin: 0 0 24px;">
+      <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite&next=/auth/nova-senha"
+         style="display: inline-block; background: #004C97; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 12px 22px; border-radius: 10px;">
+        Criar minha senha
+      </a>
+    </p>
+    <p style="margin: 0; font-size: 12px; color: #5E6D84;">Se você não esperava este convite, pode ignorar este e-mail.</p>
+  </div>
+</div>

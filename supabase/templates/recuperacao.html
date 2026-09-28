@@ -1,0 +1,17 @@
+<div style="font-family: Montserrat, Arial, sans-serif; max-width: 520px; margin: 0 auto; color: #2E3A59;">
+  <div style="background: linear-gradient(135deg, #001F4D 0%, #004C97 55%, #00AEEF 100%); padding: 28px 32px; border-radius: 10px 10px 0 0;">
+    <p style="margin: 0; color: #FFFFFF; font-size: 22px; font-weight: 700; letter-spacing: 4px;">ADERE</p>
+    <p style="margin: 4px 0 0; color: #FFFFFF; font-size: 12px;">Gestão de Negócios</p>
+  </div>
+  <div style="background: #FFFFFF; padding: 32px; border: 1px solid #E3E8EF; border-top: 0; border-radius: 0 0 10px 10px;">
+    <h1 style="margin: 0 0 12px; color: #001F4D; font-size: 20px;">Redefinir sua senha</h1>
+    <p style="margin: 0 0 24px; line-height: 1.6;">Recebemos um pedido para criar uma nova senha de acesso ao CRM de Aprovação de Criativos.</p>
+    <p style="margin: 0 0 24px;">
+      <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/auth/nova-senha"
+         style="display: inline-block; background: #004C97; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 12px 22px; border-radius: 10px;">
+        Criar nova senha
+      </a>
+    </p>
+    <p style="margin: 0; font-size: 12px; color: #5E6D84;">Se não foi você, ignore este e-mail — sua senha continua a mesma.</p>
+  </div>
+</div>

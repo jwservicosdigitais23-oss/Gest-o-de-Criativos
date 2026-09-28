@@ -34,7 +34,7 @@ const ACOES: Record<string, { rotulo: string; icone: typeof Check; cor: string }
   importou: { rotulo: "importou do cronograma", icone: FilePlus2, cor: "bg-st-rascunho-bg text-st-rascunho" },
   atualizou_importacao: { rotulo: "atualizou pelo cronograma", icone: Pencil, cor: "bg-st-rascunho-bg text-st-rascunho" },
   reagendou: { rotulo: "mudou a data de publicação", icone: Pencil, cor: "bg-st-rascunho-bg text-st-rascunho" },
-  comentou: { rotulo: "comentou", icone: MessageSquare, cor: "bg-[#e0f6fd] text-[#0079a8]" },
+  comentou: { rotulo: "comentou", icone: MessageSquare, cor: "bg-[#e0f6fd] text-[#00709a]" },
 };
 
 const LABEL_ITEM = Object.fromEntries(ITENS_REVISAO.map((i) => [i.valor, i.label]));

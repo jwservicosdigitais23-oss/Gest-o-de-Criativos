@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "db:test-reset": "./scripts/db-test-reset.sh",
     "postinstall": "node scripts/copiar-pdf-worker.mjs",
-    "fixture": "node scripts/gerar-fixture.mjs"
+    "fixture": "node scripts/gerar-fixture.mjs",
+    "check:bundle": "node scripts/verificar-bundle.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

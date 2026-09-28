@@ -310,3 +310,26 @@ export async function definirAtivo(membroId: string, ativo: boolean): Promise<Re
   revalidar();
   return { ok: true };
 }
+
+// ---------------------------------------------------------------------
+// Sistema: limpeza de arquivos órfãos do Storage
+// ---------------------------------------------------------------------
+export async function limparOrfaos(): Promise<Resultado<{ removidos: number }>> {
+  const { supabase, userId } = await exigirAdmin();
+  const { data, error } = await supabase.rpc("arquivos_orfaos", { p_horas: 24 });
+  if (error) return falha(mensagemErro(error));
+  const nomes = ((data as { nome: string }[] | null) ?? []).map((o) => o.nome);
+  let removidos = 0;
+  for (let i = 0; i < nomes.length; i += 100) {
+    const lote = nomes.slice(i, i + 100);
+    const { error: e } = await supabase.storage.from(BUCKET_MIDIAS).remove(lote);
+    if (!e) removidos += lote.length;
+  }
+  await registrarHistorico(supabase, userId, {
+    entidade: "sistema",
+    acao: "limpou_orfaos",
+    detalhes: { removidos },
+  });
+  revalidatePath("/configuracoes");
+  return { ok: true, dados: { removidos } };
+}
