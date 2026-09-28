@@ -23,7 +23,7 @@ const decisaoSchema = z
 
 /** A aprovadora só insere a decisão; o banco recalcula o status do post. */
 export async function registrarDecisao(dados: z.input<typeof decisaoSchema>): Promise<Resultado> {
-  const { supabase } = await exigirMembro();
+  const { supabase } = await exigirMembro({ gravacao: true });
   const parsed = decisaoSchema.safeParse(dados);
   if (!parsed.success) return falha(parsed.error.issues[0]!.message);
   const { postId, decisao, observacao, itens } = parsed.data;
@@ -48,7 +48,7 @@ const comentarioSchema = z.object({
 });
 
 export async function comentar(dados: z.input<typeof comentarioSchema>): Promise<Resultado> {
-  const { supabase } = await exigirMembro();
+  const { supabase } = await exigirMembro({ gravacao: true });
   const parsed = comentarioSchema.safeParse(dados);
   if (!parsed.success) return falha(parsed.error.issues[0]!.message);
   const { data: post } = await supabase.from("posts").select("versao").eq("id", parsed.data.postId).maybeSingle();

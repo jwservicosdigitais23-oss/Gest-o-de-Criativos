@@ -42,6 +42,7 @@ export default async function ConfiguracoesPage(props: PageProps<"/configuracoes
     papel: m.papel,
     ativo: m.ativo,
     ultimo_acesso: m.ultimo_acesso,
+    deve_trocar_senha: m.deve_trocar_senha,
     avatarSrc: m.avatar_url ? (urls[m.avatar_url] ?? null) : null,
     perfis: (vinculos ?? []).filter((v) => v.membro_id === m.id).map((v) => v.perfil_id as string),
   }));

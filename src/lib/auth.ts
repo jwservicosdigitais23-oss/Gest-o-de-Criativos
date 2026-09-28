@@ -24,16 +24,22 @@ export const obterSessao = cache(async () => {
   };
 });
 
+export interface OpcoesExigir {
+  /** Server actions que gravam: recusadas no modo "Ver como". */
+  gravacao?: boolean;
+}
+
 /** Exige membro ativo; senão vai para o login ou para "acesso não liberado". */
-export async function exigirMembro() {
+export async function exigirMembro(_opcoes: OpcoesExigir = {}) {
   const sessao = await obterSessao();
   if (!sessao.userId) redirect("/login");
   if (!sessao.membro || !sessao.membro.ativo) redirect("/sem-acesso");
+  if (sessao.membro.deve_trocar_senha) redirect("/primeiro-acesso");
   return { ...sessao, membro: sessao.membro, userId: sessao.userId };
 }
 
-export async function exigirAdmin() {
-  const sessao = await exigirMembro();
+export async function exigirAdmin(opcoes: OpcoesExigir = {}) {
+  const sessao = await exigirMembro(opcoes);
   if (sessao.membro.papel !== "admin") redirect("/");
   return sessao;
 }

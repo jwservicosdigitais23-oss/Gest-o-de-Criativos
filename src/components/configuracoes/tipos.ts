@@ -21,6 +21,7 @@ export interface MembroConfig {
   papel: Papel;
   ativo: boolean;
   ultimo_acesso: string | null;
+  deve_trocar_senha: boolean;
   avatarSrc: string | null;
   perfis: string[];
 }
