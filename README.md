@@ -95,3 +95,19 @@ TEST_DATABASE_URL=postgres://postgres@localhost:54329/adere_test npm test
 - **Novo/editar post** (só admin): validação com zod, upload direto do navegador para o bucket `midias` em `{perfil_id}/{post_id}/v{versao}/{arquivo}` com barra de progresso, reordenar/remover, link externo (Drive/Canva) para arquivos grandes, aviso de proporção e prévia do LinkedIn ao vivo. O limite de upload fica em `LIMITE_UPLOAD_MB` (`src/lib/constantes.ts`).
 - **Detalhe** (`/posts/[id]`): prévia estilo LinkedIn ("…ver mais" após ~210 caracteres, carrossel em PDF com pdf.js, player de vídeo), copiar legenda, baixar mídia, seletor de versões e ações do admin (editar, duplicar, excluir/arquivar, marcar como publicado).
 - **Versões**: cada envio para aprovação grava um instantâneo em `post_versoes`; as mídias valem de `versao` até `versao_removida`. O status do post só muda pelas funções de transição (`enviar_para_aprovacao`, `marcar_publicado`, `arquivar_post`) — um `UPDATE` direto em `posts.status` é recusado pelo banco.
+
+## Fluxo de aprovação
+
+| De | Para | Quem |
+| --- | --- | --- |
+| Rascunho | Aguardando aprovação | admin envia |
+| Aguardando | Aprovado · Em revisão · Reprovado | decisão da aprovadora |
+| Em revisão | Aguardando (versão + 1) | admin ajusta e reenvia |
+| Aprovado | Publicado | admin informa o link |
+| Aprovado (editado) | Aguardando (versão + 1) | admin |
+| Reprovado | novo rascunho | admin duplica |
+
+- A aprovadora **só insere** em `decisoes`. O trigger `decisoes_validar` confere se o post está aguardando e fixa a versão atual; o trigger `decisoes_aplicar` (função `security definer`) recalcula o status e grava o histórico. A observação obrigatória também é validada por `CHECK` (Revisar ≥ 10 caracteres; Reprovar exige motivo).
+- **Modo "todas"** (ex.: Grupo Adere): fica aguardando até todas as aprovadoras ativas aprovarem a versão atual ("1 de 2 aprovações"); qualquer revisão → Em revisão; reprovação prevalece. **Modo "qualquer uma"**: a primeira decisão define o status.
+- Linha do tempo com todas as ações, observações em destaque âmbar, respostas do Jonathan como comentários e a observação da versão anterior exibida junto da nova versão.
+- Testes das transições: `tests/db/fluxo-aprovacao.test.ts`.

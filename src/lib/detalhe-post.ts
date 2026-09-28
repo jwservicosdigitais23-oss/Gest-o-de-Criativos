@@ -11,7 +11,7 @@ export async function carregarDetalhePost(supabase: SupabaseClient, id: string, 
   const { data: post } = await supabase.from("posts").select("*").eq("id", id).maybeSingle<Post>();
   if (!post) return null;
 
-  const [perfilR, midiasR, versoesR, decisoesR, comentariosR, historicoR, aprovR, membrosR] = await Promise.all([
+  const [perfilR, midiasR, versoesR, decisoesR, comentariosR, historicoR, aprovR, membrosR, progressoR] = await Promise.all([
     supabase.from("perfis").select("*").eq("id", post.perfil_id).single<Perfil>(),
     supabase.from("midias").select("*").eq("post_id", id).returns<Midia[]>(),
     supabase.from("post_versoes").select("*").eq("post_id", id).order("versao").returns<PostVersao[]>(),
@@ -20,6 +20,7 @@ export async function carregarDetalhePost(supabase: SupabaseClient, id: string, 
     supabase.from("historico").select("*").eq("post_id", id).order("created_at").returns<Historico[]>(),
     supabase.from("perfil_aprovadoras").select("membro_id").eq("perfil_id", post.perfil_id),
     supabase.from("membros").select("id, nome, email, papel, avatar_url, ativo").returns<Membro[]>(),
+    supabase.from("posts_progresso").select("aprovacoes, total_aprovadoras, modo_aprovacao").eq("post_id", id).maybeSingle(),
   ]);
 
   const perfil = perfilR.data!;
@@ -61,6 +62,8 @@ export async function carregarDetalhePost(supabase: SupabaseClient, id: string, 
     historico: historicoR.data ?? [],
     membros: membrosMap,
     aprovadoras: aprovadorasIds.map((i) => membrosMap[i]).filter(Boolean),
+    aprovadorasIds,
+    progresso: progressoR.data as { aprovacoes: number; total_aprovadoras: number; modo_aprovacao: string } | null,
   };
 }
 

@@ -50,10 +50,15 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
   ]);
 
   const lista = posts ?? [];
-  const [miniaturas, observacoes] = await Promise.all([
+  const aguardandoIds = perfil.modo_aprovacao === "todas" ? lista.filter((p) => p.status === "aguardando").map((p) => p.id) : [];
+  const [miniaturas, observacoes, { data: progresso }] = await Promise.all([
     carregarMiniaturas(supabase, lista),
     contarObservacoes(supabase, lista.map((p) => p.id)),
+    aguardandoIds.length
+      ? supabase.from("posts_progresso").select("post_id, aprovacoes, total_aprovadoras").in("post_id", aguardandoIds)
+      : Promise.resolve({ data: [] as { post_id: string; aprovacoes: number; total_aprovadoras: number }[] }),
   ]);
+  const progressoPorPost = new Map((progresso ?? []).map((x) => [x.post_id as string, x]));
   const aprovadoras = (aprov ?? []).map((a) => a.membros as unknown as Pick<Membro, "id" | "nome" | "avatar_url">).filter(Boolean);
   const urls = await assinarUrls(supabase, [perfil.avatar_url, ...aprovadoras.map((a) => a.avatar_url)]);
 
@@ -75,6 +80,11 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
     ...p,
     miniatura: miniaturas[p.id],
     observacoes: observacoes[p.id] ?? 0,
+    extra: progressoPorPost.has(p.id) ? (
+      <span className="font-semibold text-st-aguardando">
+        {progressoPorPost.get(p.id)!.aprovacoes} de {progressoPorPost.get(p.id)!.total_aprovadoras} aprovações
+      </span>
+    ) : undefined,
   }));
 
   const colunas = status ? [status as StatusPost] : COLUNAS;

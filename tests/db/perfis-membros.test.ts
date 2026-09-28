@@ -70,7 +70,7 @@ describe.skipIf(!temBanco)("Prompt 2 · perfis e membros", () => {
     expect(await sql(c, "select 1 from public.perfis where id = $1", [edna])).toHaveLength(0);
     expect(await sql(c, "select 1 from public.decisoes where post_id = $1", [post])).toHaveLength(0);
     const hist = await sql<{ acao: string }>(c, "select acao from public.historico where perfil_id = $1 order by id", [edna]);
-    expect(hist.map((h) => h.acao)).toEqual(["criou", "excluiu_definitivo"]);
+    expect(hist.map((h) => h.acao)).toEqual(["aprovou", "criou", "excluiu_definitivo"]);
   });
 
   it("decisões continuam imutáveis fora da exclusão definitiva", async () => {

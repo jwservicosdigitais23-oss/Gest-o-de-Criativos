@@ -3,6 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarClock, Clock, ExternalLink, Layers } from "lucide-react";
 import { AcoesAdmin, BotaoCopiarLegenda, ListaDownloads } from "@/components/posts/acoes-post";
+import { LinhaDoTempo } from "@/components/posts/linha-do-tempo";
+import { ObservacoesAnteriores } from "@/components/posts/observacoes-anteriores";
+import { PainelDecisao } from "@/components/posts/painel-decisao";
 import { PreviaLinkedIn } from "@/components/posts/previa-linkedin";
 import { StatusBadge } from "@/components/status-badge";
 import { PilhaAvatares } from "@/components/ui/avatar";
@@ -11,6 +14,7 @@ import { exigirMembro } from "@/lib/auth";
 import { FORMATO_LABEL } from "@/lib/constantes";
 import { formatarData, formatarDataHora, formatarHora } from "@/lib/datas";
 import { carregarDetalhePost } from "@/lib/detalhe-post";
+import { montarEventos } from "@/lib/eventos-post";
 
 export const metadata: Metadata = { title: "Post" };
 
@@ -32,9 +36,19 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
   const { post, perfil, conteudo, midias, versao } = d;
   const admin = membro.papel === "admin";
   const versaoAntiga = versao !== post.versao;
+  const ehAprovadora = d.aprovadorasIds.includes(membro.id);
+  const minhaDecisao = d.decisoes.find((x) => x.versao === post.versao && x.autor_id === membro.id);
+  const podeDecidir = ehAprovadora && post.status === "aguardando" && !versaoAntiga && !minhaDecisao;
+  const nomeDe = (id: string) => d.membros[id]?.nome ?? "Aprovadora";
+  const observacoesAnteriores = d.decisoes
+    .filter((x) => x.versao === post.versao - 1 && x.observacao)
+    .map((x) => ({ id: x.id, autor: nomeDe(x.autor_id), decisao: x.decisao, observacao: x.observacao!, itens: x.itens }));
+  const observacoesAtuais = d.decisoes
+    .filter((x) => x.versao === post.versao && x.observacao && x.decisao !== "aprovado")
+    .map((x) => ({ id: x.id, autor: nomeDe(x.autor_id), decisao: x.decisao, observacao: x.observacao!, itens: x.itens }));
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className={podeDecidir ? "flex flex-col gap-5 pb-36 sm:pb-0" : "flex flex-col gap-5"}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link href={`/perfis/${perfil.id}`} className="inline-flex items-center gap-1 text-sm font-semibold text-azul-medio hover:underline">
           <ArrowLeft className="size-4" /> {perfil.nome}
@@ -84,7 +98,42 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
               midias={midias.map((m) => ({ id: m.id, tipo: m.tipo, url: m.src, nome: m.nome_arquivo }))}
             />
           </div>
-          <section id="decisao" aria-label="Decisão e linha do tempo" />
+          {podeDecidir && (
+            <Card className="flex flex-col gap-4 p-5" id="decisao">
+              <div>
+                <h2 className="text-base font-bold">Sua decisão</h2>
+                <p className="text-sm text-texto-2">
+                  Versão v{post.versao}
+                  {d.progresso?.modo_aprovacao === "todas" &&
+                    ` · ${d.progresso.aprovacoes} de ${d.progresso.total_aprovadoras} aprovações`}
+                </p>
+              </div>
+              {observacoesAnteriores.length > 0 && <ObservacoesAnteriores itens={observacoesAnteriores} versao={post.versao - 1} />}
+              <PainelDecisao postId={post.id} versao={post.versao} />
+            </Card>
+          )}
+          {!podeDecidir && minhaDecisao && post.status === "aguardando" && (
+            <Card className="p-5 text-sm">
+              Você {minhaDecisao.decisao === "aprovado" ? "aprovou" : "decidiu"} a v{post.versao}.{" "}
+              {d.progresso?.modo_aprovacao === "todas" &&
+                `Aguardando as demais aprovadoras (${d.progresso.aprovacoes} de ${d.progresso.total_aprovadoras}).`}
+            </Card>
+          )}
+          {!podeDecidir && admin && post.status === "aguardando" && d.progresso?.modo_aprovacao === "todas" && (
+            <Card className="p-5 text-sm">
+              <strong className="text-azul-escuro">{d.progresso.aprovacoes} de {d.progresso.total_aprovadoras} aprovações</strong> na v{post.versao}.
+            </Card>
+          )}
+          {admin && post.status === "em_revisao" && observacoesAtuais.length > 0 && (
+            <Card className="flex flex-col gap-3 p-5">
+              <h2 className="text-base font-bold">Precisa da sua ação</h2>
+              <ObservacoesAnteriores itens={observacoesAtuais} versao={post.versao} />
+            </Card>
+          )}
+          <Card className="p-5">
+            <h2 className="mb-4 text-base font-bold">Linha do tempo</h2>
+            <LinhaDoTempo eventos={montarEventos(d)} postId={post.id} />
+          </Card>
         </div>
 
         <aside className="flex flex-col gap-4">
