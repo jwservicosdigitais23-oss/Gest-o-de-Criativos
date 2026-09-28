@@ -59,7 +59,15 @@ Todos os pontos acima foram aprovados.
 - "Por perfil": um cartão por perfil com avatar, tipo, 6 mini-cartões de status (StatusTile) e "Ver posts"; filtro "Todos os meses" (conta só os posts do mês escolhido).
 - Painel da aprovadora com o mesmo banner, KPI "Para você aprovar" e cartões de vidro.
 
+## Etapa 4 · Perfil (Kanban) e detalhe do post (entregue)
+
+- Cabeçalho do perfil: voltar, avatar grande, nome, tipo · modo de aprovação, aprovadoras; "Exportar cronograma" e "+ Novo post".
+- KPIs compactos (Aguardando, Em revisão, Aprovados no mês, Próximos 7 dias).
+- Filtros de status/formato/mês sem cortar texto + SegmentedControl Kanban/Lista.
+- Kanban com colunas de vidro (selo com ícone + contagem) e cartões com miniatura, data · hora, tema, selo, formato e versão; selo "Atrasado" quando o prazo venceu (só visual, via `statusVisual`).
+- Lista (e celular) com o mesmo padrão.
+- Detalhe do post: voltar com avatar do perfil, seletor de versões, selo com ícone, cartões de vidro (Sua decisão, Linha do tempo, Detalhes fixo ao rolar no desktop, Ações do administrador).
+
 ## Próximas etapas
 
-4. Página do perfil / Kanban e detalhe do post.
 5. Calendário, Importar, Configurações e revisão mobile.

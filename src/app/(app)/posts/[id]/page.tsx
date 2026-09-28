@@ -8,22 +8,24 @@ import { LinhaDoTempo } from "@/components/posts/linha-do-tempo";
 import { ObservacoesAnteriores } from "@/components/posts/observacoes-anteriores";
 import { PainelDecisao } from "@/components/posts/painel-decisao";
 import { PreviaLinkedIn } from "@/components/posts/previa-linkedin";
-import { StatusBadge } from "@/components/status-badge";
-import { PilhaAvatares } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
+import { Avatar, PilhaAvatares } from "@/components/ui/avatar";
+import { GlassCard } from "@/components/ui/card";
+import { SectionHeader } from "@/components/ui/page-header";
+import { StatusPill } from "@/components/ui/status-pill";
 import { exigirMembro } from "@/lib/auth";
 import { FORMATO_LABEL } from "@/lib/constantes";
-import { formatarData, formatarDataHora, formatarHora } from "@/lib/datas";
+import { formatarData, formatarDataHora, formatarHora, hojeISO } from "@/lib/datas";
 import { carregarDetalhePost } from "@/lib/detalhe-post";
 import { montarEventos } from "@/lib/eventos-post";
+import { statusVisual } from "@/lib/status";
 
 export const metadata: Metadata = { title: "Post" };
 
 function Linha({ rotulo, children }: { rotulo: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-2 text-sm">
-      <dt className="text-texto-2">{rotulo}</dt>
-      <dd className="text-right font-semibold text-azul-escuro">{children}</dd>
+    <div className="flex items-center justify-between gap-4 py-2.5 text-body">
+      <dt className="text-text-muted">{rotulo}</dt>
+      <dd className="text-right font-semibold text-navy-900">{children}</dd>
     </div>
   );
 }
@@ -37,6 +39,7 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
   const { post, perfil, conteudo, midias, versao } = d;
   const admin = membro.papel === "admin";
   const versaoAntiga = versao !== post.versao;
+  const sv = statusVisual(post.status, post.prazo_aprovacao, hojeISO());
   const ehAprovadora = d.aprovadorasIds.includes(membro.id);
   const minhaDecisao = d.decisoes.find((x) => x.versao === post.versao && x.autor_id === membro.id);
   const podeDecidir = ehAprovadora && post.status === "aguardando" && !versaoAntiga && !minhaDecisao;
@@ -51,12 +54,19 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
   return (
     <div className={podeDecidir ? "flex flex-col gap-5 pb-36 sm:pb-0" : "flex flex-col gap-5"}>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link href={`/perfis/${perfil.id}`} className="inline-flex items-center gap-1 text-sm font-semibold text-azul-medio hover:underline">
-          <ArrowLeft className="size-4" /> {perfil.nome}
+        <Link
+          href={`/perfis/${perfil.id}`}
+          className="transicao group inline-flex items-center gap-2 rounded-full border border-border bg-surface-solid py-1 pl-1 pr-3 text-body font-semibold text-navy-900 hover:border-blue-600 hover:text-blue-600"
+        >
+          <span className="flex size-7 items-center justify-center rounded-full bg-bg-app-from">
+            <ArrowLeft className="size-4" />
+          </span>
+          <Avatar nome={perfil.nome} src={perfil.avatarSrc} size="sm" />
+          {perfil.nome}
         </Link>
         {d.versoesDisponiveis.length > 1 && (
-          <nav className="flex items-center gap-1 rounded-[var(--radius-control)] border border-borda bg-white p-1" aria-label="Versões">
-            <Layers className="ml-1 size-4 text-texto-2" aria-hidden />
+          <nav className="flex items-center gap-1 rounded-[var(--radius-control)] border border-border bg-surface-solid p-1" aria-label="Versões">
+            <Layers className="ml-1 size-4 text-text-muted" aria-hidden />
             {d.versoesDisponiveis.map((n) => (
               <Link
                 key={n}
@@ -64,8 +74,8 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
                 aria-current={n === versao ? "page" : undefined}
                 className={
                   n === versao
-                    ? "rounded-md bg-azul-medio px-2.5 py-1 text-xs font-bold text-white"
-                    : "rounded-md px-2.5 py-1 text-xs font-semibold text-texto-2 hover:text-azul-escuro"
+                    ? "bg-gradiente-primario rounded-[calc(var(--radius-control)-4px)] px-3 py-1 text-label font-bold text-white"
+                    : "transicao rounded-[calc(var(--radius-control)-4px)] px-3 py-1 text-label font-semibold text-text-muted hover:text-navy-900"
                 }
               >
                 v{n}
@@ -76,14 +86,14 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
       </div>
 
       <div>
-        <h1 className="text-2xl font-bold sm:text-page-title">{conteudo.tema}</h1>
-        <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-texto-2">
-          <StatusBadge status={post.status} />
+        <h1 className="text-2xl font-bold text-navy-900 sm:text-page-title">{conteudo.tema}</h1>
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-body text-text-muted">
+          <StatusPill status={sv} />
           <span>v{versao}</span>
           <span aria-hidden>·</span>
           <span>{FORMATO_LABEL[conteudo.formato]}</span>
           {versaoAntiga && (
-            <span className="rounded-full bg-st-rascunho-bg px-2.5 py-0.5 text-xs font-semibold">
+            <span className="rounded-full bg-st-rascunho-bg px-2.5 py-0.5 text-label font-semibold text-st-rascunho-text">
               Vendo versão anterior
             </span>
           )}
@@ -100,10 +110,10 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
             />
           </div>
           {podeDecidir && (
-            <Card className="flex flex-col gap-4 p-5" id="decisao">
+            <GlassCard className="flex scroll-mt-24 flex-col gap-4 p-5" id="decisao">
               <div>
-                <h2 className="text-base font-bold">Sua decisão</h2>
-                <p className="text-sm text-texto-2">
+                <SectionHeader titulo="Sua decisão" />
+                <p className="text-body text-text-muted">
                   Versão v{post.versao}
                   {d.progresso?.modo_aprovacao === "todas" &&
                     ` · ${d.progresso.aprovacoes} de ${d.progresso.total_aprovadoras} aprovações`}
@@ -111,39 +121,40 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
               </div>
               {observacoesAnteriores.length > 0 && <ObservacoesAnteriores itens={observacoesAnteriores} versao={post.versao - 1} />}
               <PainelDecisao postId={post.id} versao={post.versao} />
-            </Card>
+            </GlassCard>
           )}
           {!podeDecidir && minhaDecisao && post.status === "aguardando" && (
-            <Card className="p-5 text-sm">
+            <GlassCard className="p-5 text-body">
               Você {minhaDecisao.decisao === "aprovado" ? "aprovou" : "decidiu"} a v{post.versao}.{" "}
               {d.progresso?.modo_aprovacao === "todas" &&
                 `Aguardando as demais aprovadoras (${d.progresso.aprovacoes} de ${d.progresso.total_aprovadoras}).`}
-            </Card>
+            </GlassCard>
           )}
           {!podeDecidir && admin && post.status === "aguardando" && d.progresso?.modo_aprovacao === "todas" && (
-            <Card className="p-5 text-sm">
-              <strong className="text-azul-escuro">{d.progresso.aprovacoes} de {d.progresso.total_aprovadoras} aprovações</strong> na v{post.versao}.
-            </Card>
+            <GlassCard className="p-5 text-body">
+              <strong className="text-navy-900">{d.progresso.aprovacoes} de {d.progresso.total_aprovadoras} aprovações</strong> na v{post.versao}.
+            </GlassCard>
           )}
           {admin && post.status === "em_revisao" && observacoesAtuais.length > 0 && (
-            <Card className="flex flex-col gap-3 p-5">
-              <h2 className="text-base font-bold">Precisa da sua ação</h2>
+            <GlassCard className="flex flex-col gap-3 p-5">
+              <SectionHeader titulo="Precisa da sua ação" />
               <ObservacoesAnteriores itens={observacoesAtuais} versao={post.versao} />
-            </Card>
+            </GlassCard>
           )}
-          <Card className="p-5">
-            <h2 className="mb-4 text-base font-bold">Linha do tempo</h2>
+          <GlassCard className="flex flex-col gap-4 p-5">
+            <SectionHeader titulo="Linha do tempo" />
             <LinhaDoTempo eventos={montarEventos(d)} postId={post.id} />
-          </Card>
+          </GlassCard>
         </div>
 
-        <aside className="flex flex-col gap-4">
-          <Card className="p-5">
-            <dl className="divide-y divide-borda">
-              <Linha rotulo="Status"><StatusBadge status={post.status} /></Linha>
+        <aside className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
+          <GlassCard className="p-5">
+            <SectionHeader titulo="Detalhes" className="mb-1" />
+            <dl className="divide-y divide-border">
+              <Linha rotulo="Status"><StatusPill status={sv} /></Linha>
               <Linha rotulo="Publicação">
                 <span className="inline-flex items-center gap-1">
-                  <CalendarClock className="size-4 text-texto-2" />
+                  <CalendarClock className="size-4 text-text-muted" />
                   {formatarData(conteudo.data_publicacao)}
                   {conteudo.hora_publicacao && ` às ${formatarHora(conteudo.hora_publicacao)}`}
                 </span>
@@ -151,7 +162,7 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
               <Linha rotulo="Versão">v{post.versao}</Linha>
               <Linha rotulo="Prazo de aprovação">
                 <span className="inline-flex items-center gap-1">
-                  <Clock className="size-4 text-texto-2" /> {formatarData(post.prazo_aprovacao)}
+                  <Clock className="size-4 text-text-muted" /> {formatarData(post.prazo_aprovacao)}
                 </span>
               </Linha>
               {conteudo.pilar && <Linha rotulo="Pilar">{conteudo.pilar}</Linha>}
@@ -161,7 +172,7 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
               </Linha>
               {post.link_publicado && (
                 <Linha rotulo="Publicado">
-                  <a href={post.link_publicado} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-azul-medio hover:underline">
+                  <a href={post.link_publicado} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-600 hover:underline">
                     {formatarDataHora(post.publicado_em)} <ExternalLink className="size-3.5" />
                   </a>
                 </Linha>
@@ -180,13 +191,13 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
                 />
               )}
             </div>
-          </Card>
+          </GlassCard>
 
           {admin && !versaoAntiga && (
-            <Card className="p-5">
-              <h2 className="rotulo mb-3 text-texto-2">Ações do administrador</h2>
+            <GlassCard className="flex flex-col gap-3 p-5">
+              <SectionHeader titulo="Ações do administrador" />
               <AcoesAdmin postId={post.id} status={post.status} temDecisoes={d.decisoes.length > 0} versao={post.versao} />
-            </Card>
+            </GlassCard>
           )}
         </aside>
       </div>
