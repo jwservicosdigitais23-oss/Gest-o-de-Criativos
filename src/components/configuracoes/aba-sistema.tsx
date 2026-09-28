@@ -37,7 +37,7 @@ export function AbaSistema({ uso }: { uso: UsoStorage | null }) {
     <div className="grid gap-4 lg:grid-cols-2">
       <Card className="flex flex-col gap-4 p-5">
         <div className="flex items-center gap-3">
-          <span className="flex size-10 items-center justify-center rounded-[10px] bg-st-aguardando-bg text-azul-medio">
+          <span className="flex size-10 items-center justify-center rounded-[var(--radius-control)] bg-st-aguardando-bg text-azul-medio">
             <HardDrive className="size-5" aria-hidden />
           </span>
           <div>

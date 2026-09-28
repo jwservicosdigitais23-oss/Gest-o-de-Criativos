@@ -23,13 +23,13 @@ export function DialogContent({
 }) {
   return (
     <D.Portal>
-      <D.Overlay className="fixed inset-0 z-50 bg-azul-escuro/40 backdrop-blur-[1px]" />
+      <D.Overlay className="fixed inset-0 z-50 bg-overlay backdrop-blur-sm" />
       <D.Content
         className={cn(
-          "fixed z-50 flex flex-col bg-white shadow-xl focus:outline-none",
+          "fixed z-50 flex flex-col bg-surface-solid shadow-elevated focus:outline-none",
           telaCheiaNoCelular
-            ? "inset-0 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:max-h-[90dvh] sm:w-[calc(100%-2rem)] sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-[10px]"
-            : "left-1/2 top-1/2 max-h-[90dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-[10px]",
+            ? "inset-0 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:max-h-[90dvh] sm:w-[calc(100%-2rem)] sm:max-w-lg sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-[var(--radius-card)]"
+            : "left-1/2 top-1/2 max-h-[90dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-[var(--radius-card)]",
           className,
         )}
         {...props}

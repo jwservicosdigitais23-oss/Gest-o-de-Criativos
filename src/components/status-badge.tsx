@@ -1,35 +1,15 @@
-import { STATUS_CLASSES, STATUS_LABEL } from "@/lib/constantes";
-import type { StatusPost } from "@/lib/types";
+import { StatusPill } from "@/components/ui/status-pill";
+import type { StatusVisual } from "@/lib/status";
 import { cn } from "@/lib/utils";
 
-export function StatusBadge({ status, className }: { status: StatusPost; className?: string }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold",
-        STATUS_CLASSES[status],
-        className,
-      )}
-    >
-      {STATUS_LABEL[status]}
-    </span>
-  );
+/** @deprecated use StatusPill (components/ui/status-pill). */
+export function StatusBadge({ status, className }: { status: StatusVisual; className?: string }) {
+  return <StatusPill status={status} className={className} />;
 }
 
-export function Pilula({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+export function Pilula({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold",
-        className,
-      )}
-    >
+    <span className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-0.5 text-label font-semibold", className)}>
       {children}
     </span>
   );

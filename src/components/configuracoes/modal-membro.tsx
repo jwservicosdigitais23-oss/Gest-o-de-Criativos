@@ -78,7 +78,7 @@ export function ModalMembro({
               {perfis
                 .filter((p) => !p.arquivado)
                 .map((p) => (
-                  <label key={p.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[10px] border border-borda px-3 hover:bg-fundo">
+                  <label key={p.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[var(--radius-control)] border border-borda px-3 hover:bg-fundo">
                     <Checkbox
                       checked={selecionados.includes(p.id)}
                       onChange={(e) =>
@@ -91,7 +91,7 @@ export function ModalMembro({
                 ))}
             </fieldset>
           ) : (
-            <p className="rounded-[10px] bg-fundo px-3 py-2 text-sm text-texto-2">
+            <p className="rounded-[var(--radius-control)] bg-fundo px-3 py-2 text-sm text-texto-2">
               O administrador vê e gerencia todos os perfis.
             </p>
           )}

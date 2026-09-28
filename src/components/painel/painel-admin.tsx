@@ -117,7 +117,7 @@ export async function PainelAdmin({ supabase }: { supabase: SupabaseClient }) {
             {(revisao ?? []).map((p) => {
               const o = ultimaObs.get(p.id);
               return (
-                <div key={p.id} className="flex flex-col gap-2 rounded-[10px] border border-[#fcd34d] bg-st-revisao-bg/60 p-3 sm:flex-row sm:items-center">
+                <div key={p.id} className="flex flex-col gap-2 rounded-[var(--radius-control)] border border-[#fcd34d] bg-st-revisao-bg/60 p-3 sm:flex-row sm:items-center">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-bold text-azul-escuro">{p.tema}</p>
                     <p className="text-xs text-texto-2">
@@ -154,7 +154,7 @@ export async function PainelAdmin({ supabase }: { supabase: SupabaseClient }) {
                       <Link
                         href={`/posts/${p.id}`}
                         className={cn(
-                          "flex items-center gap-3 rounded-[10px] border px-3 py-2 hover:bg-fundo",
+                          "flex items-center gap-3 rounded-[var(--radius-control)] border px-3 py-2 hover:bg-fundo",
                           urgente(p) ? "border-[#fca5a5] bg-st-reprovado-bg/60" : "border-borda",
                         )}
                       >
@@ -184,7 +184,7 @@ export async function PainelAdmin({ supabase }: { supabase: SupabaseClient }) {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {(porPerfil ?? []).map((p) => (
-              <Link key={p.perfil_id} href={`/perfis/${p.perfil_id}`} className="rounded-[10px] border border-borda bg-white p-4 shadow-card hover:border-azul-claro">
+              <Link key={p.perfil_id} href={`/perfis/${p.perfil_id}`} className="rounded-[var(--radius-control)] border border-borda bg-white p-4 shadow-card hover:border-azul-claro">
                 <div className="flex items-center gap-3">
                   <Avatar nome={p.nome} src={p.avatar_url ? urls[p.avatar_url] : null} tamanho={36} />
                   <p className="font-bold text-azul-escuro">{p.nome}</p>
@@ -192,7 +192,7 @@ export async function PainelAdmin({ supabase }: { supabase: SupabaseClient }) {
                 <dl className="mt-3 grid grid-cols-3 gap-2">
                   {(["rascunho", "aguardando", "em_revisao", "aprovado", "publicado", "reprovado"] as StatusPost[]).map((s) => (
                     <div key={s} className={cn("rounded-md px-2 py-1.5", STATUS_CLASSES[s])}>
-                      <dt className="truncate text-[10px] font-semibold">{STATUS_LABEL[s]}</dt>
+                      <dt className="truncate text-xs font-semibold">{STATUS_LABEL[s]}</dt>
                       <dd className="text-lg font-bold leading-tight">{p[s] as number}</dd>
                     </div>
                   ))}

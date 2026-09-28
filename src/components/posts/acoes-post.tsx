@@ -44,7 +44,7 @@ export function ListaDownloads({ midias }: { midias: { id: string; nome: string;
     );
   }
   return (
-    <details className="rounded-[10px] border border-borda">
+    <details className="rounded-[var(--radius-control)] border border-borda">
       <summary className="flex h-10 cursor-pointer list-none items-center justify-center gap-2 text-sm font-semibold text-azul-escuro">
         <Download className="size-4" /> Baixar mídia ({baixaveis.length})
       </summary>

@@ -1,43 +1,48 @@
 import { cn, iniciais } from "@/lib/utils";
 
-const CORES = ["#004C97", "#001F4D", "#0079C1", "#00AEEF", "#2E3A59"];
+/** Cores de avatar derivadas da marca (texto branco, contraste AA). */
+const CORES = ["bg-blue-600", "bg-navy-900", "bg-st-proximos-text", "bg-st-aprovado-text", "bg-st-revisao-text", "bg-navy-700"];
 
-function corDoNome(nome: string) {
+/** Cor estável por perfil/pessoa (mesmo nome → mesma cor). */
+export function corDoNome(nome: string) {
   let h = 0;
   for (const c of nome) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  return CORES[h % CORES.length];
+  return CORES[h % CORES.length]!;
 }
+
+const TAMANHOS = { sm: 24, md: 32, lg: 48 } as const;
 
 export function Avatar({
   nome,
   src,
-  tamanho = 32,
+  size,
+  tamanho,
   className,
 }: {
   nome: string;
   src?: string | null;
+  size?: keyof typeof TAMANHOS;
+  /** tamanho em px (v1) */
   tamanho?: number;
   className?: string;
 }) {
-  const estilo = { width: tamanho, height: tamanho, fontSize: Math.max(10, tamanho * 0.38) };
+  const px = size ? TAMANHOS[size] : (tamanho ?? 32);
+  const estilo = { width: px, height: px, fontSize: Math.max(12, Math.round(px * 0.38)) };
   if (src) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={src}
-        alt={nome}
-        style={estilo}
-        className={cn("shrink-0 rounded-full object-cover ring-2 ring-white", className)}
-      />
+      <img src={src} alt={nome} style={estilo} className={cn("shrink-0 rounded-full object-cover ring-2 ring-surface-solid", className)} />
     );
   }
   return (
     <span
+      role="img"
       aria-label={nome}
       title={nome}
-      style={{ ...estilo, backgroundColor: corDoNome(nome) }}
+      style={estilo}
       className={cn(
-        "inline-flex shrink-0 items-center justify-center rounded-full font-bold text-white ring-2 ring-white",
+        "inline-flex shrink-0 items-center justify-center rounded-full font-bold leading-none text-white ring-2 ring-surface-solid",
+        corDoNome(nome),
         className,
       )}
     >
@@ -55,7 +60,7 @@ export function PilhaAvatares({
   tamanho?: number;
   max?: number;
 }) {
-  if (pessoas.length === 0) return <span className="text-xs text-texto-2">—</span>;
+  if (pessoas.length === 0) return <span className="text-label text-text-muted">—</span>;
   return (
     <div className="flex -space-x-2">
       {pessoas.slice(0, max).map((p) => (
@@ -63,7 +68,7 @@ export function PilhaAvatares({
       ))}
       {pessoas.length > max && (
         <span
-          className="inline-flex items-center justify-center rounded-full bg-fundo text-[10px] font-bold text-texto-2 ring-2 ring-white"
+          className="inline-flex items-center justify-center rounded-full bg-bg-app-to text-label font-bold text-text-muted ring-2 ring-surface-solid"
           style={{ width: tamanho, height: tamanho }}
         >
           +{pessoas.length - max}

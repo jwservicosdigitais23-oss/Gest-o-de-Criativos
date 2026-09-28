@@ -55,7 +55,7 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
           <ArrowLeft className="size-4" /> {perfil.nome}
         </Link>
         {d.versoesDisponiveis.length > 1 && (
-          <nav className="flex items-center gap-1 rounded-[10px] border border-borda bg-white p-1" aria-label="Versões">
+          <nav className="flex items-center gap-1 rounded-[var(--radius-control)] border border-borda bg-white p-1" aria-label="Versões">
             <Layers className="ml-1 size-4 text-texto-2" aria-hidden />
             {d.versoesDisponiveis.map((n) => (
               <Link
@@ -76,7 +76,7 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
       </div>
 
       <div>
-        <h1 className="text-2xl font-bold sm:text-[28px]">{conteudo.tema}</h1>
+        <h1 className="text-2xl font-bold sm:text-page-title">{conteudo.tema}</h1>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-texto-2">
           <StatusBadge status={post.status} />
           <span>v{versao}</span>

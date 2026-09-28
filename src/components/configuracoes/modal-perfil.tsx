@@ -129,7 +129,7 @@ export function ModalPerfil({
               <p className="text-sm text-texto-2">Nenhuma aprovadora cadastrada ainda. Convide na aba Membros.</p>
             )}
             {aprovadorasDisponiveis.map((m) => (
-              <label key={m.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[10px] border border-borda px-3 hover:bg-fundo">
+              <label key={m.id} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[var(--radius-control)] border border-borda px-3 hover:bg-fundo">
                 <Checkbox
                   checked={aprovadoras.includes(m.id)}
                   onChange={(e) =>

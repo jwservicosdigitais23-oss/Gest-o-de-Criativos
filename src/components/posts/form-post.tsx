@@ -178,8 +178,8 @@ export function FormPost({
         {status !== "rascunho" && (
           <div
             className={cn(
-              "flex gap-3 rounded-[10px] p-4 text-sm",
-              jaEnviado ? "bg-st-revisao-bg text-st-revisao" : "bg-st-aguardando-bg text-st-aguardando",
+              "flex gap-3 rounded-[var(--radius-control)] p-4 text-sm",
+              jaEnviado ? "bg-st-revisao-bg text-st-revisao-text" : "bg-st-aguardando-bg text-st-aguardando-text",
             )}
           >
             <AlertTriangle className="mt-0.5 size-4 shrink-0" />
@@ -267,7 +267,7 @@ export function FormPost({
           <ListaMidias itens={midias} onChange={setMidias} perfilId={perfilId} postId={id} versao={versaoEdicao} />
         </Card>
 
-        <div className="sticky bottom-20 z-10 flex flex-col-reverse gap-2 rounded-[10px] border border-borda bg-white/95 p-3 shadow-card backdrop-blur sm:flex-row sm:justify-end lg:bottom-4">
+        <div className="sticky bottom-20 z-10 flex flex-col-reverse gap-2 rounded-[var(--radius-control)] border border-borda bg-white/95 p-3 shadow-card backdrop-blur sm:flex-row sm:justify-end lg:bottom-4">
           <Button type="button" variant="secondary" onClick={() => router.back()} disabled={pendente}>
             Cancelar
           </Button>

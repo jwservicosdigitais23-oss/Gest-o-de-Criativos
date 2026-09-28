@@ -21,13 +21,13 @@ export function Topbar({ usuario, naoLidas }: { usuario: UsuarioShell; naoLidas:
             name="q"
             type="search"
             placeholder="Buscar post, tema, legenda..."
-            className="h-10 w-full rounded-[10px] border border-borda bg-fundo pl-9 pr-3 text-sm placeholder:text-texto-2 focus-visible:border-azul-claro focus-visible:bg-white"
+            className="h-10 w-full rounded-[var(--radius-control)] border border-borda bg-fundo pl-9 pr-3 text-sm placeholder:text-texto-2 focus-visible:border-azul-claro focus-visible:bg-white"
           />
         </form>
         <div className="ml-auto flex items-center gap-2">
           <Link
             href="/busca"
-            className="flex size-10 items-center justify-center rounded-[10px] text-texto hover:bg-fundo md:hidden"
+            className="flex size-10 items-center justify-center rounded-[var(--radius-control)] text-texto hover:bg-fundo md:hidden"
             aria-label="Buscar"
           >
             <Search className="size-5" />

@@ -93,7 +93,7 @@ export function AbaMembros({
                   <span
                     className={cn(
                       "rounded-full px-2.5 py-0.5 text-xs font-semibold",
-                      m.ativo ? "bg-st-aprovado-bg text-st-aprovado" : "bg-st-rascunho-bg text-st-rascunho",
+                      m.ativo ? "bg-st-aprovado-bg text-st-aprovado-text" : "bg-st-rascunho-bg text-st-rascunho-text",
                     )}
                   >
                     {m.ativo ? "Ativo" : "Inativo"}

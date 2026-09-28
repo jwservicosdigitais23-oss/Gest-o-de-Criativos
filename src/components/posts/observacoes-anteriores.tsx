@@ -12,7 +12,7 @@ export function ObservacoesAnteriores({
   versao: number;
 }) {
   return (
-    <div className="rounded-[10px] border border-[#fcd34d] bg-st-revisao-bg p-4 text-sm text-[#78350f]">
+    <div className="rounded-[var(--radius-control)] border border-[#fcd34d] bg-st-revisao-bg p-4 text-sm text-[#78350f]">
       <p className="mb-2 flex items-center gap-2 font-bold">
         <MessageSquareWarning className="size-4" aria-hidden /> O que foi pedido na v{versao}
       </p>

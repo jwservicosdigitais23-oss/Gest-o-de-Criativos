@@ -24,7 +24,7 @@ export function Logo({
       </span>
       <span
         className={cn(
-          "mt-1 text-[11px] font-normal tracking-[0.04em]",
+          "mt-1 text-xs font-normal tracking-[0.04em]",
           branco ? "text-white/80" : "text-texto",
         )}
       >

@@ -27,7 +27,7 @@ export function MenuUsuario({ usuario }: { usuario: UsuarioShell }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="flex items-center gap-2 rounded-[10px] p-1 pr-2 hover:bg-fundo"
+        className="flex items-center gap-2 rounded-[var(--radius-control)] p-1 pr-2 hover:bg-fundo"
         aria-label="Menu do usuário"
       >
         <Avatar nome={usuario.nome} src={usuario.avatarUrl} tamanho={34} className="ring-0" />

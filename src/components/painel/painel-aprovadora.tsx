@@ -11,9 +11,9 @@ import { cn, trecho } from "@/lib/utils";
 
 const DECISAO_LABEL = { aprovado: "Aprovou", revisar: "Pediu revisão", reprovado: "Reprovou" } as const;
 const DECISAO_COR = {
-  aprovado: "bg-st-aprovado-bg text-st-aprovado",
-  revisar: "bg-st-revisao-bg text-st-revisao",
-  reprovado: "bg-st-reprovado-bg text-st-reprovado",
+  aprovado: "bg-st-aprovado-bg text-st-aprovado-text",
+  revisar: "bg-st-revisao-bg text-st-revisao-text",
+  reprovado: "bg-st-reprovado-bg text-st-reprovado-text",
 } as const;
 
 export async function PainelAprovadora({ supabase, membroId }: { supabase: SupabaseClient; membroId: string }) {
@@ -55,7 +55,7 @@ export async function PainelAprovadora({ supabase, membroId }: { supabase: Supab
             const venceHoje = p.prazo_aprovacao === hoje;
             const m = mini[p.id];
             return (
-              <div key={p.id} className="flex flex-col gap-3 rounded-[10px] border border-borda p-3 sm:flex-row sm:items-center">
+              <div key={p.id} className="flex flex-col gap-3 rounded-[var(--radius-control)] border border-borda p-3 sm:flex-row sm:items-center">
                 <div className="flex min-w-0 flex-1 items-center gap-3">
                   <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md bg-fundo">
                     {m?.src ? (
@@ -72,13 +72,13 @@ export async function PainelAprovadora({ supabase, membroId }: { supabase: Supab
                       {p.hora_publicacao && ` às ${formatarHora(p.hora_publicacao)}`} · v{p.versao}
                     </p>
                     <div className="mt-1 flex flex-wrap gap-1">
-                      {atrasado && <Pilula className="bg-st-reprovado-bg text-st-reprovado">Atrasado</Pilula>}
-                      {venceHoje && <Pilula className="bg-st-reprovado-bg text-st-reprovado">Vence hoje</Pilula>}
-                      {venceAmanha && <Pilula className="bg-st-revisao-bg text-st-revisao">Vence amanhã</Pilula>}
+                      {atrasado && <Pilula className="bg-st-reprovado-bg text-st-reprovado-text">Atrasado</Pilula>}
+                      {venceHoje && <Pilula className="bg-st-reprovado-bg text-st-reprovado-text">Vence hoje</Pilula>}
+                      {venceAmanha && <Pilula className="bg-st-revisao-bg text-st-revisao-text">Vence amanhã</Pilula>}
                       {!atrasado && !venceHoje && !venceAmanha && p.prazo_aprovacao && (
                         <Pilula className="bg-fundo text-texto-2">Prazo {formatarData(p.prazo_aprovacao)}</Pilula>
                       )}
-                      {p.versao > 1 && <Pilula className="bg-st-aguardando-bg text-st-aguardando">Ajustado</Pilula>}
+                      {p.versao > 1 && <Pilula className="bg-st-aguardando-bg text-st-aguardando-text">Ajustado</Pilula>}
                     </div>
                   </div>
                 </div>

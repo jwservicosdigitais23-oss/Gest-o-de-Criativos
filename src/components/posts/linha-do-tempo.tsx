@@ -19,21 +19,21 @@ export interface EventoLinha {
 }
 
 const ACOES: Record<string, { rotulo: string; icone: typeof Check; cor: string }> = {
-  criou: { rotulo: "criou o post", icone: FilePlus2, cor: "bg-st-rascunho-bg text-st-rascunho" },
-  editou: { rotulo: "editou o post", icone: Pencil, cor: "bg-st-rascunho-bg text-st-rascunho" },
-  enviou: { rotulo: "enviou para aprovação", icone: Send, cor: "bg-st-aguardando-bg text-st-aguardando" },
-  reenviou: { rotulo: "reenviou com ajustes", icone: Send, cor: "bg-st-aguardando-bg text-st-aguardando" },
-  editou_e_reenviou: { rotulo: "editou e reenviou para aprovação", icone: Send, cor: "bg-st-aguardando-bg text-st-aguardando" },
-  aprovou: { rotulo: "aprovou", icone: Check, cor: "bg-st-aprovado-bg text-st-aprovado" },
-  pediu_revisao: { rotulo: "pediu revisão", icone: RotateCcw, cor: "bg-st-revisao-bg text-st-revisao" },
-  reprovou: { rotulo: "reprovou", icone: X, cor: "bg-st-reprovado-bg text-st-reprovado" },
-  publicou: { rotulo: "marcou como publicado", icone: Globe, cor: "bg-st-publicado-bg text-st-publicado" },
-  duplicou: { rotulo: "criou por duplicação", icone: CopyPlus, cor: "bg-st-rascunho-bg text-st-rascunho" },
-  arquivou: { rotulo: "arquivou o post", icone: Archive, cor: "bg-st-rascunho-bg text-st-rascunho" },
-  excluiu: { rotulo: "excluiu o post", icone: Trash2, cor: "bg-st-reprovado-bg text-st-reprovado" },
-  importou: { rotulo: "importou do cronograma", icone: FilePlus2, cor: "bg-st-rascunho-bg text-st-rascunho" },
-  atualizou_importacao: { rotulo: "atualizou pelo cronograma", icone: Pencil, cor: "bg-st-rascunho-bg text-st-rascunho" },
-  reagendou: { rotulo: "mudou a data de publicação", icone: Pencil, cor: "bg-st-rascunho-bg text-st-rascunho" },
+  criou: { rotulo: "criou o post", icone: FilePlus2, cor: "bg-st-rascunho-bg text-st-rascunho-text" },
+  editou: { rotulo: "editou o post", icone: Pencil, cor: "bg-st-rascunho-bg text-st-rascunho-text" },
+  enviou: { rotulo: "enviou para aprovação", icone: Send, cor: "bg-st-aguardando-bg text-st-aguardando-text" },
+  reenviou: { rotulo: "reenviou com ajustes", icone: Send, cor: "bg-st-aguardando-bg text-st-aguardando-text" },
+  editou_e_reenviou: { rotulo: "editou e reenviou para aprovação", icone: Send, cor: "bg-st-aguardando-bg text-st-aguardando-text" },
+  aprovou: { rotulo: "aprovou", icone: Check, cor: "bg-st-aprovado-bg text-st-aprovado-text" },
+  pediu_revisao: { rotulo: "pediu revisão", icone: RotateCcw, cor: "bg-st-revisao-bg text-st-revisao-text" },
+  reprovou: { rotulo: "reprovou", icone: X, cor: "bg-st-reprovado-bg text-st-reprovado-text" },
+  publicou: { rotulo: "marcou como publicado", icone: Globe, cor: "bg-st-publicado-bg text-st-publicado-text" },
+  duplicou: { rotulo: "criou por duplicação", icone: CopyPlus, cor: "bg-st-rascunho-bg text-st-rascunho-text" },
+  arquivou: { rotulo: "arquivou o post", icone: Archive, cor: "bg-st-rascunho-bg text-st-rascunho-text" },
+  excluiu: { rotulo: "excluiu o post", icone: Trash2, cor: "bg-st-reprovado-bg text-st-reprovado-text" },
+  importou: { rotulo: "importou do cronograma", icone: FilePlus2, cor: "bg-st-rascunho-bg text-st-rascunho-text" },
+  atualizou_importacao: { rotulo: "atualizou pelo cronograma", icone: Pencil, cor: "bg-st-rascunho-bg text-st-rascunho-text" },
+  reagendou: { rotulo: "mudou a data de publicação", icone: Pencil, cor: "bg-st-rascunho-bg text-st-rascunho-text" },
   comentou: { rotulo: "comentou", icone: MessageSquare, cor: "bg-[#e0f6fd] text-[#00709a]" },
 };
 
@@ -45,7 +45,7 @@ export function LinhaDoTempo({ eventos, postId }: { eventos: EventoLinha[]; post
     <div className="flex flex-col gap-4">
       <ol className="relative flex flex-col gap-5 before:absolute before:bottom-2 before:left-[17px] before:top-2 before:w-px before:bg-borda">
         {eventos.map((e) => {
-          const cfg = ACOES[e.acao] ?? { rotulo: e.acao.replaceAll("_", " "), icone: Pencil, cor: "bg-st-rascunho-bg text-st-rascunho" };
+          const cfg = ACOES[e.acao] ?? { rotulo: e.acao.replaceAll("_", " "), icone: Pencil, cor: "bg-st-rascunho-bg text-st-rascunho-text" };
           const Icone = cfg.icone;
           const destaque = e.observacao && (e.acao === "pediu_revisao" || e.acao === "reprovou");
           return (
@@ -68,7 +68,7 @@ export function LinhaDoTempo({ eventos, postId }: { eventos: EventoLinha[]; post
                 {e.observacao && (
                   <div
                     className={cn(
-                      "mt-2 rounded-[10px] border p-3 text-sm",
+                      "mt-2 rounded-[var(--radius-control)] border p-3 text-sm",
                       destaque ? "border-[#fcd34d] bg-st-revisao-bg text-[#78350f]" : "border-borda bg-fundo",
                     )}
                   >
@@ -85,7 +85,7 @@ export function LinhaDoTempo({ eventos, postId }: { eventos: EventoLinha[]; post
                   </div>
                 )}
                 {e.texto && (
-                  <div className="mt-2 rounded-[10px] border border-borda bg-white p-3 text-sm">
+                  <div className="mt-2 rounded-[var(--radius-control)] border border-borda bg-white p-3 text-sm">
                     {e.respondeA && <p className="mb-1 text-xs font-semibold text-texto-2">Em resposta a {e.respondeA}</p>}
                     <p className="whitespace-pre-wrap">{e.texto}</p>
                   </div>

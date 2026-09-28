@@ -55,7 +55,7 @@ export function LoginForm({ next, mostrarPrimeiroAcesso }: { next: string; mostr
         </Link>
       </div>
       {erro && (
-        <p role="alert" className="rounded-[10px] bg-st-reprovado-bg px-3 py-2 text-sm text-st-reprovado">
+        <p role="alert" className="rounded-[var(--radius-control)] bg-st-reprovado-bg px-3 py-2 text-sm text-st-reprovado-text">
           {erro}
         </p>
       )}

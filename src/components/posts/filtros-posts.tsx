@@ -49,7 +49,7 @@ export function FiltrosPosts({ meses, vista }: { meses: string[]; vista: "kanban
           })}
         </Select>
       </div>
-      <div className="hidden rounded-[10px] border border-borda bg-white p-1 md:inline-flex" role="group" aria-label="Visualização">
+      <div className="hidden rounded-[var(--radius-control)] border border-borda bg-white p-1 md:inline-flex" role="group" aria-label="Visualização">
         {(
           [
             { v: "kanban", l: "Kanban", i: Columns3 },

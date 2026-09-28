@@ -113,7 +113,7 @@ export function PainelDecisao({ postId, versao, fixoNoCelular = true }: { postId
                         key={i.valor}
                         className={cn(
                           "flex min-h-11 cursor-pointer items-center gap-2 rounded-full border px-4 text-sm font-medium",
-                          itens.includes(i.valor) ? "border-ambar bg-st-revisao-bg text-st-revisao" : "border-borda",
+                          itens.includes(i.valor) ? "border-ambar bg-st-revisao-bg text-st-revisao-text" : "border-borda",
                         )}
                       >
                         <Checkbox

@@ -35,10 +35,10 @@ import { enviarArquivo, lerDimensoes } from "@/lib/upload";
 import { cn } from "@/lib/utils";
 
 const SELO: Record<Situacao, { rotulo: string; classe: string }> = {
-  novo: { rotulo: "Novo", classe: "bg-st-aguardando-bg text-st-aguardando" },
+  novo: { rotulo: "Novo", classe: "bg-st-aguardando-bg text-st-aguardando-text" },
   atualiza: { rotulo: "Atualiza", classe: "bg-[#e0f6fd] text-[#00709a]" },
-  ignorada: { rotulo: "Ignorada", classe: "bg-st-rascunho-bg text-st-rascunho" },
-  erro: { rotulo: "Erro", classe: "bg-st-reprovado-bg text-st-reprovado" },
+  ignorada: { rotulo: "Ignorada", classe: "bg-st-rascunho-bg text-st-rascunho-text" },
+  erro: { rotulo: "Erro", classe: "bg-st-reprovado-bg text-st-reprovado-text" },
 };
 
 type Etapa = "upload" | "mapeamento" | "previa" | "resumo";
@@ -152,7 +152,7 @@ export function ImportarCronograma({
           if (f) void lerArquivo(f);
         }}
         className={cn(
-          "flex flex-col items-center justify-center gap-3 rounded-[10px] border-2 border-dashed bg-white px-6 py-16 text-center",
+          "flex flex-col items-center justify-center gap-3 rounded-[var(--radius-control)] border-2 border-dashed bg-white px-6 py-16 text-center",
           arrastando ? "border-azul-claro bg-st-aguardando-bg" : "border-borda",
         )}
       >
@@ -249,7 +249,7 @@ export function ImportarCronograma({
         </div>
 
         {temPassado && (
-          <label className="flex items-start gap-3 rounded-[10px] border border-[#fcd34d] bg-st-revisao-bg p-3 text-sm text-[#78350f]">
+          <label className="flex items-start gap-3 rounded-[var(--radius-control)] border border-[#fcd34d] bg-st-revisao-bg p-3 text-sm text-[#78350f]">
             <Checkbox checked={confirmaPassado} onChange={(e) => setConfirmaPassado(e.target.checked)} className="mt-0.5" />
             <span>
               Algumas linhas têm <strong>data no passado</strong>. Confirmo que quero importá-las mesmo assim.
@@ -299,7 +299,7 @@ export function ImportarCronograma({
                       </p>
                     )}
                     {l.avisos.map((a) => (
-                      <p key={a} className="flex items-center gap-1 text-st-revisao">
+                      <p key={a} className="flex items-center gap-1 text-st-revisao-text">
                         <AlertTriangle className="size-3.5 shrink-0" /> {a}
                       </p>
                     ))}
@@ -421,7 +421,7 @@ function Resumo({ resumo, analise, onNova }: { resumo: ResumoImportacao; analise
             { r: "Ignorados", v: resumo.ignorados, c: SELO.ignorada.classe },
             { r: "Erros", v: resumo.erros, c: SELO.erro.classe },
           ].map((x) => (
-            <div key={x.r} className={cn("rounded-[10px] p-3", x.c)}>
+            <div key={x.r} className={cn("rounded-[var(--radius-control)] p-3", x.c)}>
               <dt className="text-xs font-semibold">{x.r}</dt>
               <dd className="text-2xl font-bold">{x.v}</dd>
             </div>
@@ -454,7 +454,7 @@ function Resumo({ resumo, analise, onNova }: { resumo: ResumoImportacao; analise
               e.preventDefault();
               void soltar(e.dataTransfer.files);
             }}
-            className="flex flex-col items-center gap-2 rounded-[10px] border-2 border-dashed border-borda bg-fundo px-4 py-8 text-center"
+            className="flex flex-col items-center gap-2 rounded-[var(--radius-control)] border-2 border-dashed border-borda bg-fundo px-4 py-8 text-center"
           >
             <Paperclip className="size-6 text-azul-medio" aria-hidden />
             <p className="text-sm font-semibold text-azul-escuro">Arraste as mídias aqui</p>

@@ -22,7 +22,7 @@ function ItemMenu({
       href={href}
       aria-current={ativo ? "page" : undefined}
       className={cn(
-        "relative flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm font-medium transition-colors [&>svg]:size-5",
+        "relative flex items-center gap-3 rounded-[var(--radius-control)] px-3 py-2 text-sm font-medium transition-colors [&>svg]:size-5",
         ativo ? "bg-white/10 text-azul-claro" : "text-white/80 hover:bg-white/5 hover:text-white",
       )}
     >
@@ -47,7 +47,7 @@ export function Sidebar({ perfis, usuario }: { perfis: PerfilMenu[]; usuario: Us
   const ativo = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col bg-azul-escuro lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col bg-gradiente-sidebar lg:flex">
       <div className="px-6 pb-6 pt-7">
         <Link href="/" aria-label="Painel">
           <Logo variante="branco" />
@@ -67,7 +67,7 @@ export function Sidebar({ perfis, usuario }: { perfis: PerfilMenu[]; usuario: Us
               <span className="flex-1 truncate">{p.nome}</span>
               {p.aguardando > 0 && (
                 <span
-                  className="rounded-full bg-azul-claro px-1.5 text-[11px] font-bold text-azul-escuro"
+                  className="rounded-full bg-azul-claro px-1.5 text-xs font-bold text-azul-escuro"
                   aria-label={`${p.aguardando} aguardando aprovação`}
                 >
                   {p.aguardando}

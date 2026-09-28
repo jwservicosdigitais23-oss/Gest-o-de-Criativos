@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/toast";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -25,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="pt-BR" className={montserrat.variable}>
       <body className="min-h-dvh">
         {children}
-        <Toaster position="top-right" richColors closeButton />
+        <Toaster />
       </body>
     </html>
   );

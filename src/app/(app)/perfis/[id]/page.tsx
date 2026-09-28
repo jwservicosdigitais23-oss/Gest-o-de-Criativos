@@ -81,7 +81,7 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
     miniatura: miniaturas[p.id],
     observacoes: observacoes[p.id] ?? 0,
     extra: progressoPorPost.has(p.id) ? (
-      <span className="font-semibold text-st-aguardando">
+      <span className="font-semibold text-st-aguardando-text">
         {progressoPorPost.get(p.id)!.aprovacoes} de {progressoPorPost.get(p.id)!.total_aprovadoras} aprovações
       </span>
     ) : undefined,
@@ -96,7 +96,7 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
         <div className="flex items-center gap-4">
           <Avatar nome={perfil.nome} src={perfil.avatar_url ? urls[perfil.avatar_url] : null} tamanho={64} />
           <div className="min-w-0">
-            <h1 className="text-2xl font-bold sm:text-[28px]">{perfil.nome}</h1>
+            <h1 className="text-2xl font-bold sm:text-page-title">{perfil.nome}</h1>
             <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-texto-2">
               <span>{perfil.tipo === "empresa" ? "Empresa" : "Pessoal"}</span>
               <span aria-hidden>·</span>
@@ -166,7 +166,7 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
                   {colunas.map((col) => {
                     const doStatus = cards.filter((p) => p.status === col);
                     return (
-                      <section key={col} className="flex w-72 shrink-0 flex-col gap-3 rounded-[10px] bg-[#eef1f5] p-3" aria-label={col}>
+                      <section key={col} className="flex w-72 shrink-0 flex-col gap-3 rounded-[var(--radius-control)] bg-[#eef1f5] p-3" aria-label={col}>
                         <header className="flex items-center justify-between px-1">
                           <StatusBadge status={col} />
                           <span className="text-xs font-bold text-texto-2">{doStatus.length}</span>

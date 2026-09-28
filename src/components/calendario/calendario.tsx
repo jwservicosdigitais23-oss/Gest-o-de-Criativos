@@ -121,7 +121,7 @@ export function Calendario({
         }}
         title={`${p.tema} · ${STATUS_LABEL[p.status]}`}
         className={cn(
-          "flex min-w-0 items-center gap-1 rounded-full border-l-[3px] py-0.5 pl-1 pr-2 text-[11px] font-semibold",
+          "flex min-w-0 items-center gap-1 rounded-full border-l-[3px] py-0.5 pl-1 pr-2 text-xs font-semibold",
           STATUS_CLASSES[p.status],
           podeArrastar && "cursor-grab active:cursor-grabbing",
         )}
@@ -139,7 +139,7 @@ export function Calendario({
       {/* Barra de navegação */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          <div className="inline-flex rounded-[10px] border border-borda bg-white p-1" role="group" aria-label="Visualização">
+          <div className="inline-flex rounded-[var(--radius-control)] border border-borda bg-white p-1" role="group" aria-label="Visualização">
             {(["mes", "semana"] as const).map((m) => (
               <button
                 key={m}
@@ -209,7 +209,7 @@ export function Calendario({
       </div>
 
       {/* Grade (desktop / semana) */}
-      <div className="hidden overflow-hidden rounded-[10px] border border-borda bg-white shadow-card md:block">
+      <div className="hidden overflow-hidden rounded-[var(--radius-control)] border border-borda bg-white shadow-card md:block">
         <div className="grid grid-cols-7 border-b border-borda bg-fundo">
           {DIAS.map((d) => (
             <div key={d} className="rotulo px-2 py-2 text-center text-texto-2">
@@ -277,7 +277,7 @@ export function Calendario({
                   <button
                     type="button"
                     onClick={() => setDiaAberto(dia)}
-                    className="self-start rounded-full px-2 text-[11px] font-bold text-azul-medio hover:bg-st-aguardando-bg"
+                    className="self-start rounded-full px-2 text-xs font-bold text-azul-medio hover:bg-st-aguardando-bg"
                   >
                     +{resto}
                   </button>
@@ -292,7 +292,7 @@ export function Calendario({
       {(
         <div className="flex flex-col gap-4 md:hidden">
           {dias.filter((d) => (modo === "semana" || Number(d.slice(5, 7)) === mesRef) && (porDia.get(d)?.length ?? 0) > 0).length === 0 && (
-            <p className="rounded-[10px] border border-dashed border-borda bg-white p-8 text-center text-sm text-texto-2">
+            <p className="rounded-[var(--radius-control)] border border-dashed border-borda bg-white p-8 text-center text-sm text-texto-2">
               {modo === "mes" ? "Nenhum post neste mês." : "Nenhum post nesta semana."}
             </p>
           )}
@@ -304,7 +304,7 @@ export function Calendario({
                   {dia === hoje ? "Hoje · " : ""}
                   {formatarDiaCurto(dia)}
                 </h3>
-                <ul className="overflow-hidden rounded-[10px] border border-borda bg-white">
+                <ul className="overflow-hidden rounded-[var(--radius-control)] border border-borda bg-white">
                   {porDia.get(dia)!.map((p) => {
                     const perfil = perfilPorId.get(p.perfil_id);
                     return (
@@ -348,7 +348,7 @@ export function Calendario({
               <strong className="text-azul-escuro">{formatarData(movendo.para)}</strong>. O prazo de aprovação é recalculado.
             </p>
             {movendo.post.status === "aprovado" && (
-              <p className="mt-3 rounded-[10px] bg-st-revisao-bg p-3 text-sm text-[#78350f]">
+              <p className="mt-3 rounded-[var(--radius-control)] bg-st-revisao-bg p-3 text-sm text-[#78350f]">
                 Este post já está aprovado. Mudar a data <strong>o devolve para aprovação</strong> (nova versão).
               </p>
             )}

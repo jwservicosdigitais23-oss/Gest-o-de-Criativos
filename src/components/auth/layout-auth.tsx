@@ -22,7 +22,7 @@ export function LayoutAuth({ children }: { children: React.ReactNode }) {
           <ul className="mt-8 hidden flex-col gap-5 sm:flex">
             {BENEFICIOS.map(({ icone: Icone, titulo, texto }) => (
               <li key={titulo} className="flex gap-4">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-[10px] bg-white/15">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-white/15">
                   <Icone className="size-5 text-white" aria-hidden />
                 </span>
                 <div>

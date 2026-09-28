@@ -26,7 +26,7 @@ function Thumb({ miniatura, formato, className }: { miniatura?: Miniatura; forma
         <Icone className="size-7 text-texto-2" aria-hidden />
       )}
       {miniatura && miniatura.total > 1 && (
-        <span className="absolute right-1.5 top-1.5 rounded-full bg-azul-escuro/80 px-1.5 text-[10px] font-bold text-white">
+        <span className="absolute right-1.5 top-1.5 rounded-full bg-azul-escuro/80 px-1.5 text-xs font-bold text-white">
           +{miniatura.total - 1}
         </span>
       )}
@@ -46,7 +46,7 @@ export function CardPost({ post }: { post: PostCardDados }) {
   return (
     <Link
       href={`/posts/${post.id}`}
-      className="group block overflow-hidden rounded-[10px] border border-borda bg-white shadow-card transition hover:border-azul-claro hover:shadow-md"
+      className="group block overflow-hidden rounded-[var(--radius-control)] border border-borda bg-white shadow-card transition hover:border-azul-claro hover:shadow-md"
     >
       <Thumb miniatura={post.miniatura} formato={post.formato} className="aspect-[16/10]" />
       <div className="flex flex-col gap-2 p-3">
