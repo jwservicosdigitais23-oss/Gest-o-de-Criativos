@@ -105,7 +105,7 @@ export function FormPrimeiroAcesso({ nome, previa = false }: { nome: string; pre
       <Campo label="Nova senha" htmlFor="nova-senha">
         <PasswordInput id="nova-senha" value={senha} onChange={(e) => setSenha(e.target.value)} autoComplete="new-password" required />
       </Campo>
-      <RegrasSenha senha={senha} className="-mt-2" />
+      <RegrasSenha senha={senha} className="-mt-2" claro />
       <Campo label="Confirmar senha" htmlFor="confirmar-senha">
         <PasswordInput
           id="confirmar-senha"

@@ -42,7 +42,7 @@ export function NovaSenhaForm({ nome }: { nome: string }) {
       <Campo label="Nova senha" htmlFor="senha">
         <CampoSenha id="senha" name="senha" autoComplete="new-password" required minLength={10} onChange={(e) => setSenhaDigitada(e.target.value)} />
       </Campo>
-      <RegrasSenha senha={senhaDigitada} className="-mt-2" />
+      <RegrasSenha senha={senhaDigitada} className="-mt-2" claro />
       <Campo label="Confirme a senha" htmlFor="confirmacao">
         <CampoSenha id="confirmacao" name="confirmacao" autoComplete="new-password" required />
       </Campo>
