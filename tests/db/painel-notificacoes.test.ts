@@ -21,6 +21,8 @@ describe.skipIf(!temBanco)("Prompt 5 · painel e notificações", () => {
     admin = await criarUsuario(c, "admin@teste.dev", "Jonathan");
     edna = await perfilPorNome(c, "Edna Queiroz");
     adere = await perfilPorNome(c, "Grupo Adere");
+    // Estes cenários cobrem o modo "todas" (o Grupo Adere real usa "qualquer uma").
+    await sql(c, "update public.perfis set modo_aprovacao = 'todas' where id = $1", [adere]);
     aprovEdna = await criarAprovadora(c, "edna@teste.dev", [edna, adere]);
     aprovDaniela = await criarAprovadora(c, "daniela@teste.dev", [adere]);
   });

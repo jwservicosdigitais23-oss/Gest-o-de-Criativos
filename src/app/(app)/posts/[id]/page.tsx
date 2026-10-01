@@ -60,6 +60,14 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
           ),
         )
       : null;
+  // "Aprovado por Daniela Quintana": quem tomou a decisão que definiu o status.
+  const decisoesFinais = d.decisoes.filter(
+    (x) =>
+      x.versao === post.versao &&
+      ((["aprovado", "publicado"].includes(post.status) && x.decisao === "aprovado") ||
+        (post.status === "reprovado" && x.decisao === "reprovado")),
+  );
+  const decididoPor = !versaoAntiga && decisoesFinais.length ? decisoesFinais.map((x) => nomeDe(x.autor_id)).join(" e ") : null;
   const observacoesAtuais = d.decisoes
     .filter((x) => x.versao === post.versao && x.observacao && x.decisao !== "aprovado")
     .map((x) => ({ id: x.id, autor: nomeDe(x.autor_id), decisao: x.decisao, observacao: x.observacao!, itens: x.itens }));
@@ -101,7 +109,7 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
       <div>
         <h1 className="text-2xl font-bold text-navy-900 sm:text-page-title">{conteudo.tema}</h1>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-body text-text-muted">
-          <StatusPill status={sv} />
+          <StatusPill status={sv} por={decididoPor} />
           <span>v{versao}</span>
           <span aria-hidden>·</span>
           <span>{FORMATO_LABEL[conteudo.formato]}</span>
@@ -179,7 +187,7 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
           <GlassCard className="p-5">
             <SectionHeader titulo="Detalhes" className="mb-1" />
             <dl className="divide-y divide-border">
-              <Linha rotulo="Status"><StatusPill status={sv} /></Linha>
+              <Linha rotulo="Status"><StatusPill status={sv} por={decididoPor} className="whitespace-normal text-right" /></Linha>
               <Linha rotulo="Publicação">
                 <span className="inline-flex items-center gap-1">
                   <CalendarClock className="size-4 text-text-muted" />

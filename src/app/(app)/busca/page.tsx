@@ -7,7 +7,7 @@ import { GlassCard } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { exigirMembro } from "@/lib/auth";
-import { carregarMiniaturas, contarObservacoes } from "@/lib/consultas";
+import { carregarDecididoPor, carregarMiniaturas, contarObservacoes } from "@/lib/consultas";
 import type { Post } from "@/lib/types";
 
 export const metadata: Metadata = { title: "Buscar" };
@@ -30,11 +30,18 @@ export default async function BuscaPage(props: PageProps<"/busca">) {
       .limit(50)
       .returns<(Post & { perfis: { nome: string } | null })[]>();
     const lista = data ?? [];
-    const [mini, obs] = await Promise.all([
+    const [mini, obs, por] = await Promise.all([
       carregarMiniaturas(supabase, lista),
       contarObservacoes(supabase, lista.map((p) => p.id)),
+      carregarDecididoPor(supabase, lista),
     ]);
-    resultados = lista.map((p) => ({ ...p, perfilNome: p.perfis?.nome, miniatura: mini[p.id], observacoes: obs[p.id] ?? 0 }));
+    resultados = lista.map((p) => ({
+      ...p,
+      perfilNome: p.perfis?.nome,
+      miniatura: mini[p.id],
+      observacoes: obs[p.id] ?? 0,
+      decididoPor: por[p.id] ?? null,
+    }));
   }
 
   return (

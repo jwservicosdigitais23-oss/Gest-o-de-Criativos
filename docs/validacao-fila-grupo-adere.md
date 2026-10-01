@@ -102,3 +102,14 @@ Playwright: `e2e/fila-grupo-adere.spec.ts` (fila e contadores na tela) e `e2e/ac
 Nenhum post foi criado, alterado ou decidido, e nenhum e-mail foi enviado (as notificações são só internas).
 
 **Prints do "Ver como":** não foi possível tirar daqui, porque este ambiente não acessa o Supabase de produção nem tem a sua sessão de admin. Para conferir: entre como admin › avatar › **Ver como Edna Queiroz** › Painel (4 em "Para você aprovar") e a página do Grupo Adere (os 2 webinars em Aguardando, com "Edna: pendente · Daniela: pendente"). Depois repita com a Daniela (3 na fila).
+
+## 5. Mudança de regra (01/10): Grupo Adere passa a "qualquer uma"
+
+Pedido do Jonathan: o post do Grupo Adere continua aparecendo para a Edna e para a Daniela, mas **basta uma aprovar**. Quem não decidiu vê o post como "Aprovado por Daniela Quintana" (ou "por Edna Queiroz").
+
+- Migração `20261001130000_grupo_adere_qualquer_uma.sql` (aplicada em produção):
+  - `modo_aprovacao = 'qualquer_uma'` no Grupo Adere, com reavaliação dos posts que já tinham alguma aprovação (em produção não havia nenhum);
+  - nova view `posts_decidido_por` (security invoker), com o nome de quem aprovou ou reprovou a versão atual.
+- O selo de status mostra "Aprovado por …" / "Reprovado por …" no Kanban, na lista, na busca e no detalhe do post. No modo "todas", lista todas ("Aprovado por Edna Queiroz e Daniela Quintana").
+- O modo continua editável em Configurações › Perfis. Os testes do modo "todas" seguem cobrindo esse modo (definido no próprio teste).
+- Testes novos: a primeira aprovação vale, o post sai da fila da outra, ela vê "Aprovado por …" e não decide mais. Vale nos dois sentidos. Suíte: 112 testes passando.

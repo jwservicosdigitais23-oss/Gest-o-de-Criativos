@@ -54,9 +54,38 @@ describe.skipIf(!temBanco)("Fila do Grupo Adere", () => {
       (r) => r.map((x) => x.destinatario_id).sort(),
     );
 
-  it("modo cadastrado do Grupo Adere é 'todas'", async () => {
+  it("modo cadastrado do Grupo Adere é 'qualquer uma'", async () => {
     const [p] = await sql<{ modo_aprovacao: string }>(c, "select modo_aprovacao from public.perfis where id = $1", [perfilGrupo]);
-    expect(p!.modo_aprovacao).toBe("todas");
+    expect(p!.modo_aprovacao).toBe("qualquer_uma");
+  });
+
+  it("Grupo Adere: a primeira aprovação vale; o post sai da fila da outra, que vê 'Aprovado por Daniela Quintana'", async () => {
+    await sql(c, "update public.membros set nome = 'Daniela Quintana' where id = $1", [daniela]);
+    const post = await enviar(perfilGrupo, "Uma basta");
+    expect(await fila(edna)).toContain(post);
+    expect(await fila(daniela)).toContain(post);
+    await decidir(daniela, post, "aprovado");
+    expect(await status(post)).toBe("aprovado");
+    expect(await fila(edna)).not.toContain(post);
+    // A Edna continua vendo o post, com quem aprovou.
+    const [visto] = await como(c, edna, () =>
+      sql<{ autor_nome: string }>(c, "select autor_nome from public.posts_decidido_por where post_id = $1", [post]),
+    );
+    expect(visto!.autor_nome).toBe("Daniela Quintana");
+    // E não decide mais nele.
+    expect(await erroDe(decidir(edna, post, "aprovado"))).toBe("P0001");
+  });
+
+  it("vale também ao contrário: Edna aprova primeiro, Daniela vê 'Aprovado por Edna Queiroz'", async () => {
+    await sql(c, "update public.membros set nome = 'Edna Queiroz' where id = $1", [edna]);
+    const post = await enviar(perfilGrupo, "Edna primeiro");
+    await decidir(edna, post, "aprovado");
+    expect(await status(post)).toBe("aprovado");
+    expect(await fila(daniela)).not.toContain(post);
+    const [visto] = await como(c, daniela, () =>
+      sql<{ autor_nome: string }>(c, "select autor_nome from public.posts_decidido_por where post_id = $1", [post]),
+    );
+    expect(visto!.autor_nome).toBe("Edna Queiroz");
   });
 
   it("post do Grupo Adere entra na fila das duas e notifica as duas, mesmo sem nunca terem entrado", async () => {
@@ -85,8 +114,8 @@ describe.skipIf(!temBanco)("Fila do Grupo Adere", () => {
         await decidir(quem, x, "reprovado", "Fora da linha editorial");
         expect(await status(r)).toBe("em_revisao");
         expect(await status(x)).toBe("reprovado");
-        // própria: qualquer uma → aprovado; Grupo: todas → espera a outra
-        expect(await status(a)).toBe(perfil === perfilGrupo ? "aguardando" : "aprovado");
+        // qualquer uma (próprio perfil e Grupo Adere): a primeira aprovação vale
+        expect(await status(a)).toBe("aprovado");
       }
     }
   });
@@ -108,6 +137,7 @@ describe.skipIf(!temBanco)("Fila do Grupo Adere", () => {
   });
 
   it("modo todas: 1 de 2 → aprovado; revisão de qualquer uma → em revisão; nova versão zera as aprovações", async () => {
+    await sql(c, "update public.perfis set modo_aprovacao = 'todas' where id = $1", [perfilGrupo]);
     const post = await enviar(perfilGrupo, "Todas");
     await decidir(edna, post, "aprovado");
     let [p] = await sql<{ aprovacoes: number; total_aprovadoras: number }>(
@@ -151,7 +181,7 @@ describe.skipIf(!temBanco)("Fila do Grupo Adere", () => {
     const g1 = await enviar(perfilGrupo, "G1");
     await enviar(perfilGrupo, "G2");
     await enviar(perfilEdna, "E1");
-    await decidir(edna, g1, "aprovado"); // continua aguardando (todas), mas sai da fila da Edna
+    await decidir(edna, g1, "aprovado"); // aprovado (qualquer uma): sai da fila
     const porPerfil = await como(c, edna, () =>
       sql<{ perfil_id: string; n: number }>(
         c,

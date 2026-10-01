@@ -65,6 +65,14 @@ export async function carregarMiniaturas(
   return r;
 }
 
+/** Nome de quem aprovou/reprovou a versão atual de cada post ("Aprovado por …"). */
+export async function carregarDecididoPor(supabase: SupabaseClient, posts: Pick<Post, "id" | "status">[]) {
+  const ids = posts.filter((p) => ["aprovado", "publicado", "reprovado"].includes(p.status)).map((p) => p.id);
+  if (ids.length === 0) return {} as Record<string, string>;
+  const { data } = await supabase.from("posts_decidido_por").select("post_id, autor_nome").in("post_id", ids);
+  return Object.fromEntries((data ?? []).filter((d) => d.autor_nome).map((d) => [d.post_id as string, d.autor_nome as string]));
+}
+
 export async function contarObservacoes(supabase: SupabaseClient, postIds: string[]) {
   if (postIds.length === 0) return {} as Record<string, number>;
   const { data } = await supabase.from("posts_observacoes").select("post_id, observacoes").in("post_id", postIds);

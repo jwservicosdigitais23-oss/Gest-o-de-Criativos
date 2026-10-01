@@ -11,7 +11,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { exigirMembro } from "@/lib/auth";
 import { progressoPorPessoa, textoProgresso, type DecisaoResumo } from "@/lib/progresso";
-import { carregarMiniaturas, contarObservacoes } from "@/lib/consultas";
+import { carregarDecididoPor, carregarMiniaturas, contarObservacoes } from "@/lib/consultas";
 import { hojeISO, somarDias } from "@/lib/datas";
 import { statusVisual } from "@/lib/status";
 import { assinarUrls } from "@/lib/storage";
@@ -53,7 +53,7 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
 
   const lista = posts ?? [];
   const aguardandoIds = perfil.modo_aprovacao === "todas" ? lista.filter((p) => p.status === "aguardando").map((p) => p.id) : [];
-  const [miniaturas, observacoes, { data: progresso }, { data: decisoesAguardando }] = await Promise.all([
+  const [miniaturas, observacoes, { data: progresso }, { data: decisoesAguardando }, decididoPor] = await Promise.all([
     carregarMiniaturas(supabase, lista),
     contarObservacoes(supabase, lista.map((p) => p.id)),
     aguardandoIds.length
@@ -62,6 +62,7 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
     aguardandoIds.length
       ? supabase.from("decisoes").select("post_id, autor_id, decisao, versao").in("post_id", aguardandoIds)
       : Promise.resolve({ data: [] as (DecisaoResumo & { post_id: string })[] }),
+    carregarDecididoPor(supabase, lista),
   ]);
   const progressoPorPost = new Map((progresso ?? []).map((x) => [x.post_id as string, x]));
   const aprovadoras = (aprov ?? []).map((a) => a.membros as unknown as Pick<Membro, "id" | "nome" | "avatar_url">).filter(Boolean);
@@ -86,6 +87,7 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
     miniatura: miniaturas[p.id],
     observacoes: observacoes[p.id] ?? 0,
     statusVisual: statusVisual(p.status, p.prazo_aprovacao, hoje),
+    decididoPor: decididoPor[p.id] ?? null,
     extra: progressoPorPost.has(p.id) ? (
       <span className="flex flex-col gap-0.5">
         <span className="font-semibold text-st-aguardando-text">

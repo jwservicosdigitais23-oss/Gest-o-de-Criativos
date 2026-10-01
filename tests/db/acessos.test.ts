@@ -101,6 +101,7 @@ describe.skipIf(!temBanco)("Prompt 9 · visibilidade das aprovadoras (RLS)", () 
   });
 
   it("ambas leem, veem as mídias e decidem no Grupo Adere (modo todas)", async () => {
+    await sql(c, "update public.perfis set modo_aprovacao = 'todas' where id = $1", [perfilGrupo]);
     for (const quem of [edna, daniela]) {
       const arquivos = await como(c, quem, () => sql(c, "select name from storage.objects where name like $1", [`%${postGrupo}%`]));
       expect(arquivos).toHaveLength(1);

@@ -5,13 +5,17 @@ import { cn } from "@/lib/utils";
 export function StatusPill({
   status,
   semIcone = false,
+  por,
   className,
 }: {
   status: StatusVisual;
   semIcone?: boolean;
+  /** Quem decidiu (ex.: "Aprovado por Daniela Quintana"). Só em aprovado/reprovado. */
+  por?: string | null;
   className?: string;
 }) {
   const s = STATUS[status];
+  const comAutor = por && (status === "aprovado" || status === "reprovado");
   const Icone = s.icone;
   return (
     <span
@@ -23,7 +27,7 @@ export function StatusPill({
       )}
     >
       {!semIcone && <Icone className={cn("size-3.5 shrink-0", s.corIcone)} aria-hidden />}
-      {s.rotulo}
+      {comAutor ? `${s.rotulo} por ${por}` : s.rotulo}
     </span>
   );
 }

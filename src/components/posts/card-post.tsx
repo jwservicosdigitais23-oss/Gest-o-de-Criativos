@@ -42,6 +42,8 @@ export interface PostCardDados extends Pick<Post, "id" | "tema" | "status" | "fo
   extra?: React.ReactNode;
   /** status visual (ex.: atrasado); padrão = status do post */
   statusVisual?: StatusVisual;
+  /** Quem aprovou/reprovou a versão atual ("Aprovado por …") */
+  decididoPor?: string | null;
 }
 
 function Rodape({ post }: { post: PostCardDados }) {
@@ -77,7 +79,7 @@ export function CardPost({ post }: { post: PostCardDados }) {
           {post.perfilNome && ` · ${post.perfilNome}`}
         </p>
         <p className="line-clamp-2 text-body font-bold text-navy-900 group-hover:text-blue-600">{post.tema}</p>
-        <StatusPill status={post.statusVisual ?? post.status} className="self-start" />
+        <StatusPill status={post.statusVisual ?? post.status} por={post.decididoPor} className="self-start whitespace-normal" />
         <Rodape post={post} />
       </div>
     </Link>
@@ -100,11 +102,11 @@ export function LinhaPost({ post }: { post: PostCardDados }) {
           {post.perfilNome && ` · ${post.perfilNome}`}
         </p>
         <div className="sm:hidden">
-          <StatusPill status={post.statusVisual ?? post.status} />
+          <StatusPill status={post.statusVisual ?? post.status} por={post.decididoPor} />
         </div>
         <Rodape post={post} />
       </div>
-      <StatusPill status={post.statusVisual ?? post.status} className="hidden sm:inline-flex" />
+      <StatusPill status={post.statusVisual ?? post.status} por={post.decididoPor} className="hidden sm:inline-flex" />
     </Link>
   );
 }

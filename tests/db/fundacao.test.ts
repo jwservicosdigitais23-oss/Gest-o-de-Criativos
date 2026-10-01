@@ -25,7 +25,7 @@ describe.skipIf(!temBanco)("Prompt 1 · fundação do banco", () => {
     expect(perfis).toEqual([
       { nome: "Edna Queiroz", modo_aprovacao: "qualquer_uma", tipo: "pessoal" },
       { nome: "Daniela Quintana", modo_aprovacao: "qualquer_uma", tipo: "pessoal" },
-      { nome: "Grupo Adere", modo_aprovacao: "todas", tipo: "empresa" },
+      { nome: "Grupo Adere", modo_aprovacao: "qualquer_uma", tipo: "empresa" },
     ]);
     const [{ n }] = (await sql<{ n: string }>(c, "select count(*) n from public.posts")) as [{ n: string }];
     expect(Number(n)).toBe(0);
