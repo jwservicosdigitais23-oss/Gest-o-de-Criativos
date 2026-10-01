@@ -14,7 +14,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const { supabase, membro, real, verComo, perfisIds } = await exigirMembro();
 
   const [perfis, naoLidas, urls, aprovadoras] = await Promise.all([
-    carregarPerfisMenu(supabase, perfisIds),
+    carregarPerfisMenu(supabase, perfisIds, membro.papel === "aprovadora" ? membro.id : null),
     verComo
       ? supabase
           .rpc("notificacoes_de", { p_membro: membro.id, p_limite: 200 })

@@ -10,6 +10,7 @@ import { GlassCard } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { exigirMembro } from "@/lib/auth";
+import { progressoPorPessoa, textoProgresso, type DecisaoResumo } from "@/lib/progresso";
 import { carregarMiniaturas, contarObservacoes } from "@/lib/consultas";
 import { hojeISO, somarDias } from "@/lib/datas";
 import { statusVisual } from "@/lib/status";
@@ -52,12 +53,15 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
 
   const lista = posts ?? [];
   const aguardandoIds = perfil.modo_aprovacao === "todas" ? lista.filter((p) => p.status === "aguardando").map((p) => p.id) : [];
-  const [miniaturas, observacoes, { data: progresso }] = await Promise.all([
+  const [miniaturas, observacoes, { data: progresso }, { data: decisoesAguardando }] = await Promise.all([
     carregarMiniaturas(supabase, lista),
     contarObservacoes(supabase, lista.map((p) => p.id)),
     aguardandoIds.length
       ? supabase.from("posts_progresso").select("post_id, aprovacoes, total_aprovadoras").in("post_id", aguardandoIds)
       : Promise.resolve({ data: [] as { post_id: string; aprovacoes: number; total_aprovadoras: number }[] }),
+    aguardandoIds.length
+      ? supabase.from("decisoes").select("post_id, autor_id, decisao, versao").in("post_id", aguardandoIds)
+      : Promise.resolve({ data: [] as (DecisaoResumo & { post_id: string })[] }),
   ]);
   const progressoPorPost = new Map((progresso ?? []).map((x) => [x.post_id as string, x]));
   const aprovadoras = (aprov ?? []).map((a) => a.membros as unknown as Pick<Membro, "id" | "nome" | "avatar_url">).filter(Boolean);
@@ -83,8 +87,19 @@ export default async function PerfilPage(props: PageProps<"/perfis/[id]">) {
     observacoes: observacoes[p.id] ?? 0,
     statusVisual: statusVisual(p.status, p.prazo_aprovacao, hoje),
     extra: progressoPorPost.has(p.id) ? (
-      <span className="font-semibold text-st-aguardando-text">
-        {progressoPorPost.get(p.id)!.aprovacoes} de {progressoPorPost.get(p.id)!.total_aprovadoras} aprovações
+      <span className="flex flex-col gap-0.5">
+        <span className="font-semibold text-st-aguardando-text">
+          {progressoPorPost.get(p.id)!.aprovacoes} de {progressoPorPost.get(p.id)!.total_aprovadoras} aprovações
+        </span>
+        <span data-testid="progresso-pessoas">
+          {textoProgresso(
+            progressoPorPessoa(
+              aprovadoras,
+              ((decisoesAguardando ?? []) as (DecisaoResumo & { post_id: string })[]).filter((d) => d.post_id === p.id),
+              p.versao,
+            ),
+          )}
+        </span>
       </span>
     ) : undefined,
   }));
