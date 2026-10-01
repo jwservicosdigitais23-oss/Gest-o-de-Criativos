@@ -49,3 +49,56 @@ O código e o RLS estão corretos e não dependem de login. **O problema está n
 5. **Testes** (Vitest no Postgres de teste; Playwright com o harness local, nunca em produção) para todos os cenários do pedido.
 
 Ação **sua**, que não é código: as duas ainda não têm senha. Depois do deploy, em Membros, use **Gerar nova senha provisória** para cada uma (isso também confirma o e-mail) e mande pelo WhatsApp.
+
+## 2. Correções feitas
+
+| O que estava errado | Correção | Onde |
+|---|---|---|
+| Grupo Adere sem aprovadoras | Vínculos Edna→Grupo Adere e Daniela→Grupo Adere, localizados por e-mail e nome do perfil, com `on conflict do nothing` (idempotente) | `supabase/migrations/20261001100000_fila_grupo_adere.sql` (aplicada em produção em 01/10) |
+| Aprovadora vinculada depois do envio não recebia notificação | Trigger `perfil_aprovadoras_notificar` (AFTER INSERT) → `notificar_pendencias(membro, perfil)`: avisa cada post aguardando em que ela ainda não decidiu, sem duplicar | mesma migração |
+| Posts pendentes sem notificação | Backfill `select notificar_pendencias()`: criou 6 notificações (2 posts do Grupo Adere × 2 aprovadoras, mais "Relacionamento" para a Edna e "Decisão de tecnologia…" para a Daniela) | mesma migração |
+| Contador da sidebar contava todos os posts aguardando do perfil | A view `pendencias_aprovadoras` ganhou `perfil_id`; para a aprovadora (e no "Ver como"), a sidebar conta a mesma view do Painel. O admin continua vendo o total aguardando. | `src/lib/shell.ts`, `src/app/(app)/layout.tsx` |
+| Progresso só em número ("1 de 2") | "Edna: aprovou · Daniela: pendente" no card do Kanban e no detalhe do post (modo "todas", aguardando) | `src/lib/progresso.ts`, `perfis/[id]/page.tsx`, `posts/[id]/page.tsx` |
+
+Não mudou: RLS, regras do fluxo (`status_pelas_decisoes`, `validar_decisao`, `aplicar_decisao`), visual e telas. Visibilidade e decisão continuam dependendo só de **membro ativo + vínculo em `perfil_aprovadoras`**.
+
+## 3. Testes
+
+Vitest (`npm test`, 110 testes, todos passando) num Postgres local com todas as migrações. Nunca em produção.
+
+`tests/db/fila-grupo-adere.test.ts`, com as duas aprovadoras como em produção (convite pendente, nunca entraram):
+
+| Cenário | Resultado |
+|---|---|
+| Modo do Grupo Adere é "todas" | ✅ |
+| Post do Grupo Adere enviado entra na fila das duas e notifica as duas, sem login; depois do primeiro acesso, continua na fila e na notificação | ✅ |
+| As duas aprovam, revisam (com observação) e reprovam no Grupo Adere e no próprio perfil | ✅ |
+| Revisar sem observação é recusado | ✅ |
+| Edna não lê nem decide em post da Daniela, e vice-versa (SQL direto, via RLS) | ✅ |
+| Modo todas: 1 aprovação = Aguardando "1 de 2" e sai só da fila de quem decidiu; a 2ª aprova; revisão de qualquer uma → Em revisão; nova versão zera as aprovações e volta para a fila das duas | ✅ |
+| Aprovadora vinculada depois do envio vê o post e recebe a notificação; desvincular e vincular de novo não duplica | ✅ |
+| Contador por perfil (sidebar) = fila do Painel | ✅ |
+| Migração: vínculos idempotentes (rodados 2×), backfill não duplica | ✅ |
+
+`src/lib/progresso.test.ts`: o texto "Edna: aprovou · Daniela: pendente" e o fato de que decisões de versões anteriores não contam.
+
+Playwright: `e2e/fila-grupo-adere.spec.ts` (fila e contadores na tela) e `e2e/acessos.spec.ts` precisam de usuários de teste (`E2E_*`) num ambiente de preview. Aqui rodaram os 6 testes sem login; os de login ficaram como *skipped*, porque este ambiente não acessa o Supabase.
+
+## 4. Produção depois da correção (01/10, só leitura)
+
+| Post aguardando | Perfil (modo) | Fila da Edna | Fila da Daniela | Notificadas | Decisões na versão atual |
+|---|---|---|---|---|---|
+| Relacionamento | Edna Queiroz (qualquer uma) | ✅ | — | Edna | 0 |
+| Repostagem Webinar - Crédito do Trabalhador no RM | Edna Queiroz (qualquer uma) | ✅ | — | Edna | 0 |
+| Decisão de tecnologia é decisão de negócio, não só de TI | Daniela Quintana (qualquer uma) | — | ✅ | Daniela | 0 |
+| Webinar - Crédito do Trabalhador no RM | **Grupo Adere (todas)** | ✅ | ✅ | Edna, Daniela | 0 |
+| Webinar 06/10 · IoT + IA: AIoT | **Grupo Adere (todas)** | ✅ | ✅ | Edna, Daniela | 0 |
+
+| Aprovadora | Perfis | Itens na fila | Notificações não lidas |
+|---|---|---|---|
+| Edna Queiroz | Edna Queiroz, Grupo Adere | 4 | 4 |
+| Daniela Quintana | Daniela Quintana, Grupo Adere | 3 | 3 |
+
+Nenhum post foi criado, alterado ou decidido, e nenhum e-mail foi enviado (as notificações são só internas).
+
+**Prints do "Ver como":** não foi possível tirar daqui, porque este ambiente não acessa o Supabase de produção nem tem a sua sessão de admin. Para conferir: entre como admin › avatar › **Ver como Edna Queiroz** › Painel (4 em "Para você aprovar") e a página do Grupo Adere (os 2 webinars em Aguardando, com "Edna: pendente · Daniela: pendente"). Depois repita com a Daniela (3 na fila).

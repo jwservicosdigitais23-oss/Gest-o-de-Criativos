@@ -17,6 +17,7 @@ import { FORMATO_LABEL } from "@/lib/constantes";
 import { formatarData, formatarDataHora, formatarHora, hojeISO } from "@/lib/datas";
 import { carregarDetalhePost } from "@/lib/detalhe-post";
 import { montarEventos } from "@/lib/eventos-post";
+import { progressoPorPessoa, textoProgresso } from "@/lib/progresso";
 import { statusVisual } from "@/lib/status";
 
 export const metadata: Metadata = { title: "Post" };
@@ -48,6 +49,17 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
   const observacoesAnteriores = d.decisoes
     .filter((x) => x.versao === post.versao - 1 && x.observacao)
     .map((x) => ({ id: x.id, autor: nomeDe(x.autor_id), decisao: x.decisao, observacao: x.observacao!, itens: x.itens }));
+  // Modo "todas": quem já decidiu na versão atual e quem falta.
+  const progressoPessoas =
+    d.progresso?.modo_aprovacao === "todas" && post.status === "aguardando"
+      ? textoProgresso(
+          progressoPorPessoa(
+            d.aprovadoras.map((a) => ({ id: a!.id, nome: a!.nome })),
+            d.decisoes,
+            post.versao,
+          ),
+        )
+      : null;
   const observacoesAtuais = d.decisoes
     .filter((x) => x.versao === post.versao && x.observacao && x.decisao !== "aprovado")
     .map((x) => ({ id: x.id, autor: nomeDe(x.autor_id), decisao: x.decisao, observacao: x.observacao!, itens: x.itens }));
@@ -119,6 +131,11 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
                   {d.progresso?.modo_aprovacao === "todas" &&
                     ` · ${d.progresso.aprovacoes} de ${d.progresso.total_aprovadoras} aprovações`}
                 </p>
+                {progressoPessoas && (
+                  <p className="text-label text-text-muted" data-testid="progresso-pessoas">
+                    {progressoPessoas}
+                  </p>
+                )}
               </div>
               {observacoesAnteriores.length > 0 && <ObservacoesAnteriores itens={observacoesAnteriores} versao={post.versao - 1} />}
               <PainelDecisao postId={post.id} versao={post.versao} />
@@ -129,11 +146,21 @@ export default async function PostPage(props: PageProps<"/posts/[id]">) {
               Você {minhaDecisao.decisao === "aprovado" ? "aprovou" : "decidiu"} a v{post.versao}.{" "}
               {d.progresso?.modo_aprovacao === "todas" &&
                 `Aguardando as demais aprovadoras (${d.progresso.aprovacoes} de ${d.progresso.total_aprovadoras}).`}
+              {progressoPessoas && (
+                <span className="mt-1 block text-label text-text-muted" data-testid="progresso-pessoas">
+                  {progressoPessoas}
+                </span>
+              )}
             </GlassCard>
           )}
           {!podeDecidir && admin && post.status === "aguardando" && d.progresso?.modo_aprovacao === "todas" && (
             <GlassCard className="p-5 text-body">
               <strong className="text-navy-900">{d.progresso.aprovacoes} de {d.progresso.total_aprovadoras} aprovações</strong> na v{post.versao}.
+              {progressoPessoas && (
+                <span className="mt-1 block text-label text-text-muted" data-testid="progresso-pessoas">
+                  {progressoPessoas}
+                </span>
+              )}
             </GlassCard>
           )}
           {admin && post.status === "em_revisao" && observacoesAtuais.length > 0 && (
